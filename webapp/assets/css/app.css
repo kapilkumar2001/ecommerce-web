@@ -24,6 +24,6 @@ body {
 }
 
 .btn:focus, .btn.focus, button:focus {
-  outline: none;
+  outline: none !important;
   box-shadow: none !important;
 }
