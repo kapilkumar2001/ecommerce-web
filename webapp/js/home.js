@@ -48,6 +48,11 @@ function viewProduct(barcode) {
 function changeToCountButton(barcode) {
     let button = $("#add-item-to-cart-button-" + barcode);
     button.empty();
+
+    var value = JSON.parse(localStorage.getItem("cart"));
+    value.add(barcode);
+    localStorage.setItem("cart", JSON.stringify(value));
+
     localStorage.setItem("quantity-" + barcode, 1);
     button.addClass("rounded-pill border py-2 px-2 mx-2");
     button.append("<button class='border-0 bg-transparent' onclick='decreaseQuantity(\"" + barcode + "\")'><i class='fa fa-minus border-right pr-2 py-2 my-2'></i></button> <span class='px-2'>" + localStorage.getItem('quantity-'+barcode) + "</span> <button class='border-0 bg-transparent' onclick='increaseQuantity(\"" + barcode + "\")'><i class='fa fa-plus border-left pl-2 py-2'></i></button>");
@@ -78,7 +83,7 @@ function decreaseQuantity(barcode) {
     }
 }
 
-function init(){
+function init() {
 	displayProducts();
 }
 
