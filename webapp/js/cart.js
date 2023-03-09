@@ -26,10 +26,10 @@ function displayCart() {
                         }
                     }
                     if((productData !== null) && (quantity !== 0) && (quantity !== null)) {
-                        row += ("<div class='row align-items-center mt-4'><div class='col-4'> <img class='img-fluid rounded img-thumbnail p-2 border-0 shadow-sm' src='https://img.freepik.com/free-photo/pink-headphones-wireless-digital-device_53876-96804.jpg' alt='Image not Available'> </div>"
+                        row += ("<div class='row align-items-center mt-4'><div class='col-4' onclick='viewProduct(\"" + barcode + "\")'> <img class='img-fluid rounded img-thumbnail p-2 border-0 shadow-sm' src=" + productData['imageUrl'] + " alt='Image not Available' style='height:170px' width='300'> </div>"
                             + "<div class='col-8 p-4'>"
                             + "<div class='row align-items-baseline'> <h5>" + productData['name'] + "</h5> <h5 class='ml-auto'>" + productData['mrp'].split(" ")[0] + "</h5> </div>"
-                            + "<div class='row mt-2'> <span class='rounded border py-1 px-2 ml-auto'> <i class='fa fa-minus border-right pr-2'></i> <span class='px-2'>" + quantity + "</span> <i class='fa fa-plus border-left pl-2'></i>  </span> </div></div></div>");
+                            + "<div class='row mt-2'> <span id='increase-or-decrease-item-" + barcode + "' class='rounded-pill border px-2 ml-auto'><button class='border-0 bg-transparent' onclick='decreaseQuantity(decreaseQuantity(\"" + barcode + "\"))'><i class='fa fa-minus border-right pr-2 py-2'></i></button> <span class='px-2'>" + localStorage.getItem('quantity-' + barcode) + "</span> <button class='border-0 bg-transparent' onclick='increaseQuantity(\"" + barcode + "\")'><i class='fa fa-plus border-left pl-2 py-2'></i></button></span> </div></div></div>");
                     }
                 }
         }));
@@ -40,10 +40,33 @@ function displayCart() {
             + "<h3>Order Summary</h3>"
             + "<div class='row p-4'> <span>Total Amount </span> <span class='ml-auto'>$5678</span> </div>"
             + "<div class='row'> <button class='border btn btn-dark mx-2 my-1 px-4 py-2 rounded-pill ml-auto'>Place Order</button></div></div></div>");
-
-        console.log(row);
+            
         cartArea.append(row);
-    })
+    });
+}
+
+function viewProduct(barcode) {
+    let url = "product-details.html?barcode=" + barcode;
+    window.location.href = url;
+}
+
+function increaseQuantity(barcode) {
+    let quantity = parseInt(localStorage.getItem("quantity-" + barcode));
+    localStorage.setItem("quantity-" + barcode, quantity + 1);
+    
+    let button = $("#increase-or-decrease-item-" + barcode).find('span');
+    button.html(localStorage.getItem("quantity-" + barcode));
+}
+
+function decreaseQuantity(barcode) {
+    let quantity = parseInt(localStorage.getItem("quantity-" + barcode));
+
+    if(quantity > 0) {
+        localStorage.setItem("quantity-" + barcode, quantity - 1);
+
+        let button = $("#increase-or-decrease-item-" + barcode).find('span');
+        button.html(localStorage.getItem("quantity-" + barcode));
+    } 
 }
 
 function init(){

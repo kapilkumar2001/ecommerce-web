@@ -24,7 +24,7 @@ function displayProductDetails(barcode){
             if(productData !== null) {
                 let row = "<div class='row mx-2'>" + productData['category'] + " / "  + productData['brand'] + " / " + productData['name'] + "</div>"
                     + "<div class='row mt-4'> <div class='col-6'>"
-                    + "<img class='img-fluid rounded img-thumbnail p-2 border-0 shadow-sm' src='https://img.freepik.com/free-photo/pink-headphones-wireless-digital-device_53876-96804.jpg' alt='Image not Available'> </div>"
+                    + "<img class='img-fluid rounded img-thumbnail p-2 border-0 shadow-sm' src=" + productData['imageUrl'] + " alt='Image not Available' style='height:340px' width='500'> </div>"
                     + "<div class='col-6'> <h2 class='my-2'>" + productData['name'] + "</h2> <h6 class='text-secondary'>" + productData['description'] + "</h6>"
                     + "<div class='row align-items-baseline mx-1 mb-4'>";
                 let rating = Math.round(productData['rating']);
