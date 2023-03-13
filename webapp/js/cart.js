@@ -2,7 +2,7 @@ function displayCart() {
     let cartArea = $("#cart");
     cartArea.empty();
 
-    let row = ("<div class='col-8'> <div class='border p-4 rounded'> <h3>Review Items</h3>");
+    let row = ("<div class='col-8'> <div class='border p-4 rounded'> <h5>Review Items</h5>");
 
     const promises = [];
 
@@ -26,10 +26,10 @@ function displayCart() {
                         }
                     }
                     if((productData !== null) && (quantity !== 0) && (quantity !== null)) {
-                        row += ("<div class='row align-items-center mt-4'><div class='col-4' onclick='viewProduct(\"" + barcode + "\")'> <img class='img-fluid rounded img-thumbnail p-2 border-0 shadow-sm' src=" + productData['imageUrl'] + " alt='Image not Available' style='height:170px' width='300'> </div>"
+                        row += ("<div class='row align-items-center mt-4'><div class='col-4' onclick='viewProduct(\"" + barcode + "\")'> <img class='img-fluid rounded img-thumbnail p-2 border-0 shadow-sm' src=" + productData['imageUrl'] + " alt='Image not Available' style='height:150px' width='200'> </div>"
                             + "<div class='col-8 p-4'>"
-                            + "<div class='row align-items-baseline'> <h5>" + productData['name'] + "</h5> <h5 class='ml-auto'>" + productData['mrp'].split(" ")[0] + "</h5> </div>"
-                            + "<div class='row mt-2'> <span id='increase-or-decrease-item-" + barcode + "' class='rounded-pill border px-2 ml-auto'><button class='border-0 bg-transparent' onclick='decreaseQuantity(decreaseQuantity(\"" + barcode + "\"))'><i class='fa fa-minus border-right pr-2 py-2'></i></button> <span class='px-2'>" + localStorage.getItem('quantity-' + barcode) + "</span> <button class='border-0 bg-transparent' onclick='increaseQuantity(\"" + barcode + "\")'><i class='fa fa-plus border-left pl-2 py-2'></i></button></span> </div></div></div>");
+                            + "<div class='row align-items-baseline'> <b>" + productData['name'] + "</b> <h6 class='ml-auto'>" + productData['mrp'] + "</h6> </div>"
+                            + "<div class='row mt-2'><span>Color: " + productData['color'] + "</span> <span id='increase-or-decrease-item-" + barcode + "' class='rounded-pill border px-2 ml-auto'><button class='border-0 bg-transparent' onclick='decreaseQuantity(decreaseQuantity(\"" + barcode + "\"))'><i class='fa fa-minus border-right pr-2 py-2'></i></button> <span class='px-2'>" + localStorage.getItem('quantity-' + barcode) + "</span> <button class='border-0 bg-transparent' onclick='increaseQuantity(\"" + barcode + "\")'><i class='fa fa-plus border-left pl-2 py-2'></i></button></span> </div></div></div>");
                     }
                 }
         }));
@@ -70,6 +70,9 @@ function decreaseQuantity(barcode) {
 }
 
 function init(){
+    // $("#header-placeholder").load("header.html");
+    $("#navbar-placeholder").load("navbar.html");
+    $("#footer-placeholder").load("footer.html");
 	displayCart();
 }
 
