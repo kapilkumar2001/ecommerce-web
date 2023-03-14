@@ -27,3 +27,8 @@ body {
   outline: none !important;
   box-shadow: none !important;
 }
+
+.toggle-password {
+	right: 2rem;
+	top: 0.75rem;
+}
