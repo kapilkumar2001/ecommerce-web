@@ -4,10 +4,18 @@ function getProductDetails() {
     displayProductDetails(barcode);
 }
 
-function displayProductDetails(barcode){
-    let productDetailsContainer = $("#product-details-container");
-    productDetailsContainer.empty();
+function getCurrentUserId() {
+    let currentUserId = localStorage.getItem('current-user-id');
 
+    if(currentUserId === null) {
+        localStorage.setItem('current-user-id', 0);
+        currentUserId = 0;
+    }
+
+    return currentUserId;
+}
+
+function displayProductDetails(barcode){
     $.ajax({
         url: 'data/products.json',
         dataType: 'json',
@@ -22,38 +30,32 @@ function displayProductDetails(barcode){
             }
 
             if(productData !== null) {
-                let row = "<div class='row mx-2'>" + productData['category'] + " / "  + productData['brand'] + " / " + productData['name'] + "</div>"
-                    + "<div class='row mt-4'> <div class='col-6'>"
-                    + "<img class='img-fluid rounded img-thumbnail p-2 border-0 shadow-sm' src=" + productData['imageUrl'] + " alt='Image not Available' style='height:400px' width='500'> </div>"
-                    + "<div class='col-6'> <h3 class='my-2'>" + productData['name'] + "</h3> <p class='text-secondary'>" + productData['description'] + "</p>"
-                    + "<div class='row align-items-baseline mx-1 mb-4'>";
-                let rating = Math.round(productData['rating']);
-
-                for(let j=0; j<rating; j++){
-                    row += "<i class='fa fa-star text-success'></i>";
-                }
-
-                for(let j=0; j<(5-rating); j++){
-                    row += "<i class='fa fa-star-o text-success'></i>";
-                }
-
-                row +=  ("<span class='mr-1 text-success'>(" + productData['rating'] + ")</span><span class='ml-2 text-primary'>" + productData['reviews'] + " ratings</span></div>"
-                    + "<hr>"
-                    + "<h4 class='my-2'>" + productData['mrp'] + "</h4>"
-                    + "<span class='my-3'>Color: " + productData['color'] + "</span><br>"
-                    + "<span class='my-3'>Style Name: " + productData['styleName'] + "</span>"
-                    + "<hr>");
-                
-                if(localStorage.getItem('quantity-' + barcode) === null || parseInt(localStorage.getItem('quantity-' + barcode)) === 0) {
-                    row += ("<span id='add-item-to-cart-button'><button class='border btn btn-outline-secondary btn-sm mx-2 my-1 px-4 py-2 rounded-pill' onclick='changeToCountButton(\"" + barcode + "\")'>Add to cart</button></span>")
+                $(".product-name").html(productData['name']);
+                $(".product-img").attr("src", productData['imageUrl']);
+                $(".headline").html(productData['category'] + " / "  + productData['brand'] + " / " + productData['name']);
+                $(".product-desc").html(productData['description']);
+                $(".product-rating").html(productData['rating'] + " <i class='fa fa-star text-success'></i>");
+                $(".product-reviews").html("(" + productData['reviews'] + ")");
+                $(".product-mrp").html(productData['mrp']);
+                $(".product-color").html("Color: " + productData['color']);
+                $(".product-style").html("Style Name: " + productData['styleName']);
+ 
+                if(JSON.parse(localStorage.getItem(getCurrentUserId())) == null 
+                    || JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'] == null 
+                    || filterByBarcode(JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'], barcode) == null 
+                    || filterByBarcode(JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'], barcode).quantity == null 
+                    || parseInt(filterByBarcode(JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'], barcode).quantity) === 0) {
+                        $(".add-to-cart-btn").attr("onclick", "changeToCountButton('" + barcode + "')");
+                        $(".add-to-cart-span").removeClass("d-none");
+                        $(".inc-dec-qty-span").addClass("d-none");
                 } else {
-                    row += ("<span id='add-item-to-cart-button' class='rounded-pill border py-2 px-2 mx-2'><button class='border-0 bg-transparent' onclick='decreaseQuantity(\"" + barcode + "\")'><i class='fa fa-minus border-right pr-2 py-2 my-2'></i></button> <span class='px-2'>" + localStorage.getItem('quantity-' + barcode) + "</span> <button class='border-0 bg-transparent' onclick='increaseQuantity(\"" + barcode + "\")'><i class='fa fa-plus border-left pl-2 py-2'></i></button></span>")
-                }             
-                    
-                row += ("<button class='border btn btn-dark btn-sm mx-4 my-1 px-4 py-2 rounded-pill' onclick='viewCart()'>Buy Now</button>"
-                    + " </div> </div>");
-                
-                productDetailsContainer.append(row);
+                    $(".inc-qty-btn").attr("onclick", "increaseQuantity('" + barcode + "')");
+                    $(".dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "')");
+                    $(".inc-dec-qty-span").removeClass("d-none");
+                    $(".add-to-cart-span").addClass("d-none");
+                    $(".product-qty").html(filterByBarcode(JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'], barcode).quantity);
+                }  
+                $("#buy-now-btn").attr("onclick", "viewCart()");           
             }
         },
     });
@@ -64,41 +66,112 @@ function viewCart() {
 }
 
 function changeToCountButton(barcode) {
-    let button = $("#add-item-to-cart-button");
+    let button = $(".add-to-cart-btn");
     button.empty();
-    localStorage.setItem("quantity-" + barcode, 1);
-    button.addClass("rounded-pill border py-2 px-2 mx-2");
-    button.append("<button class='border-0 bg-transparent' onclick='decreaseQuantity(\"" + barcode + "\")'><i class='fa fa-minus border-right pr-2 py-2 my-2'></i></button> <span class='px-2'>" + localStorage.getItem('quantity-'+barcode) + "</span> <button class='border-0 bg-transparent' onclick='increaseQuantity(\"" + barcode + "\")'><i class='fa fa-plus border-left pl-2 py-2'></i></button>");
+    
+    let item = {'barcode': barcode, 'quantity': 1};
+    let data =  JSON.parse(localStorage.getItem(getCurrentUserId()));
+
+    if(data !== null) {
+        let cart = data['cart'];
+        let flag = 0;
+
+        for(let i in cart) {
+            if(cart[i]['barcode'] === barcode) {
+                cart[i]['barcode'] = barcode;
+                cart[i]['quantity'] = 1;
+                flag = 1;
+            }
+        }
+
+        if(flag === 0) {
+            cart.push(item);
+        }
+
+        data['itemsCount'] = data['itemsCount'] + 1;
+        data['cart'] = cart;  
+    } else {
+        data = {
+            'itemsCount' : 1,
+            'cart' : [item],
+            'email' : '',
+            'password' : '',
+            'id' : ''
+        }
+    }
+    localStorage.setItem(getCurrentUserId(), JSON.stringify(data));
+
+    $(".inc-qty-btn").attr("onclick", "increaseQuantity('" + barcode + "')");
+    $(".dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "')");
+    $(".inc-dec-qty-span").removeClass("d-none");
+    $(".add-to-cart-span").addClass("d-none");
+    $(".product-qty").html(1);
 }
 
 function increaseQuantity(barcode) {
-    let quantity = parseInt(localStorage.getItem("quantity-" + barcode));
-    localStorage.setItem("quantity-" + barcode, quantity + 1);
+    let data = JSON.parse(localStorage.getItem(getCurrentUserId()));
+    let cart = data['cart'];
+    let quantity = parseInt(filterByBarcode(cart, barcode).quantity);
+
+    for(let i in cart) {
+        if(cart[i]['barcode'] === barcode) {
+            cart[i]['barcode'] = barcode;
+            cart[i]['quantity'] = quantity + 1;
+            break;
+        }
+    }
+
+    data['itemsCount'] = data['itemsCount'] + 1;
+    data['cart'] = cart;  
+    localStorage.setItem(getCurrentUserId(), JSON.stringify(data));
     
-    let button = $("#add-item-to-cart-button").find('span');
-    button.html(localStorage.getItem("quantity-" + barcode));
+    $(".product-qty").html(quantity + 1);
 }
 
 function decreaseQuantity(barcode) {
-    let quantity = parseInt(localStorage.getItem("quantity-" + barcode));
+    let data =  JSON.parse(localStorage.getItem(getCurrentUserId()));
+    let cart = data['cart'];
+    let quantity = 0;
+    
+    if(filterByBarcode(cart, barcode) != null) {
+        quantity = parseInt(filterByBarcode(cart, barcode).quantity);
+    }
 
     if(quantity > 1) {
-        localStorage.setItem("quantity-" + barcode, quantity - 1);
+        for(let i in cart) {
+            if(cart[i]['barcode'] === barcode) {
+                cart[i]['barcode'] = barcode;
+                cart[i]['quantity'] = quantity - 1;
+                break;
+            }
+        }
 
-        let button = $("#add-item-to-cart-button").find('span');
-        button.html(localStorage.getItem("quantity-" + barcode));
-    } else {
-        localStorage.setItem("quantity-" + barcode, 0);
+        data['itemsCount'] = data['itemsCount'] - 1;
+        data['cart'] = cart;  
+        localStorage.setItem(getCurrentUserId(), JSON.stringify(data));
+
+        $(".product-qty").html(quantity - 1);
+    } else if(quantity === 1) {
+        for(let i in cart) {
+            if(cart[i]['barcode'] === barcode) {
+                cart[i]['barcode'] = barcode;
+                cart[i]['quantity'] = 0;
+                break;
+            }
+        }
+
+        data['itemsCount'] = data['itemsCount'] - 1;
+        data['cart'] = cart;  
+        localStorage.setItem(getCurrentUserId(), JSON.stringify(data));
         
-        let button = $("#add-item-to-cart-button");
-        button.empty();
-        button.removeClass("rounded-pill border py-2 px-2 mx-2");
-        button.append("<button class='border btn btn-outline-secondary btn-sm mx-2 my-1 px-4 py-2 rounded-pill' onclick='changeToCountButton(\"" + barcode + "\")'>Add to cart</button>");
+        $(".add-to-cart-btn").attr("onclick", "changeToCountButton('" + barcode + "')");
+        $(".add-to-cart-btn").html("Add to cart");
+        $(".inc-dec-qty-span").addClass("d-none");
+        $(".add-to-cart-span").removeClass("d-none");
     }
 }
 
 function init(){
-    // $("#header-placeholder").load("header.html");
     $("#navbar-placeholder").load("navbar.html");
     $("#footer-placeholder").load("footer.html");
     getProductDetails();

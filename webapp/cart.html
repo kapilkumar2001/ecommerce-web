@@ -9,19 +9,67 @@
     <meta http-equiv="Expires" content="-1"/>
     <meta http-equiv="cache-control" content="no-cache"/>
     <script src="https://kit.fontawesome.com/c30beb553f.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="assets/css/app.css" />
+    <link rel="stylesheet" href="assets/css/app.css"/>
     <link rel="icon" type="image/x-icon" href="images/increff-logo.png" />
     <link rel="icon" href="https://storage.googleapis.com/www.increff.com/img/favicon.png?v=2" type="image/x-icon"/>
     <link rel="stylesheet" href="https://storage.googleapis.com/static.increff.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
   </head>
   <body>
     <div id="navbar-placeholder"></div>
     <div class="container">
-      <div class="row" id="cart"></div>
+      <div class="row" id="cart">
+        <div id="empty-cart-img" class="col-12 d-none"><img class="img-fluid mx-auto d-block" src="https://shop.millenniumbooksource.com/static/images/cart1.png"></img></div>
+        <div id="cart-items" class="col-8 d-none p-4"> 
+          <div class="row">
+            <h4>Review Items</h4>
+            <button id="clear-cart-btn" class="btn btn-sm ml-auto btn-dark rounded-pill px-3"><i class="fa fa-close mr-2"></i>Clear</button>
+          </div>
+          <div id="cart-item" class="border rounded row align-items-center mt-4 py-2">
+            <div class="col-4"> 
+              <img class="product-img img-fluid rounded img-thumbnail p-2 border-0 shadow-sm" style="height:150px" width="200"> 
+            </div>
+            <div class="col-8 p-4">
+              <div class="row align-items-baseline"> 
+                <a class="product-name text-body">
+                  <b></b>
+                </a> 
+                <h6 class="product-mrp ml-auto"></h6> 
+              </div>
+              <div class="row mt-2">
+                <span class="product-color"></span> 
+                <span class="inc-dec-qty-span rounded-pill border px-2 ml-auto">
+                  <button class="dec-qty-btn border-0 bg-transparent">
+                    <i class="fa fa-minus border-right pr-2 py-2"></i>
+                  </button> 
+                  <span class="product-qty px-2"></span> 
+                  <button class="inc-qty-btn border-0 bg-transparent">
+                    <i class="fa fa-plus border-left pl-2 py-2"></i>
+                  </button>
+                </span> 
+              </div>
+              <div class="row">
+                <button class="remove-item-btn btn btn-sm btn-danger rounded-pill border-0 px-2"><i class="fa fa-trash mr-2"></i>Remove</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id='order-summary' class='col-4 d-none'> 
+          <div class='border p-4 rounded'>
+            <h4>Order Summary</h4>
+            <div class='row p-4'> 
+              <span>Total Amount</span> 
+              <span class='total-amount ml-auto'></span> 
+            </div>
+            <div class='row'> 
+              <button class='place-order-btn border btn btn-sm btn-dark mx-2 my-1 px-4 py-2 rounded-pill ml-auto'>Place Order</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div id="footer-placeholder"></div>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="js/cart.js"></script>
   </body>
 </html>

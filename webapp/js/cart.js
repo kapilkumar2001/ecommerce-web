@@ -1,48 +1,73 @@
-function displayCart() {
-    let cartArea = $("#cart");
-    cartArea.empty();
+function getCurrentUserId() {
+    let currentUserId = localStorage.getItem('current-user-id');
 
-    let row = ("<div class='col-8'> <div class='border p-4 rounded'> <h5>Review Items</h5>");
-
-    const promises = [];
-
-    keys = Object.keys(localStorage),
-    i = keys.length;
-
-    while (i--) {
-        let barcode = keys[i].split("-").slice(1).join('-');
-        promises.push(    
-            $.ajax({
-                url: 'data/products.json',
-                dataType: 'json',
-                success: function(data) {
-                    let productData = null;
-                    let quantity = parseInt(localStorage.getItem('quantity-' + barcode));
-        
-                    for(let i in data) {
-                        if(data[i]['barcode'] === barcode) {
-                            productData = data[i];
-                            break;
-                        }
-                    }
-                    if((productData !== null) && (quantity !== 0) && (quantity !== null)) {
-                        row += ("<div class='row align-items-center mt-4'><div class='col-4' onclick='viewProduct(\"" + barcode + "\")'> <img class='img-fluid rounded img-thumbnail p-2 border-0 shadow-sm' src=" + productData['imageUrl'] + " alt='Image not Available' style='height:150px' width='200'> </div>"
-                            + "<div class='col-8 p-4'>"
-                            + "<div class='row align-items-baseline'> <b>" + productData['name'] + "</b> <h6 class='ml-auto'>" + productData['mrp'] + "</h6> </div>"
-                            + "<div class='row mt-2'><span>Color: " + productData['color'] + "</span> <span id='increase-or-decrease-item-" + barcode + "' class='rounded-pill border px-2 ml-auto'><button class='border-0 bg-transparent' onclick='decreaseQuantity(decreaseQuantity(\"" + barcode + "\"))'><i class='fa fa-minus border-right pr-2 py-2'></i></button> <span class='px-2'>" + localStorage.getItem('quantity-' + barcode) + "</span> <button class='border-0 bg-transparent' onclick='increaseQuantity(\"" + barcode + "\")'><i class='fa fa-plus border-left pl-2 py-2'></i></button></span> </div></div></div>");
-                    }
-                }
-        }));
+    if(currentUserId === null) {
+        localStorage.setItem('current-user-id', 0);
+        currentUserId = 0;
     }
 
-    Promise.all(promises).then(() => {
-        row += ("</div></div><div class='col-4'> <div class='border p-4 rounded'>"
-            + "<h3>Order Summary</h3>"
-            + "<div class='row p-4'> <span>Total Amount </span> <span class='ml-auto'>$5678</span> </div>"
-            + "<div class='row'> <button class='border btn btn-dark mx-2 my-1 px-4 py-2 rounded-pill ml-auto'>Place Order</button></div></div></div>");
+    return currentUserId;
+}
+
+function displayCart() {
+    const promises = [];
+    let data = JSON.parse(localStorage.getItem(getCurrentUserId()));
+    let cart = data['cart'];
+    let itemsCount = parseInt(data['itemsCount']);  
+    let i = cart.length;
+
+    if(itemsCount === 0) {
+        $("#empty-cart-img").removeClass("d-none");
+        $("#cart-items").addClass("d-none");
+        $("#order-summary").addClass("d-none");
+    } else {
+        $("#empty-cart-img").addClass("d-none");
+        $("#cart-items").removeClass("d-none");
+        $("#order-summary").removeClass("d-none");
+
+        while (i--) {
+            let barcode = cart[i].barcode;
+            promises.push(    
+                $.ajax({
+                    url: 'data/products.json',
+                    dataType: 'json',
+                    success: function(data) {
+                        let productData = null;
+                        let quantity = parseInt(filterByBarcode(JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'], barcode).quantity);
             
-        cartArea.append(row);
-    });
+                        for(let i in data) {
+                            if(data[i]['barcode'] === barcode) {
+                                productData = data[i];
+                                break;
+                            }
+                        }
+                        if((productData !== null) && (quantity !== 0) && (quantity !== null)) {
+
+                            let node = $("#cart-item");
+                            let clone = node.clone().attr("id", "cart-item-" + barcode);
+                            $("#cart-items").append(clone);
+
+                            $("#cart-item-" + barcode + " .product-img").attr("src", productData["imageUrl"]);
+                            $("#cart-item-" + barcode + " .product-img").attr("onclick", "viewProduct('" + barcode + "')");
+                            $("#cart-item-" + barcode + " .product-name").find("b").html(productData["name"]);
+                            $("#cart-item-" + barcode + " .product-name").attr("href", "product-details.html?barcode=" + barcode);
+                            $("#cart-item-" + barcode + " .product-mrp").html(productData["mrp"]);
+                            $("#cart-item-" + barcode + " .product-color").html(productData["color"]);
+                            
+                            $("#cart-item-" + barcode + " .inc-qty-btn").attr("onclick", "increaseQuantity('" + barcode + "')");
+                            $("#cart-item-" + barcode + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "')");
+                            $("#cart-item-" + barcode + " .remove-item-btn").attr("onclick", "removeItem('" + barcode + "')");
+                            $("#cart-item-" + barcode + " .product-qty").html(filterByBarcode(JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'], barcode).quantity);
+                        }
+                    }
+            }));
+        }
+    
+        Promise.all(promises).then(() => {
+            $(".total-amount").html("₹15490");
+            $("#cart-item").remove();
+        });
+    }
 }
 
 function viewProduct(barcode) {
@@ -51,29 +76,126 @@ function viewProduct(barcode) {
 }
 
 function increaseQuantity(barcode) {
-    let quantity = parseInt(localStorage.getItem("quantity-" + barcode));
-    localStorage.setItem("quantity-" + barcode, quantity + 1);
+    let data =  JSON.parse(localStorage.getItem(getCurrentUserId()));
+    let cart = data['cart'];
+    let quantity = parseInt(filterByBarcode(cart, barcode).quantity);
     
-    let button = $("#increase-or-decrease-item-" + barcode).find('span');
-    button.html(localStorage.getItem("quantity-" + barcode));
+    for(let i in cart) {
+        if(cart[i]['barcode'] === barcode) {
+            cart[i]['barcode'] = barcode;
+            cart[i]['quantity'] = quantity + 1;
+            break;
+        }
+    }
+
+    data['itemsCount'] = data['itemsCount'] + 1;
+    data['cart'] = cart;  
+    localStorage.setItem(getCurrentUserId(), JSON.stringify(data));
+    
+    $("#cart-item-" + barcode + " .product-qty").html(quantity + 1);
 }
 
 function decreaseQuantity(barcode) {
-    let quantity = parseInt(localStorage.getItem("quantity-" + barcode));
+    let data =  JSON.parse(localStorage.getItem(getCurrentUserId()));
+    let cart = data['cart'];
+    let quantity = 0;
+
+    if(filterByBarcode(cart, barcode) != null){
+        quantity = parseInt(filterByBarcode(cart, barcode).quantity);
+    }
 
     if(quantity > 0) {
-        localStorage.setItem("quantity-" + barcode, quantity - 1);
+        for(let i in cart) {
+            if(cart[i]['barcode'] === barcode) {
+                cart[i]['barcode'] = barcode;
+                cart[i]['quantity'] = quantity - 1;
+               
+                break;
+            }
+        }
 
-        let button = $("#increase-or-decrease-item-" + barcode).find('span');
-        button.html(localStorage.getItem("quantity-" + barcode));
+        data['itemsCount'] = data['itemsCount'] - 1;
+        data['cart'] = cart;  
+        localStorage.setItem(getCurrentUserId(), JSON.stringify(data));
+
+        $("#cart-item-" + barcode + " .product-qty").html(quantity - 1);
     } 
 }
 
+function checkLogin() {
+    let currentUserId = getCurrentUserId();
+
+    if(currentUserId === '0') {
+        window.location.href = "login.html";
+    } else {
+        let data = JSON.parse(localStorage.getItem(getCurrentUserId()));
+
+        // TODO: add more data in csv 
+        // TODO: remove 0 quantity before inserting
+        writeFileData(data['cart']);
+        
+        data['cart'] = [];
+        data['itemsCount'] = 0;
+        localStorage.setItem(currentUserId, JSON.stringify(data));
+
+        // TODO: success message
+        displayCart();
+    }
+}
+
+function removeItem(barcode) {
+    let data =  JSON.parse(localStorage.getItem(getCurrentUserId()));
+    let cart = data['cart'];
+    let quantity;
+
+    for(let i in cart) {
+        if(cart[i]['barcode'] === barcode) {
+            quantity = cart[i]['quantity'];
+            cart[i]['barcode'] = barcode;
+            cart[i]['quantity'] = 0;
+            break;
+        }
+    }
+
+    data['itemsCount'] = data['itemsCount'] - quantity;
+    data['cart'] = cart;  
+    localStorage.setItem(getCurrentUserId(), JSON.stringify(data));
+
+    $("#cart-item-" + barcode).remove();
+
+    if(parseInt(JSON.parse(localStorage.getItem(getCurrentUserId()))['itemsCount']) === 0) {
+        displayCart();
+    }
+}
+
+function clearCart() {
+    let data = JSON.parse(localStorage.getItem(getCurrentUserId()));
+    let cart = data['cart'];
+    let i = cart.length;
+    
+    while(i--) {
+        let barcode = cart[i].barcode;
+        removeItem(barcode);
+    }
+
+    data['itemsCount'] = 0;
+    data['cart'] = [];  
+    localStorage.setItem(getCurrentUserId(), JSON.stringify(data));
+    displayCart();
+}
+
+function filterByBarcode(jsonObject, barcode) {
+    return jsonObject.filter(
+        function(jsonObject) {
+            return (jsonObject['barcode'] == barcode);
+        })[0];
+}
+
 function init(){
-    // $("#header-placeholder").load("header.html");
     $("#navbar-placeholder").load("navbar.html");
     $("#footer-placeholder").load("footer.html");
 	displayCart();
+    $("#clear-cart-btn").click(clearCart);
 }
 
 $(document).ready(init);

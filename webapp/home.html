@@ -14,18 +14,41 @@
     <link rel="icon" href="https://storage.googleapis.com/www.increff.com/img/favicon.png?v=2" type="image/x-icon"/>
     <link rel="stylesheet" href="https://storage.googleapis.com/static.increff.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
   </head>
   <body>
     <div id="navbar-placeholder"></div>
     <div class="container">
       <div class="row">
-        <div class="col-12" id="products-area">
-          <div class="row m-2"></div>
+        <div class="col-12">
+          <div id="products-area" class="row m-2">
+            <div id="product-card" class='col-3 my-3'>
+              <div> 
+                <img class="product-img img-fluid rounded img-thumbnail p-2 border-0 shadow-sm" src="" style="height:170px" width="300"> 
+              </div>
+              <a class="product-name"><div class="row mt-4 mb-2 mx-2 text-body"></div></a>
+              <a class="product-short-desc"><div class="row mx-2 text-body"></div></a>
+              <div class="row mx-2 my-2 align-items-baseline">
+                <span class="product-rating mr-1 text-success"></span>
+                <span class="product-reviews ml-1 text-primary"></span> 
+              </div>
+              <div class='row mx-2 my-3 align-items-center'>
+                <a class="product-mrp text-body"><b></b></a>
+                <span class='add-to-cart-span ml-auto d-none'>
+                  <button class='add-to-cart-btn border btn btn-outline-secondary btn-sm mx-2 px-4 py-2 rounded-pill'>Add to cart</button>
+                </span>
+                <span class='inc-dec-qty-span rounded-pill border px-2 mx-2 ml-auto d-none'>
+                  <button class='dec-qty-btn btn btn-sm border-0 bg-transparent'><i class='fa fa-minus border-right pr-2 py-2'></i></button> 
+                  <span class='product-qty px-2'></span> 
+                  <button class='inc-qty-btn btn btn-sm border-0 bg-transparent'><i class='fa fa-plus border-left pl-2 py-2'></i></button>
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     <div id="footer-placeholder"></div>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="js/home.js"></script>
   </body>
 </html>
