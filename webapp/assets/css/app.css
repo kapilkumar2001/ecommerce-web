@@ -32,3 +32,7 @@ body {
 	right: 2rem;
 	top: 0.75rem;
 }
+
+.btn-danger {
+	background-color: #fb5a69 !important;
+}

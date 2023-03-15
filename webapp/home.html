@@ -8,20 +8,48 @@
     <meta http-equiv="Pragma" content="no-cache"/>
     <meta http-equiv="Expires" content="-1"/>
     <meta http-equiv="cache-control" content="no-cache"/>
-    <script src="https://kit.fontawesome.com/c30beb553f.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/c30beb553f.js"
+      crossorigin="anonymous"></script>
     <link rel="stylesheet" href="assets/css/app.css" />
     <link rel="icon" type="image/x-icon" href="images/increff-logo.png" />
-    <link rel="icon" href="https://storage.googleapis.com/www.increff.com/img/favicon.png?v=2" type="image/x-icon"/>
-    <link rel="stylesheet" href="https://storage.googleapis.com/static.increff.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+    <link rel="icon"
+      href="https://storage.googleapis.com/www.increff.com/img/favicon.png?v=2"
+      type="image/x-icon"/>
+    <link rel="stylesheet"
+      href="https://storage.googleapis.com/static.increff.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
   </head>
   <body>
     <div id="navbar-placeholder"></div>
     <div class="container">
       <div class="row">
-        <div class="col-12" id="products-area">
-          <div class="row m-2"></div>
+        <div class="col-12">
+          <div id="products-area" class="row m-2">
+            <div id="product-card" class='col-3 my-3'>
+              <div> 
+                <img class="product-img img-fluid rounded img-thumbnail p-2 border-0 shadow-sm" src="" style="height:170px" width="300"> 
+              </div>
+              <div class="product-name row mt-4 mb-2 mx-2"></div>
+              <div class="product-short-desc row mx-2"></div>
+              <div class="row mx-2 my-2 align-items-baseline">
+                <span class="product-rating mr-1 text-success"></span>
+                <span class="product-reviews ml-1 text-primary"></span> 
+              </div>
+              <div class='row mx-2 my-3 align-items-baseline'>
+                <b class="product-mrp"></b>
+                <span class='add-to-cart-span ml-auto d-none'>
+                  <button class='add-to-cart-btn border btn btn-outline-secondary btn-sm mx-2 px-4 py-2 rounded-pill'>Add to cart</button>
+                </span>
+                <span class='inc-dec-qty-span rounded-pill border px-2 mx-2 ml-auto d-none'>
+                  <button class='dec-qty-btn border-0 bg-transparent'><i class='fa fa-minus border-right pr-2 py-2'></i></button> 
+                  <span class='product-qty px-2'></span> 
+                  <button class='inc-qty-btn border-0 bg-transparent'><i class='fa fa-plus border-left pl-2 py-2'></i></button>
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -27,24 +27,22 @@ function login(){
 				localStorage.setItem("current-user-id", currentUserId);
 				let newCart = JSON.parse(localStorage.getItem("0"))["cart"];
 				let existingCart;
+				let itemsCount = JSON.parse(localStorage.getItem("0"))["itemsCount"];
 
 				if(localStorage.getItem(getCurrentUserId()) !== null) {
 					existingCart = JSON.parse(localStorage.getItem(getCurrentUserId()))["cart"];
+					itemsCount += JSON.parse(localStorage.getItem(getCurrentUserId()))["itemsCount"];
 				}
 				
 				let cart = addNewCartToExistingCart(newCart, existingCart);
 				data = {
+					"itemsCount" : itemsCount,
 					"cart" : cart,
-					"email" : email,
-					"password" : password,
-					"id" : currentUserId
 				}
 				localStorage.setItem(getCurrentUserId(), JSON.stringify(data));
              	localStorage.setItem("0", JSON.stringify({
+					"itemsCount" : 0,
 					"cart" : [],
-					"email" : "",
-					"password" : "",
-					"id" : 0,
 				}));
 				window.location.href = "home.html";
 			}
@@ -94,7 +92,14 @@ function addNewCartToExistingCart(newCart, existingCart) {
 	return cart;
 }
 
+function checkLogin() {
+	if(localStorage.getItem('current-user-id') !== '0') {
+		window.location.href = "home.html";
+	}
+}
+
 function init(){
+	checkLogin();
     $("#navbar-placeholder").load("navbar.html");
     $("#footer-placeholder").load("footer.html");
 	$("#login-button").click(login);

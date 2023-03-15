@@ -19,6 +19,37 @@
   <body>
     <div id="navbar-placeholder"></div>
     <div class="container" id="product-details-container">
+      <div class="headline row mx-2"></div>
+      <div class="row mt-4"> 
+        <div class="col-6">
+          <img class="product-img img-fluid rounded img-thumbnail p-2 border-0 shadow-sm" style="height:400px" width="500"> 
+        </div>
+        <div class="col-6"> 
+          <h3 class="product-name my-2"></h3> 
+          <p class="product-desc text-secondary"></p>
+          <div class="row align-items-baseline mx-1 mb-4">
+            <span class="product-rating mr-1 text-success"></span>
+            <span class="product-reviews ml-2 text-primary"></span>
+          </div>
+          <hr>
+          <h4 class="product-mrp my-2"></h4>
+          <span class="product-color my-3"></span>
+          <br>
+          <span class="product-style my-3"></span>
+          <hr>
+          <span class="add-to-cart-span d-none"><button class="add-to-cart-btn border btn btn-outline-secondary btn-sm mx-2 my-1 px-4 py-2 rounded-pill">Add to cart</button></span>
+          <span class="inc-dec-qty-span rounded-pill border py-2 px-2 mx-2 d-none">
+            <button class="dec-qty-btn border-0 bg-transparent">
+              <i class="fa fa-minus border-right pr-2 py-2 my-2"></i>
+            </button> 
+            <span class="product-qty px-2"></span> 
+            <button class="inc-qty-btn border-0 bg-transparent">
+              <i class="fa fa-plus border-left pl-2 py-2"></i>
+            </button>
+          </span>
+          <button id="buy-now-btn" class="border btn btn-dark btn-sm mx-4 my-1 px-4 py-2 rounded-pill">Buy Now</button>
+        </div>
+      </div>
     </div>
     <div id="footer-placeholder"></div>
     <script src="js/product-details.js"></script>
