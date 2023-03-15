@@ -12,11 +12,14 @@ function displayProducts(){
                 
                 $("#product-card-" + e["barcode"] + " .product-img").attr("src", e["imageUrl"]);
                 $("#product-card-" + e["barcode"] + " .product-img").attr("onclick", "viewProduct('" + e['barcode'] + "')")
-                $("#product-card-" + e["barcode"] + " .product-name").html(e["name"]);
-                $("#product-card-" + e["barcode"] + " .product-short-desc").html(e["shortDescription"]);
+                $("#product-card-" + e["barcode"] + " .product-name").find("div").html(e["name"]);
+                $("#product-card-" + e["barcode"] + " .product-name").attr("href", "product-details.html?barcode=" + e['barcode']);
+                $("#product-card-" + e["barcode"] + " .product-short-desc").find("div").html(e["shortDescription"]);
+                $("#product-card-" + e["barcode"] + " .product-short-desc").attr("href", "product-details.html?barcode=" + e['barcode']);
                 $("#product-card-" + e["barcode"] + " .product-rating").html(e["rating"] + " <i class='fa fa-star text-success'></i>");
                 $("#product-card-" + e["barcode"] + " .product-reviews").html("(" + e["reviews"] + ")");
-                $("#product-card-" + e["barcode"] + " .product-mrp").html(e["mrp"]);
+                $("#product-card-" + e["barcode"] + " .product-mrp").find("b").html(e["mrp"]);
+                $("#product-card-" + e["barcode"] + " .product-mrp").attr("href", "product-details.html?barcode=" + e['barcode']);
                
                 if(localStorage.getItem(getCurrentUserId()) == null 
                     || JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'] == null 

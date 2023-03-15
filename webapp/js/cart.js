@@ -13,10 +13,10 @@ function displayCart() {
     const promises = [];
     let data = JSON.parse(localStorage.getItem(getCurrentUserId()));
     let cart = data['cart'];
-    let itemsCount = data['itemsCount'];  
+    let itemsCount = parseInt(data['itemsCount']);  
     let i = cart.length;
 
-    if(itemsCount === '0') {
+    if(itemsCount === 0) {
         $("#empty-cart-img").removeClass("d-none");
         $("#cart-items").addClass("d-none");
         $("#order-summary").addClass("d-none");
@@ -48,8 +48,9 @@ function displayCart() {
                             $("#cart-items").append(clone);
 
                             $("#cart-item-" + barcode + " .product-img").attr("src", productData["imageUrl"]);
-                            $("#cart-item-" + barcode + " .product-img").attr("onclick", "viewProduct('" + barcode + "')")
-                            $("#cart-item-" + barcode + " .product-name").html(productData["name"]);
+                            $("#cart-item-" + barcode + " .product-img").attr("onclick", "viewProduct('" + barcode + "')");
+                            $("#cart-item-" + barcode + " .product-name").find("b").html(productData["name"]);
+                            $("#cart-item-" + barcode + " .product-name").attr("href", "product-details.html?barcode=" + barcode);
                             $("#cart-item-" + barcode + " .product-mrp").html(productData["mrp"]);
                             $("#cart-item-" + barcode + " .product-color").html(productData["color"]);
                             
@@ -162,9 +163,25 @@ function removeItem(barcode) {
 
     $("#cart-item-" + barcode).remove();
 
-    if(JSON.parse(localStorage.getItem(getCurrentUserId()))['itemsCount'] === '0') {
+    if(parseInt(JSON.parse(localStorage.getItem(getCurrentUserId()))['itemsCount']) === 0) {
         displayCart();
     }
+}
+
+function clearCart() {
+    let data = JSON.parse(localStorage.getItem(getCurrentUserId()));
+    let cart = data['cart'];
+    let i = cart.length;
+    
+    while(i--) {
+        let barcode = cart[i].barcode;
+        removeItem(barcode);
+    }
+
+    data['itemsCount'] = 0;
+    data['cart'] = [];  
+    localStorage.setItem(getCurrentUserId(), JSON.stringify(data));
+    displayCart();
 }
 
 function filterByBarcode(jsonObject, barcode) {
@@ -178,6 +195,7 @@ function init(){
     $("#navbar-placeholder").load("navbar.html");
     $("#footer-placeholder").load("footer.html");
 	displayCart();
+    $("#clear-cart-btn").click(clearCart);
 }
 
 $(document).ready(init);

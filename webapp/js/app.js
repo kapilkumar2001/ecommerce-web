@@ -20,9 +20,9 @@ function setLoginLogoutIcon() {
     let currentUserId = getCurrentUserId(); 
 
     if(currentUserId === '0') {
-        $("#navbar-login-logout").html("<a class='nav-link' href='login.html'><i class='material-icons'>login</i></a>");
+        $("#navbar-login-logout").html("<a class='nav-link' href='login.html'><i class='fa fa-sign-out fa-lg'></i></a>");
     } else {
-        $("#navbar-login-logout").html("<a class='nav-link' href='login.html'><i class='material-icons'>logout</i></a>");
+        $("#navbar-login-logout").html("<a class='nav-link' href='login.html'><i class='fa fa-sign-in fa-lg'></i></a>");
     } 
 } 
 

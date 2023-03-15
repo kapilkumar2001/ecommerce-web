@@ -36,3 +36,7 @@ body {
 .btn-danger {
 	background-color: #fb5a69 !important;
 }
+
+a { 
+	text-decoration: none !important; 
+}
