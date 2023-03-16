@@ -1,0 +1,34 @@
+.browse-box {
+    border: 0.18rem dashed blue;
+    border-radius: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.error-box {
+    border: 0.1rem solid red;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+    padding-left: 4rem;
+    padding-right: 4rem;
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+}
+
+.success-box {
+    border: 0.1rem solid green;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+    padding-left: 4rem;
+    padding-right: 4rem;
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+}

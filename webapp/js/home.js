@@ -158,5 +158,4 @@ function init() {
 	displayProducts();
 }
 
-$("#footer-placeholder").load("footer.html");
 $(document).ready(init);

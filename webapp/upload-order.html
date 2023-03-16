@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Increff</title>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="-1"/>
+    <meta http-equiv="cache-control" content="no-cache"/>
+    <script src="https://kit.fontawesome.com/c30beb553f.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="assets/css/app.css">
+    <link rel="stylesheet" href="assets/css/upload-order.css">
+    <link rel="icon" type="image/x-icon" href="images/increff-logo.png" />
+    <link rel="icon" href="https://storage.googleapis.com/www.increff.com/img/favicon.png?v=2" type="image/x-icon"/>
+    <link rel="stylesheet" href="https://storage.googleapis.com/static.increff.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+  </head>
+  <body>
+    <div id="navbar-placeholder"></div>
+    <div class="container">
+      <div class="row">
+        <div class="center">
+          <h5>Upload Order</h5>
+        </div>
+      </div>
+      <div class="row">
+        <div class="center">
+          <h6>Upload csv file to place an order</h6>
+        </div>
+      </div>
+      <div class="row">
+        <input type="file" name="file-input" id="file-input" accept="csv" class="custom-file-input d-none">
+        <button id="browse-btn" class="border-0 bg-transparent center">
+          <div class="browse-box center">
+            <img class="center" src="https://img.freepik.com/free-vector/output_53876-25529.jpg?w=740&t=st=1678951169~exp=1678951769~hmac=68aaa212375880afccc956dfc4c6f757b1bbc8a4192896821aa132791ae25480" width="15%">
+            <div class="row"><span class="center">Click to browse</span></div>
+          </div>
+        </button>
+      </div>
+      <div id="sample-file">
+        <a href="" target="_blank"> </a>
+      </div>
+      <div id="upload-btn-row" class="row d-none">
+        <div class="center">
+          <span id="file-name"></span>
+          <button id="upload-btn" class="btn btn-sm btn-dark ml-2">Upload</button>
+        </div>
+      </div>
+      <div id="error" class="d-none">
+        <div class="row">
+          <div class="error-box center">
+            <h5 class="mx-2 my-4">Something went wrong. The file contains some errors.</h5>
+            <div class="mx-2 mt-4">
+              <table class="table" id="order-items-table">
+                <thead>
+                  <tr>
+                    <th class="text-left">S.No.</th>
+                    <th class="text-left">Barcode</th>
+                    <th class="text-right">Quantity</th>
+                    <th class="text-left">Error</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-left">1</td>
+                    <td class="text-left">Realme Air 2</td>
+                    <td class="text-right">2</td>
+                    <td class="text-left">Item doesn't exist</td>
+                  </tr>
+                  <tr>
+                    <td class="text-left">2</td>
+                    <td class="text-left">Realme Air 3</td>
+                    <td class="text-right">1</td>
+                    <td class="text-left">item doesn't exist</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="success" class="d-none">
+        <div class="row">
+          <div class="success-box center">
+            <h5 class="mx-2 my-4">Order Items</h5>
+            <div class="mx-2 mt-4">
+              <table class="table" id="order-items-table">
+                <thead>
+                  <tr>
+                    <th class="text-left">S.No.</th>
+                    <th class="text-left">Name</th>
+                    <th class="text-right">Quantity</th>
+                    <th class="text-right">MRP</th>
+                    <th class="text-right">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-left">1</td>
+                    <td class="text-left">Realme Air 2</td>
+                    <td class="text-right">2</td>
+                    <td class="text-right">1230</td>
+                    <td class="text-right">2460</td>
+                  </tr>
+                  <tr>
+                    <td class="text-left">2</td>
+                    <td class="text-left">Realme Air 3</td>
+                    <td class="text-right">1</td>
+                    <td class="text-right">2230</td>
+                    <td class="text-right">2230</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="row align-items-center mx-2 my-4">
+              <div id="total-amount"><b>Total Amount: 4490</b></div>
+              <button id="place-order-btn" class="btn btn-sm btn-success ml-auto">Place Order</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="footer-placeholder"></div>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="js/upload-order.js"></script>
+  </body>
+</html>
