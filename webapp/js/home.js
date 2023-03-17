@@ -18,7 +18,7 @@ function displayProducts(){
                 $("#product-card-" + e["barcode"] + " .product-short-desc").attr("href", "product-details.html?barcode=" + e['barcode']);
                 $("#product-card-" + e["barcode"] + " .product-rating").html(e["rating"] + " <i class='fa fa-star text-success'></i>");
                 $("#product-card-" + e["barcode"] + " .product-reviews").html("(" + e["reviews"] + ")");
-                $("#product-card-" + e["barcode"] + " .product-mrp").find("b").html(e["mrp"]);
+                $("#product-card-" + e["barcode"] + " .product-mrp").find("b").html("₹" + e["mrp"]);
                 $("#product-card-" + e["barcode"] + " .product-mrp").attr("href", "product-details.html?barcode=" + e['barcode']);
                
                 if(localStorage.getItem(getCurrentUserId()) == null 

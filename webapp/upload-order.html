@@ -38,13 +38,15 @@
           </div>
         </button>
       </div>
-      <div id="sample-file">
-        <a href="" target="_blank"> </a>
+      <div id="sample-file" class="row mb-4">
+        <div class="center">  
+          <a href="resources/order-sample.csv" target="_blank">Download Sample File</a>
+        </div>
       </div>
       <div id="upload-btn-row" class="row d-none">
         <div class="center">
           <span id="file-name"></span>
-          <button id="upload-btn" class="btn btn-sm btn-dark ml-2">Upload</button>
+          <button id="upload-btn" class="btn btn-sm btn-dark">Upload</button>
         </div>
       </div>
       <div id="error" class="d-none">
@@ -52,7 +54,7 @@
           <div class="error-box center">
             <h5 class="mx-2 my-4">Something went wrong. The file contains some errors.</h5>
             <div class="mx-2 mt-4">
-              <table class="table" id="order-items-table">
+              <table class="table" id="errors-table">
                 <thead>
                   <tr>
                     <th class="text-left">S.No.</th>
@@ -89,32 +91,18 @@
                 <thead>
                   <tr>
                     <th class="text-left">S.No.</th>
+                    <th class="text-left">Barcode</th>
                     <th class="text-left">Name</th>
                     <th class="text-right">Quantity</th>
                     <th class="text-right">MRP</th>
                     <th class="text-right">Amount</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td class="text-left">1</td>
-                    <td class="text-left">Realme Air 2</td>
-                    <td class="text-right">2</td>
-                    <td class="text-right">1230</td>
-                    <td class="text-right">2460</td>
-                  </tr>
-                  <tr>
-                    <td class="text-left">2</td>
-                    <td class="text-left">Realme Air 3</td>
-                    <td class="text-right">1</td>
-                    <td class="text-right">2230</td>
-                    <td class="text-right">2230</td>
-                  </tr>
-                </tbody>
+                <tbody></tbody>
               </table>
             </div>
             <div class="row align-items-center mx-2 my-4">
-              <div id="total-amount"><b>Total Amount: 4490</b></div>
+              <div id="total-amount"><b></b></div>
               <button id="place-order-btn" class="btn btn-sm btn-success ml-auto">Place Order</button>
             </div>
           </div>

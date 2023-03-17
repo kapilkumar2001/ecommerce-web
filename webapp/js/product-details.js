@@ -36,7 +36,7 @@ function displayProductDetails(barcode){
                 $(".product-desc").html(productData['description']);
                 $(".product-rating").html(productData['rating'] + " <i class='fa fa-star text-success'></i>");
                 $(".product-reviews").html("(" + productData['reviews'] + ")");
-                $(".product-mrp").html(productData['mrp']);
+                $(".product-mrp").html("₹" + productData['mrp']);
                 $(".product-color").html("Color: " + productData['color']);
                 $(".product-style").html("Style Name: " + productData['styleName']);
  

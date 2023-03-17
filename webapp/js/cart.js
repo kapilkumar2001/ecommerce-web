@@ -51,7 +51,7 @@ function displayCart() {
                             $("#cart-item-" + barcode + " .product-img").attr("onclick", "viewProduct('" + barcode + "')");
                             $("#cart-item-" + barcode + " .product-name").find("b").html(productData["name"]);
                             $("#cart-item-" + barcode + " .product-name").attr("href", "product-details.html?barcode=" + barcode);
-                            $("#cart-item-" + barcode + " .product-mrp").html(productData["mrp"]);
+                            $("#cart-item-" + barcode + " .product-mrp").html("₹" + productData["mrp"]);
                             $("#cart-item-" + barcode + " .product-color").html(productData["color"]);
                             
                             $("#cart-item-" + barcode + " .inc-qty-btn").attr("onclick", "increaseQuantity('" + barcode + "')");
@@ -129,17 +129,41 @@ function checkLogin() {
         window.location.href = "login.html";
     } else {
         let data = JSON.parse(localStorage.getItem(getCurrentUserId()));
+        cart = data["cart"];
+        let orderData = [];
+        let products;
 
-        // TODO: add more data in csv 
-        // TODO: remove 0 quantity before inserting
-        writeFileData(data['cart']);
+        $.ajax({
+            url: 'data/products.json',
+            dataType: 'json',
+            success: function(response) {
+                products = response;
         
-        data['cart'] = [];
-        data['itemsCount'] = 0;
-        localStorage.setItem(currentUserId, JSON.stringify(data));
+                for(let i in cart) {
+                    if(parseInt(cart[i]["quantity"]) !== 0) {
+                        let row = {};
+                        console.log(cart[i]);
+                        row.barcode = cart[i]["barcode"];
+                        row.name = filterByBarcode(products, cart[i]["barcode"]).name;
+                        console.log(row.name);
+                        row.quantity = cart[i]["quantity"];
+                        row.mrp = filterByBarcode(products, cart[i]["barcode"]).mrp;
+                        row.amount = (row.quantity) * (row.mrp);
+                        orderData.push(row);
+                    }
+                }
+        
+                writeFileData(orderData);
+                
+                data['cart'] = [];
+                data['itemsCount'] = 0;
+                localStorage.setItem(currentUserId, JSON.stringify(data));
+        
+                // TODO: success message
+                displayCart();
+            },
+        });
 
-        // TODO: success message
-        displayCart();
     }
 }
 
@@ -196,6 +220,7 @@ function init(){
     $("#footer-placeholder").load("footer.html");
 	displayCart();
     $("#clear-cart-btn").click(clearCart);
+    $("#place-order-btn").click(checkLogin);
 }
 
 $(document).ready(init);

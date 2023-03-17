@@ -4,7 +4,7 @@
     padding-top: 1rem;
     padding-bottom: 2rem;
     margin-top: 2rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 .center {
@@ -15,6 +15,7 @@
 
 .error-box {
     border: 0.1rem solid red;
+    border-radius: 0.4rem;
     padding-top: 1rem;
     padding-bottom: 2rem;
     padding-left: 4rem;
@@ -25,6 +26,7 @@
 
 .success-box {
     border: 0.1rem solid green;
+    border-radius: 0.4rem;
     padding-top: 1rem;
     padding-bottom: 2rem;
     padding-left: 4rem;

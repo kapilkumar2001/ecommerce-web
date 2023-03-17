@@ -34,6 +34,22 @@ function loginLogoutAction() {
     } 
 } 
 
+function containsOnlyNumbers(str) {
+    return /^[0-9]+$/.test(str);
+}
+
+function readFileData(file, callback){
+	let config = {
+		header: true,
+		delimiter: "\t",
+		skipEmptyLines: "greedy",
+		complete: function(results) {
+			callback(results);
+	  }	
+	}
+	Papa.parse(file, config);
+}
+
 function writeFileData(arr){
 	let config = {
 		quoteChar: "",
@@ -57,7 +73,6 @@ function writeFileData(arr){
     tempLink.click(); 
     tempLink.remove();
 }
-
 
 function init() {
     setLoginLogoutIcon();

@@ -9,7 +9,8 @@
     <meta http-equiv="Expires" content="-1"/>
     <meta http-equiv="cache-control" content="no-cache"/>
     <script src="https://kit.fontawesome.com/c30beb553f.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="assets/css/app.css"/>
+    <link rel="stylesheet" href="assets/css/app.css">
+    <link rel="stylesheet" href="assets/css/cart.css">
     <link rel="icon" type="image/x-icon" href="images/increff-logo.png" />
     <link rel="icon" href="https://storage.googleapis.com/www.increff.com/img/favicon.png?v=2" type="image/x-icon"/>
     <link rel="stylesheet" href="https://storage.googleapis.com/static.increff.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
@@ -22,7 +23,7 @@
         <div id="empty-cart-img" class="col-12 d-none"><img class="img-fluid mx-auto d-block" src="https://shop.millenniumbooksource.com/static/images/cart1.png"></img></div>
         <div id="cart-items" class="col-8 d-none p-4"> 
           <div class="row">
-            <h4>Review Items</h4>
+            <h4>Your Cart</h4>
             <button id="clear-cart-btn" class="btn btn-sm ml-auto btn-dark rounded-pill px-3"><i class="fa fa-close mr-2"></i>Clear</button>
           </div>
           <div id="cart-item" class="border rounded row align-items-center mt-4 py-2">
@@ -62,7 +63,7 @@
               <span class='total-amount ml-auto'></span> 
             </div>
             <div class='row'> 
-              <button class='place-order-btn border btn btn-sm btn-success mx-2 my-1 px-4 py-2 rounded-pill ml-auto'>Place Order</button>
+              <button id="place-order-btn" class="border btn btn-sm btn-success mx-2 my-1 px-4 py-2 rounded-pill ml-auto">Place Order</button>
             </div>
           </div>
         </div>
