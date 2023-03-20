@@ -20,27 +20,38 @@
     <div id="navbar-placeholder"></div>
     <div class="container">
       <div class="row">
+        <!-- <div class="col-2"></div> -->
         <div class="col-12">
           <div id="products-area" class="row my-4">
             <div id="product-card" class="card-shadow m-2 p-2">
               <div> 
                 <img class="product-img img-fluid rounded img-thumbnail border-0" src="" style="height:200px" width="250"> 
               </div>
-              <a class="product-name"><div class="row mt-2 mb-2 mx-2 text-body"></div></a>
-              <a class="product-short-desc"><div class="row mx-2 text-body"></div></a>
-              <div class="row mx-2 my-2 align-items-baseline">
+              <a class="brand-name"><div class="row mx-2 mt-2 text-muted"></div></a>
+              <a class="product-name"><div class="row mx-2 text-body"></div></a>
+              <!-- <a class="product-short-desc"><div class="row mx-2 text-body"></div></a> -->
+              <!-- <div class="row mx-2 align-items-baseline">
                 <span class="product-rating mr-1 text-success"></span>
                 <span class="product-reviews ml-1 text-primary"></span> 
-              </div>
-              <div class='row mx-2 mt-3 mb-2 align-items-center'>
-                <a class="product-mrp text-body"><b></b></a>
-                <span class='add-to-cart-span ml-auto d-none'>
-                  <button class='add-to-cart-btn border btn btn-outline-secondary btn-sm mx-2 px-4 py-2 rounded-pill'>Add to cart</button>
+              </div> -->
+              <!-- <div class='row mx-2 my-2'>
+                <a class="product-price text-body"><b></b></a><br>
+                <a class="product-mrp text-muted ml-2"><s></s></a>
+               <a class="product-discount text-success ml-2"></a> 
+              </div> -->
+              <div class="row mt-3 mb-2 align-items-center">
+                <div class="ml-4">
+                  <a class="product-price text-body"><b></b></a><br>
+                  <a class="product-mrp text-muted"><s></s></a>
+                  <!-- <a class="product-discount text-success ml-2"></a> -->
+                </div>
+                <span class='add-to-cart-span ml-auto d-none mr-2'>
+                  <button class='add-to-cart-btn border border-success btn btn-outline-success btn-sm mx-2 px-2 py-1 rounded'>Add to cart</button>
                 </span>
-                <span class='inc-dec-qty-span rounded-pill border px-2 mx-2 ml-auto d-none'>
-                  <button class='dec-qty-btn btn btn-sm border-0 bg-transparent'><i class='fa fa-minus border-right pr-2 py-2'></i></button> 
-                  <span class='product-qty px-2'></span> 
-                  <button class='inc-qty-btn btn btn-sm border-0 bg-transparent'><i class='fa fa-plus border-left pl-2 py-2'></i></button>
+                <span class='inc-dec-qty-span border border-success ml-auto d-none mr-3 rounded'>
+                  <button class='dec-qty-btn btn-sm border-0 bg-transparent text-success'><i class='fa fa-minus py-1 pl-1'></i></button> 
+                  <span class='product-qty text-success'></span> 
+                  <button class='inc-qty-btn btn-sm border-0 bg-transparent text-success'><i class='fa fa-plus py-1 pr-1'></i></button>
                 </span>
               </div>
             </div>

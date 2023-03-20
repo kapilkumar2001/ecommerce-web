@@ -12,14 +12,20 @@ function displayProducts(){
                 
                 $("#product-card-" + e["barcode"] + " .product-img").attr("src", e["imageUrl"]);
                 $("#product-card-" + e["barcode"] + " .product-img").attr("onclick", "viewProduct('" + e['barcode'] + "')")
+                $("#product-card-" + e["barcode"] + " .brand-name").find("div").html(e["brand"]);
+                $("#product-card-" + e["barcode"] + " .brand-name").attr("href", "product-details.html?barcode=" + e['barcode']);
                 $("#product-card-" + e["barcode"] + " .product-name").find("div").html(e["name"]);
                 $("#product-card-" + e["barcode"] + " .product-name").attr("href", "product-details.html?barcode=" + e['barcode']);
                 $("#product-card-" + e["barcode"] + " .product-short-desc").find("div").html(e["shortDescription"]);
                 $("#product-card-" + e["barcode"] + " .product-short-desc").attr("href", "product-details.html?barcode=" + e['barcode']);
                 $("#product-card-" + e["barcode"] + " .product-rating").html(e["rating"] + " <i class='fa fa-star text-success'></i>");
                 $("#product-card-" + e["barcode"] + " .product-reviews").html("(" + e["reviews"] + ")");
-                $("#product-card-" + e["barcode"] + " .product-mrp").find("b").html("₹" + e["mrp"]);
+                $("#product-card-" + e["barcode"] + " .product-price").find("b").html("₹" + (e["mrp"] - parseInt(e["mrp"] * e["discountPercent"] / 100)));
+                $("#product-card-" + e["barcode"] + " .product-price").attr("href", "product-details.html?barcode=" + e['barcode']);
+                $("#product-card-" + e["barcode"] + " .product-mrp").find("s").html("₹" + e["mrp"]);
                 $("#product-card-" + e["barcode"] + " .product-mrp").attr("href", "product-details.html?barcode=" + e['barcode']);
+                $("#product-card-" + e["barcode"] + " .product-discount").html(e["discountPercent"] + "%off");
+                $("#product-card-" + e["barcode"] + " .product-discount").attr("href", "product-details.html?barcode=" + e['barcode']);
                
                 if(localStorage.getItem(getCurrentUserId()) == null 
                     || JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'] == null 
