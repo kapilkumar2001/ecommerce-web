@@ -44,6 +44,11 @@ function displayProducts(){
                 }
             }
             $("#product-card").remove();
+
+            // display brands in filters
+            displayBrands(data);
+            // display categories in filters
+            displayCategories(data);
         },
     });
 }
@@ -158,10 +163,64 @@ function decreaseQuantity(barcode) {
     }
 }
 
+function displayBrands(data) {
+    let brands = [];
+    for(let i in data) {
+        brands.push(data[i]["brand"]);
+    }
+    brands = Array.from(new Set(brands));
+
+    for(let i in brands) {
+        let node = $("#input-brand");
+        let clone = node.clone().attr("id", "input-brand-" + brands[i]);
+        $("#brand-collapse").append(clone);
+
+        $("#input-brand-" + brands[i]).find("label").html(brands[i]);
+        $("#input-brand-" + brands[i]).find("input").attr("value", brands[i]);
+    }
+
+    $("#input-brand").remove();
+}
+
+function displayCategories(data) {
+    let categories = [];
+    for(let i in data) {
+        categories.push(data[i]["category"]);
+    }
+    categories = Array.from(new Set(categories));
+
+    for(let i in categories) {
+        let node = $("#input-category");
+        let clone = node.clone().attr("id", "input-category-" + categories[i]);
+        $("#category-collapse").append(clone);
+
+        $("#input-category-" + categories[i]).find("label").html(categories[i]);
+        $("#input-category-" + categories[i]).find("input").attr("value", categories[i]);
+    }
+
+    $("#input-category").remove();
+}
+
+function filterProducts() {
+    console.log("filterProducts");
+    var selectedFilters = {};
+
+    $('input[type="checkbox"]').filter(':checked').each(function() {
+        if (!selectedFilters.hasOwnProperty(this.name)) {
+          selectedFilters[this.name] = [];
+        }
+
+        selectedFilters[this.name].push(this.value);
+    });
+    
+    console.log(selectedFilters);
+}
+
 function init() {
     $("#navbar-placeholder").load("navbar.html");
     $("#footer-placeholder").load("footer.html");
 	displayProducts();
+    $('input[type="checkbox"]').on('change', filterProducts());
 }
 
 $(document).ready(init);

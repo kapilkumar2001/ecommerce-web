@@ -18,32 +18,67 @@
   </head>
   <body>
     <div id="navbar-placeholder"></div>
-    <div class="container">
+    <div class="container-fluid">
       <div class="row">
-        <!-- <div class="col-2"></div> -->
-        <div class="col-12">
-          <div id="products-area" class="row my-4">
-            <div id="product-card" class="card-shadow m-2 p-2">
+        <div class="col-2 shadow-sm pt-4 pb-2">
+          <h5>Filters</h5>
+          <hr>
+          <div class="brand-filter">
+            <button class="btn bg-transparent border-0 p-0 collapsed" type="button" data-toggle="collapse" data-target="#brand-collapse" aria-expanded="true" aria-controls="brand-collapse">
+              Brand <i class="fa fa-angle-down ml-auto"></i>
+            </button>
+            <div class="collapse pt-2 px-2 show" id="brand-collapse">
+              <div id="input-brand"><input type="checkbox" name="brand"><label class="ml-2"></label><br></div>
+            </div>
+          </div>
+          <hr>
+          <div class="category-filter">
+            <button class="btn bg-transparent border-0 p-0 collapsed" type="button" data-toggle="collapse" data-target="#category-collapse" aria-expanded="true" aria-controls="category-collapse">
+              Category <i class="fa fa-angle-down ml-auto"></i>
+            </button>
+            <div class="collapse pt-2 px-2 show" id="category-collapse">
+              <div id="input-category"><input type="checkbox"><label class="ml-2"></label><br></div>
+            </div>
+          </div>
+          <hr>
+          <div class="discount-filter">
+            <button class="btn bg-transparent border-0 p-0 collapsed" type="button" data-toggle="collapse" data-target="#discount-collapse" aria-expanded="true" aria-controls="discount-collapse">
+              Discount <i class="fa fa-angle-down ml-auto"></i>
+            </button>
+            <div class="collapse pt-2 px-2 show" id="discount-collapse">
+              <input type="checkbox"><label class="ml-2">60% and more</label><br>
+              <input type="checkbox"><label class="ml-2">50% and more</label><br>
+              <input type="checkbox"><label class="ml-2">40% and more</label><br>
+              <input type="checkbox"><label class="ml-2">30% and more</label><br>
+              <input type="checkbox"><label class="ml-2">20% and more</label><br>
+              <input type="checkbox"><label class="ml-2">10% and more</label><br>
+            </div>
+          </div>
+          <hr>
+          <div class="price-filter">
+            <button class="btn bg-transparent border-0 p-0 collapsed" type="button" data-toggle="collapse" data-target="#price-collapse" aria-expanded="true" aria-controls="price-collapse">
+              Price <i class="fa fa-angle-down ml-auto"></i>
+            </button>
+            <div class="collapse pt-2 px-2 show" id="price-collapse">
+              <input type="checkbox"><label class="ml-2">more than 2000</label><br>
+              <input type="checkbox"><label class="ml-2">less than 2000</label><br>
+              <input type="checkbox"><label class="ml-2">less than 1000</label><br>
+              <input type="checkbox"><label class="ml-2">less than 500</label><br>
+            </div>
+          </div>
+        </div>
+        <div class="col-10">
+          <div id="products-area" class="row my-4 mx-1">
+            <div id="product-card" class="card-shadow p-2 col-sm-12 col-md-6 col-lg-3">
               <div> 
                 <img class="product-img img-fluid rounded img-thumbnail border-0" src="" style="height:200px" width="250"> 
               </div>
-              <a class="brand-name"><div class="row mx-2 mt-2 text-muted"></div></a>
-              <a class="product-name"><div class="row mx-2 text-body"></div></a>
-              <!-- <a class="product-short-desc"><div class="row mx-2 text-body"></div></a> -->
-              <!-- <div class="row mx-2 align-items-baseline">
-                <span class="product-rating mr-1 text-success"></span>
-                <span class="product-reviews ml-1 text-primary"></span> 
-              </div> -->
-              <!-- <div class='row mx-2 my-2'>
-                <a class="product-price text-body"><b></b></a><br>
-                <a class="product-mrp text-muted ml-2"><s></s></a>
-               <a class="product-discount text-success ml-2"></a> 
-              </div> -->
+              <a class="brand-name"><div class="row mx-2 mt-2 text-muted text-wrap"></div></a>
+              <a class="product-name"><div class="row mx-2 text-body text-wrap"></div></a>
               <div class="row mt-3 mb-2 align-items-center">
                 <div class="ml-4">
                   <a class="product-price text-body"><b></b></a><br>
                   <a class="product-mrp text-muted"><s></s></a>
-                  <!-- <a class="product-discount text-success ml-2"></a> -->
                 </div>
                 <span class='add-to-cart-span ml-auto d-none mr-2'>
                   <button class='add-to-cart-btn border border-success btn btn-outline-success btn-sm mx-2 px-2 py-1 rounded'>Add to cart</button>

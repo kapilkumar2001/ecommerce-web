@@ -51,7 +51,7 @@ function displayCart() {
                             $("#cart-item-" + barcode + " .product-img").attr("onclick", "viewProduct('" + barcode + "')");
                             $("#cart-item-" + barcode + " .product-name").find("b").html(productData["name"]);
                             $("#cart-item-" + barcode + " .product-name").attr("href", "product-details.html?barcode=" + barcode);
-                            $("#cart-item-" + barcode + " .product-mrp").html("₹" + productData["mrp"]);
+                            $("#cart-item-" + barcode + " .product-price").html("₹" + (productData["mrp"] - parseInt(productData["mrp"] * productData["discountPercent"] / 100)));
                             $("#cart-item-" + barcode + " .product-color").html(productData["color"]);
                             
                             $("#cart-item-" + barcode + " .inc-qty-btn").attr("onclick", "increaseQuantity('" + barcode + "')");

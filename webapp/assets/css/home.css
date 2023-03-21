@@ -1,13 +1,21 @@
-.card-shadow:hover {
-    border-radius: 5px !important;
-    box-shadow: 0 0 11px rgba(33,33,33,.2); 
-}
-
 .card-shadow {
     border-radius: 5px !important;
     box-shadow: 0 0 2px rgba(44, 44, 44, 0.2); 
 }
 
+.card-shadow:hover {
+    border-radius: 5px !important;
+    box-shadow: 0 0 11px rgba(33,33,33,.2); 
+}
+
 a { 
 	text-decoration: none !important; 
+}
+
+.text-wrap {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1; 
+    -webkit-box-orient: vertical;
 }
