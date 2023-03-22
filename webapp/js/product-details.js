@@ -4,17 +4,6 @@ function getProductDetails() {
     displayProductDetails(barcode);
 }
 
-function getCurrentUserId() {
-    let currentUserId = localStorage.getItem('current-user-id');
-
-    if(currentUserId === null) {
-        localStorage.setItem('current-user-id', 0);
-        currentUserId = 0;
-    }
-
-    return currentUserId;
-}
-
 function displayProductDetails(barcode){
     $.ajax({
         url: 'data/products.json',

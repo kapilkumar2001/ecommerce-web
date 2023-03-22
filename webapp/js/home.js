@@ -3,54 +3,119 @@ function displayProducts(){
         url: 'data/products.json',
         dataType: 'json',
         success: function(data) {
-            for(let i in data) {
-                let e = data[i];
+            displayFilters(data);
 
-                let node = $("#product-card");
-                let clone = node.clone().attr("id", "product-card-" + e["barcode"]);
-                $("#products-area").append(clone);
+            let filters = sessionStorage.getItem("filters");
                 
-                $("#product-card-" + e["barcode"] + " .product-img").attr("src", e["imageUrl"]);
-                $("#product-card-" + e["barcode"] + " .product-img").attr("onclick", "viewProduct('" + e['barcode'] + "')")
-                $("#product-card-" + e["barcode"] + " .brand-name").find("div").html(e["brand"]);
-                $("#product-card-" + e["barcode"] + " .brand-name").attr("href", "product-details.html?barcode=" + e['barcode']);
-                $("#product-card-" + e["barcode"] + " .product-name").find("div").html(e["name"]);
-                $("#product-card-" + e["barcode"] + " .product-name").attr("href", "product-details.html?barcode=" + e['barcode']);
-                $("#product-card-" + e["barcode"] + " .product-short-desc").find("div").html(e["shortDescription"]);
-                $("#product-card-" + e["barcode"] + " .product-short-desc").attr("href", "product-details.html?barcode=" + e['barcode']);
-                $("#product-card-" + e["barcode"] + " .product-rating").html(e["rating"] + " <i class='fa fa-star text-success'></i>");
-                $("#product-card-" + e["barcode"] + " .product-reviews").html("(" + e["reviews"] + ")");
-                $("#product-card-" + e["barcode"] + " .product-price").find("b").html("₹" + (e["mrp"] - parseInt(e["mrp"] * e["discountPercent"] / 100)));
-                $("#product-card-" + e["barcode"] + " .product-price").attr("href", "product-details.html?barcode=" + e['barcode']);
-                $("#product-card-" + e["barcode"] + " .product-mrp").find("s").html("₹" + e["mrp"]);
-                $("#product-card-" + e["barcode"] + " .product-mrp").attr("href", "product-details.html?barcode=" + e['barcode']);
-                $("#product-card-" + e["barcode"] + " .product-discount").html(e["discountPercent"] + "%off");
-                $("#product-card-" + e["barcode"] + " .product-discount").attr("href", "product-details.html?barcode=" + e['barcode']);
-               
-                if(localStorage.getItem(getCurrentUserId()) == null 
-                    || JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'] == null 
-                    || filterByBarcode(JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'], e['barcode']) == null 
-                    || filterByBarcode(JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'], e['barcode']).quantity === null 
-                    || parseInt(filterByBarcode(JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'], e['barcode']).quantity) === 0) {
-                        $("#product-card-" + e["barcode"] + " .add-to-cart-btn").attr("onclick", "changeToCountButton('" + e['barcode'] + "')")
-                        $("#product-card-" + e["barcode"] + " .add-to-cart-span").removeClass("d-none");
-                        $("#product-card-" + e["barcode"] + " .inc-dec-qty-span").addClass("d-none");
+            if(filters === null) {
+                showProductCard(data);
+            } else {
+                filters = JSON.parse(filters);
+
+                if(Object.keys(filters).length === 0) {
+                    showProductCard(data);
                 } else {
-                    $("#product-card-" + e["barcode"] + " .inc-qty-btn").attr("onclick", "increaseQuantity('" + e['barcode'] + "')");
-                    $("#product-card-" + e["barcode"] + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + e['barcode'] + "')");
-                    $("#product-card-" + e["barcode"] + " .inc-dec-qty-span").removeClass("d-none");
-                    $("#product-card-" + e["barcode"] + " .add-to-cart-span").addClass("d-none");
-                    $("#product-card-" + e["barcode"] + " .product-qty").html(parseInt(filterByBarcode(JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'], e['barcode']).quantity));
+
+                    console.log(data);
+                    for (let key in filters) {
+                        let value = filters[key];
+        
+                        switch(key) {
+                            case "brand" : 
+                                data = filterByBrand(data, value);
+                                break;
+                            case "category" :
+                                data = filterByCategory(data, value);
+                                break;
+                            case "color" :
+                                data = filterByColor(data, value);
+                                break;
+                        }
+                    }
+
+                    console.log(data);
+                    showProductCard(data);
                 }
             }
-            $("#product-card").remove();
 
-            // display brands in filters
-            displayBrands(data);
-            // display categories in filters
-            displayCategories(data);
+            $("#product-card").remove();
+            $("input[type='checkbox']").on("change", function(e){
+                filterProducts();
+            });
         },
     });
+}
+
+function displayFilters(data) {
+    displayBrands(data);
+    displayCategories(data);
+    displayColors(data);
+
+    let filters = sessionStorage.getItem("filters");
+    if(filters !== null) {
+        let brands = JSON.parse(filters)["brand"];
+        let categories = JSON.parse(filters)["category"];
+        let colors = JSON.parse(filters)["color"];
+    
+        for(let i in brands) {
+            $("#input-brand-" + brands[i]).find("input").attr("checked" , true);
+        }
+        for(let i in categories) {
+            $("#input-category-" + categories[i]).find("input").attr("checked" , true);
+        }
+        for(let i in colors) {
+            $("#input-color-" + colors[i]).find("input").attr("checked" , true);
+        }
+    }
+}
+
+function showProductCard(data) {
+
+    if(data.length === 0) {
+        $("#no-product").removeClass("d-none");
+    } else {
+        $("#no-product").addClass("d-none");
+        
+        for(let i in data) {
+            let e = data[i];
+            let node = $("#product-card");
+            let clone = node.clone().attr("id", "product-card-" + e["barcode"]);
+            $("#products-area").append(clone);
+            
+            $("#product-card-" + e["barcode"] + " .product-img").attr("src", e["imageUrl"]);
+            $("#product-card-" + e["barcode"] + " .product-img").attr("onclick", "viewProduct('" + e['barcode'] + "')")
+            $("#product-card-" + e["barcode"] + " .brand-name").find("div").html(e["brand"]);
+            $("#product-card-" + e["barcode"] + " .brand-name").attr("href", "product-details.html?barcode=" + e['barcode']);
+            $("#product-card-" + e["barcode"] + " .product-name").find("div").html(e["name"]);
+            $("#product-card-" + e["barcode"] + " .product-name").attr("href", "product-details.html?barcode=" + e['barcode']);
+            $("#product-card-" + e["barcode"] + " .product-short-desc").find("div").html(e["shortDescription"]);
+            $("#product-card-" + e["barcode"] + " .product-short-desc").attr("href", "product-details.html?barcode=" + e['barcode']);
+            $("#product-card-" + e["barcode"] + " .product-rating").html(e["rating"] + " <i class='fa fa-star text-success'></i>");
+            $("#product-card-" + e["barcode"] + " .product-reviews").html("(" + e["reviews"] + ")");
+            $("#product-card-" + e["barcode"] + " .product-price").find("b").html("₹" + (e["mrp"] - parseInt(e["mrp"] * e["discountPercent"] / 100)));
+            $("#product-card-" + e["barcode"] + " .product-price").attr("href", "product-details.html?barcode=" + e['barcode']);
+            $("#product-card-" + e["barcode"] + " .product-mrp").find("s").html("₹" + e["mrp"]);
+            $("#product-card-" + e["barcode"] + " .product-mrp").attr("href", "product-details.html?barcode=" + e['barcode']);
+            $("#product-card-" + e["barcode"] + " .product-discount").html(e["discountPercent"] + "%off");
+            $("#product-card-" + e["barcode"] + " .product-discount").attr("href", "product-details.html?barcode=" + e['barcode']);
+            
+            if(localStorage.getItem(getCurrentUserId()) == null 
+                || JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'] == null 
+                || filterByBarcode(JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'], e['barcode']) == null 
+                || filterByBarcode(JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'], e['barcode']).quantity === null 
+                || parseInt(filterByBarcode(JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'], e['barcode']).quantity) === 0) {
+                    $("#product-card-" + e["barcode"] + " .add-to-cart-btn").attr("onclick", "changeToCountButton('" + e['barcode'] + "')")
+                    $("#product-card-" + e["barcode"] + " .add-to-cart-span").removeClass("d-none");
+                    $("#product-card-" + e["barcode"] + " .inc-dec-qty-span").addClass("d-none");
+            } else {
+                $("#product-card-" + e["barcode"] + " .inc-qty-btn").attr("onclick", "increaseQuantity('" + e['barcode'] + "')");
+                $("#product-card-" + e["barcode"] + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + e['barcode'] + "')");
+                $("#product-card-" + e["barcode"] + " .inc-dec-qty-span").removeClass("d-none");
+                $("#product-card-" + e["barcode"] + " .add-to-cart-span").addClass("d-none");
+                $("#product-card-" + e["barcode"] + " .product-qty").html(parseInt(filterByBarcode(JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'], e['barcode']).quantity));
+            }
+        }
+    }
 }
 
 function viewProduct(barcode) {
@@ -201,26 +266,88 @@ function displayCategories(data) {
     $("#input-category").remove();
 }
 
-function filterProducts() {
-    console.log("filterProducts");
-    var selectedFilters = {};
+function displayColors(data) {
+    let colors = [];
+    for(let i in data) {
+        colors.push(data[i]["color"]);
+    }
+    colors = Array.from(new Set(colors));
 
-    $('input[type="checkbox"]').filter(':checked').each(function() {
+    for(let i in colors) {
+        let node = $("#input-color");
+        let clone = node.clone().attr("id", "input-color-" + colors[i]);
+        $("#color-collapse").append(clone);
+
+        $("#input-color-" + colors[i]).find("label").html(colors[i]);
+        $("#input-color-" + colors[i]).find("input").attr("value", colors[i]);
+    }
+
+    $("#input-color").remove();
+}
+
+function filterProducts() {
+    let selectedFilters = {};
+
+    $("input[type='checkbox']").filter(":checked").each(function() {
+
         if (!selectedFilters.hasOwnProperty(this.name)) {
           selectedFilters[this.name] = [];
         }
 
         selectedFilters[this.name].push(this.value);
     });
-    
-    console.log(selectedFilters);
+
+    sessionStorage.setItem("filters", JSON.stringify(selectedFilters));
+
+    window.location.href = "home.html";
 }
 
+function filterByBrand(data, brands) {
+    const filteredData = new Set();
+
+    for(let i in data) {
+        for(let j in brands) {
+            if(data[i]["brand"] === brands[j]) {
+                filteredData.add(data[i]);
+            }
+        }
+    }
+
+    return Array.from(filteredData);
+}
+
+function filterByCategory(data, categories) {
+    const filteredData = new Set();
+
+    for(let i in data) {
+        for(let j in categories) {
+            if(data[i]["category"] === categories[j]) {
+                filteredData.add(data[i]);
+            }
+        }
+    }
+
+    return Array.from(filteredData);
+}
+
+function filterByColor(data, colors) {
+    const filteredData = new Set();
+
+    for(let i in data) {
+        for(let j in colors) {
+            if(data[i]["color"] === colors[j]) {
+                filteredData.add(data[i]);
+            }
+        }
+    }
+
+    return Array.from(filteredData);
+}
+ 
 function init() {
     $("#navbar-placeholder").load("navbar.html");
     $("#footer-placeholder").load("footer.html");
 	displayProducts();
-    $('input[type="checkbox"]').on('change', filterProducts());
 }
 
 $(document).ready(init);

@@ -9,10 +9,10 @@ function getCurrentUserId() {
     return currentUserId;
 }
 
-function filterByBarcode(jsonObject, barcode) {
-    return jsonObject.filter(
-        function(jsonObject) {
-            return (jsonObject['barcode'] == barcode);
+function filterByBarcode(data, barcode) {
+    return data.filter(
+        function(data) {
+            return (data['barcode'] == barcode);
         })[0];
 }
 

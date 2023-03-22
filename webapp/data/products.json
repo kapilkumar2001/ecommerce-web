@@ -7,7 +7,7 @@
     "imageUrl": "https://rukminim1.flixcart.com/image/612/612/l31x2fk0/headphone/0/z/e/-original-image9egyqndhqhb.jpeg?q=70",
     "rating": 3.8,
     "reviews": 96291,
-    "color": "Black",
+    "color": "Blue",
     "styleName": "70 Hours",
     "barcode": "abcde1",
     "discountPercent": 50,
@@ -52,7 +52,7 @@
     "imageUrl": "https://rukminim1.flixcart.com/image/612/612/l0sgyvk0/headphone/m/b/c/buds-z2-oneplus-original-imagcg5stg9fzes6.jpeg?q=70",
     "rating": 3.4,
     "reviews": 19211,
-    "color": "Black",
+    "color": "Blue",
     "styleName": "30 Hours",
     "barcode": "abcde4",
     "discountPercent": 10,
@@ -102,6 +102,21 @@
     "barcode": "abcde7",
     "discountPercent": 10,
     "shortDescription": "Lorem ipsum dolor sit amet",
+    "description": "boAt Rockerz 450 Pro Bluetooth Wireless On Ear Headphones with Mic with 70 Hours Battery, 40mn Drivers, Bluetooth V5.0 Padded Ear Cushions, Easy Access Controls and Voice Assistant (Aqua Blue)"
+  },
+  {
+    "brand": "Bolt",
+    "category": "Earphone",
+    "name": "bolt 650 Pro+",
+    "mrp": 549,
+    "imageUrl": "https://rukminim1.flixcart.com/image/612/612/l31x2fk0/headphone/0/z/e/-original-image9egyqndhqhb.jpeg?q=70",
+    "rating": 2.8,
+    "reviews": 991,
+    "color": "Blue",
+    "styleName": "70 Hours",
+    "barcode": "abcde8",
+    "discountPercent": 20,
+    "shortDescription": "Wired Stereo headset with mic",
     "description": "boAt Rockerz 450 Pro Bluetooth Wireless On Ear Headphones with Mic with 70 Hours Battery, 40mn Drivers, Bluetooth V5.0 Padded Ear Cushions, Easy Access Controls and Voice Assistant (Aqua Blue)"
   }
 ]
