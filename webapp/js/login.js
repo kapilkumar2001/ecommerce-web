@@ -96,6 +96,7 @@ function checkLogin() {
 	if(localStorage.getItem('current-user-id') !== '0') {
 		window.location.href = "home.html";
 	}
+	setLoginLogoutIcon();
 }
 
 function init(){

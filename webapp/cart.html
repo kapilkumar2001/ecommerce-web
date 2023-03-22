@@ -14,58 +14,77 @@
     <link rel="icon" type="image/x-icon" href="images/increff-logo.png" />
     <link rel="icon" href="https://storage.googleapis.com/www.increff.com/img/favicon.png?v=2" type="image/x-icon"/>
     <link rel="stylesheet" href="https://storage.googleapis.com/static.increff.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
   </head>
   <body>
     <div id="navbar-placeholder"></div>
-    <div class="container">
-      <div class="row" id="cart">
+    <div class="container-fluid">
+      <div class="row p-4" id="cart">
         <div id="empty-cart" class="col-12 d-none">
-          <img class="img-fluid mx-auto d-block" src="https://shop.millenniumbooksource.com/static/images/cart1.png"></img>
+          <img class="img-fluid mx-auto d-block" src="https://img.freepik.com/free-vector/man-shopping-supermarket_74855-7612.jpg?w=740&t=st=1679464460~exp=1679465060~hmac=1e4ec278c18a29946fe80221529f27944249f60c7873ee497f5255ed9cd408e8" style="height: 50%;"></img>
+          <h5 class="text-center my-4">Oops! looks like your cart is empty.</h5>
+          <button id="start-shopping-btn" class="btn btn-secondary mx-auto d-block">Start Shopping</button>
         </div>
-        <div id="cart-items" class="col-8 d-none p-4"> 
-          <div class="row">
-            <h4>Your Cart</h4>
-            <button id="clear-cart-btn" class="btn btn-sm ml-auto btn-dark rounded-pill px-3"><i class="fa fa-close mr-2"></i>Clear</button>
-          </div>
-          <div id="cart-item" class="border rounded row align-items-center mt-4 py-2">
-            <div class="col-4"> 
-              <img class="product-img img-fluid rounded img-thumbnail p-2 border-0 shadow-sm" style="height:150px" width="200"> 
-            </div>
-            <div class="col-8 p-4">
-              <div class="row align-items-baseline"> 
-                <a class="product-name text-body">
-                  <b></b>
-                </a> 
-                <h6 class="product-price ml-auto"></h6> 
-              </div>
-              <div class="row mt-2">
-                <span class="product-color"></span> 
-                <span class="inc-dec-qty-span rounded-pill border px-2 ml-auto">
-                  <button class="dec-qty-btn border-0 bg-transparent">
-                    <i class="fa fa-minus border-right pr-2 py-2"></i>
-                  </button> 
-                  <span class="product-qty px-2"></span> 
-                  <button class="inc-qty-btn border-0 bg-transparent">
-                    <i class="fa fa-plus border-left pl-2 py-2"></i>
-                  </button>
-                </span> 
-              </div>
+        <div id="cart-items" class="col-sm-12 col-md-7 col-lg-8 d-none">
+          <div class="card">
+            <div class="card-header">
               <div class="row">
-                <button class="remove-item-btn btn btn-sm btn-danger rounded-pill border-0 px-2"><i class="fa fa-trash mr-2"></i>Remove</button>
+                <h5 class="ml-4">Your Cart</h5>
+                <button id="clear-cart-btn" class="btn ml-auto btn-dark-outlined rounded mr-2"><i class="fa fa-close mr-2"></i>Clear Cart</button>
+              </div>
+            </div> 
+            <div class="card-body">
+              <div id="cart-item" class="row align-items-center p-2 my-4">
+                <div class="col-sm-12 col-md-3"> 
+                  <img class="product-img img-fluid rounded img-thumbnail border-0 mx-auto d-block"> 
+                </div>
+                <div class="col-sm-12 col-md-9">
+                  <h6 class="brand-name text-muted mb-2"></h6>
+                  <a class="product-name text-body"></a> 
+                  <h6 class="product-color text-body mt-2"></h6>
+                  <div class="row pl-3 mt-3">
+                    <h6 class="product-price font-weight-bold"></h6> 
+                    <h6 class="product-mrp ml-2"><s></s></h6>
+                    <h6 class="product-discount text-success ml-2"></h6>
+                  </div>
+                  <div class="row pl-3 mt-2">
+                    <span class="inc-dec-qty-span border rounded border-success">
+                      <button class="dec-qty-btn border-0 bg-transparent">
+                        <i class="fa fa-minus pl-2 py-2 text-success"></i>
+                      </button> 
+                      <span class="product-qty px-2 text-success"></span> 
+                      <button class="inc-qty-btn border-0 bg-transparent">
+                        <i class="fa fa-plus pr-2 py-2 text-success"></i>
+                      </button>
+                    </span>
+                    <button class="remove-item-btn btn btn-sm rounded border ml-4 px-2 border-danger"><i class="fa fa-trash text-danger"></i></button> 
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div id='order-summary' class='col-4 d-none'> 
+        <div id='order-summary' class='col-sm-12 col-md-5 col-lg-4 d-none'> 
           <div class='border p-4 rounded'>
             <h4>Order Summary</h4>
-            <div class='row p-4'> 
-              <span>Total Amount</span> 
-              <span class='total-amount ml-auto'></span> 
+            <div class='row px-4 pt-4 pb-1'> 
+              <span>Order Value</span> 
+              <span class='order-value ml-auto'></span> 
             </div>
-            <div class='row'> 
-              <button id="place-order-btn" class="border btn btn-sm btn-success mx-2 my-1 px-4 py-2 rounded-pill ml-auto">Place Order</button>
+            <div class='row px-4 py-1'> 
+              <span>Discount</span> 
+              <span class='discount ml-auto'></span> 
+            </div>
+            <div class='row px-4 py-1'> 
+              <span>Shipping Price</span> 
+              <span class='shipping-price ml-auto'></span> 
+            </div>
+            <div class='row px-4 py-2'> 
+              <span class="font-weight-bold">Total Amount</span> 
+              <span class='total-amount font-weight-bold ml-auto'></span> 
+            </div>
+            <div class="row px-3"> 
+              <button id="place-order-btn" class="border btn btn-sm btn-block btn-success mx-2 mt-4 px-4 py-2 rounded ml-auto">Place Order</button>
             </div>
           </div>
         </div>

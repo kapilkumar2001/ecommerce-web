@@ -16,7 +16,6 @@ function displayProducts(){
                     showProductCard(data);
                 } else {
 
-                    console.log(data);
                     for (let key in filters) {
                         let value = filters[key];
         
@@ -33,7 +32,6 @@ function displayProducts(){
                         }
                     }
 
-                    console.log(data);
                     showProductCard(data);
                 }
             }
@@ -42,6 +40,8 @@ function displayProducts(){
             $("input[type='checkbox']").on("change", function(e){
                 filterProducts();
             });
+
+            setLoginLogoutIcon();
         },
     });
 }
@@ -75,7 +75,7 @@ function showProductCard(data) {
         $("#no-product").removeClass("d-none");
     } else {
         $("#no-product").addClass("d-none");
-        
+
         for(let i in data) {
             let e = data[i];
             let node = $("#product-card");

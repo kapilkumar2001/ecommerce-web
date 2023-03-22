@@ -27,7 +27,7 @@ function displayProductDetails(barcode){
                 $(".product-reviews").html("(" + productData['reviews'] + ")");
                 $(".product-price").html("₹" + (productData["mrp"] - parseInt(productData["mrp"] * productData["discountPercent"] / 100)));
                 $(".product-mrp").find("s").html("₹" + productData['mrp']);
-                $(".product-discount").find("b").html(productData['discountPercent'] + "%off");
+                $(".product-discount").find("b").html(productData['discountPercent'] + "% off");
                 $(".product-color").html("Color: " + productData['color']);
                 $(".product-style").html("Style Name: " + productData['styleName']);
  
@@ -53,6 +53,8 @@ function displayProductDetails(barcode){
                     $(".buy-now-btn").addClass("d-none");
                 }     
             }
+
+            setLoginLogoutIcon();
         },
     });
 }

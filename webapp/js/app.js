@@ -19,10 +19,15 @@ function filterByBarcode(data, barcode) {
 function setLoginLogoutIcon() { 
     let currentUserId = getCurrentUserId(); 
 
+    console.log("set login logout");
+
     if(currentUserId === '0') {
-        $("#navbar-login-logout").html("<a class='nav-link' href='login.html'><i class='fa fa-sign-out fa-lg'></i></a>");
+        console.log("this");
+        $("#navbar-login-logout").html("<a class='nav-link' href='login.html'><i class=;bi bi-box-arrow-right'></i></a>");
     } else {
-        $("#navbar-login-logout").html("<a class='nav-link' href='login.html'><i class='fa fa-sign-in fa-lg'></i></a>");
+        console.log("that");
+        console.log($("#navbar-login-logout"));
+        $("#navbar-login-logout").html("<a class='nav-link' href='login.html'><i class='bi bi-box-arrow-in-right'></i></a>");
     } 
 } 
 

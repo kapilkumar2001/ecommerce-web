@@ -9,6 +9,7 @@ function displayCart() {
         $("#empty-cart").removeClass("d-none");
         $("#cart-items").addClass("d-none");
         $("#order-summary").addClass("d-none");
+        $("#start-shopping-btn").click(viewHomePage);
     } else {
         $("#empty-cart").addClass("d-none");
         $("#cart-items").removeClass("d-none");
@@ -31,17 +32,19 @@ function displayCart() {
                             }
                         }
                         if((productData !== null) && (quantity !== 0) && (quantity !== null)) {
-
                             let node = $("#cart-item");
                             let clone = node.clone().attr("id", "cart-item-" + barcode);
-                            $("#cart-items").append(clone);
+                            $("#cart-items .card-body").append(clone);
 
                             $("#cart-item-" + barcode + " .product-img").attr("src", productData["imageUrl"]);
                             $("#cart-item-" + barcode + " .product-img").attr("onclick", "viewProduct('" + barcode + "')");
-                            $("#cart-item-" + barcode + " .product-name").find("b").html(productData["name"]);
+                            $("#cart-item-" + barcode + " .brand-name").html(productData["brand"]);
+                            $("#cart-item-" + barcode + " .product-name").html(productData["name"]);
                             $("#cart-item-" + barcode + " .product-name").attr("href", "product-details.html?barcode=" + barcode);
+                            $("#cart-item-" + barcode + " .product-color").html("Color - " + productData["color"]);
                             $("#cart-item-" + barcode + " .product-price").html("₹" + (productData["mrp"] - parseInt(productData["mrp"] * productData["discountPercent"] / 100)));
-                            $("#cart-item-" + barcode + " .product-color").html(productData["color"]);
+                            $("#cart-item-" + barcode + " .product-mrp").find("s").html("₹" + productData["mrp"]);
+                            $("#cart-item-" + barcode + " .product-discount").html(productData["discountPercent"] + "% off");
                             
                             $("#cart-item-" + barcode + " .inc-qty-btn").attr("onclick", "increaseQuantity('" + barcode + "')");
                             $("#cart-item-" + barcode + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "')");
@@ -53,15 +56,15 @@ function displayCart() {
         }
     
         Promise.all(promises).then(() => {
-            $(".total-amount").html("₹15490");
+            $(".order-value").html("₹15490");
+            $(".discount").html("-₹1490");
+            $(".shipping-price").html("₹90");
+            $(".total-amount").html("₹14090");
             $("#cart-item").remove();
+
+            setLoginLogoutIcon()
         });
     }
-}
-
-function viewProduct(barcode) {
-    let url = "product-details.html?barcode=" + barcode;
-    window.location.href = url;
 }
 
 function increaseQuantity(barcode) {
@@ -131,10 +134,8 @@ function checkLogin() {
                 for(let i in cart) {
                     if(parseInt(cart[i]["quantity"]) !== 0) {
                         let row = {};
-                        console.log(cart[i]);
                         row.barcode = cart[i]["barcode"];
                         row.name = filterByBarcode(products, cart[i]["barcode"]).name;
-                        console.log(row.name);
                         row.quantity = cart[i]["quantity"];
                         row.mrp = filterByBarcode(products, cart[i]["barcode"]).mrp;
                         row.amount = (row.quantity) * (row.mrp);
@@ -195,6 +196,15 @@ function clearCart() {
     data['cart'] = [];  
     localStorage.setItem(getCurrentUserId(), JSON.stringify(data));
     displayCart();
+}
+
+function viewProduct(barcode) {
+    let url = "product-details.html?barcode=" + barcode;
+    window.location.href = url;
+}
+
+function viewHomePage() {
+    window.location.href = "home.html";
 }
 
 function init(){

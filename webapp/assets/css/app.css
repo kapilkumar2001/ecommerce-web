@@ -32,23 +32,3 @@ body {
 	right: 2rem;
 	top: 0.75rem;
 }
-
-.btn-danger {
-	background-color: #fb5a69 !important;
-}
-
-.fa-stack[data-count]:after{
-	position:absolute;
-	right:14%;
-	top:10%;
-	content: attr(data-count);
-	font-size:30%;
-	padding:.6em;
-	border-radius:999px;
-	line-height:.75em;
-	color: #fff;
-	background:rgba(255,0,0,1);
-	text-align:center;
-	min-width:2em;
-	font-weight:bold;
-}
