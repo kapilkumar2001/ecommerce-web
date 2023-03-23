@@ -159,10 +159,6 @@ function checkLogin() {
     }
 }
 
-function showLoginLogout() {
-    setLoginLogoutIcon();
-}
-
 function init() {
     $("#navbar-placeholder").load("navbar.html");
     $("#footer-placeholder").load("footer.html");
@@ -170,7 +166,6 @@ function init() {
     $("#file-input").on("change", updateFileName);
     $("#upload-btn").click(validateFile);
     $("#place-order-btn").click(checkLogin);
-    showLoginLogout();
 }
 
 $(document).ready(init);

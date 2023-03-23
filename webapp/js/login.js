@@ -11,11 +11,11 @@ function login(){
 		url: "data/users.json",
         dataType: "json",	  	   
 		success: function(data) {
-			let currentUserId;
+			let userId;
 			let flag = 0;
 			for(let i in data) {
                 if(data[i]["email"] === email && data[i]["password"] === password) {
-					currentUserId =  data[i]["id"]; 
+					userId =  data[i]["id"]; 
 					flag =1;
                     break;
                 }
@@ -24,42 +24,38 @@ function login(){
 			if(flag === 0) {
 				// TODO: show error - user not registered / invalid email id or password
 			} else {
-				localStorage.setItem("current-user-id", currentUserId);
-				let newCart = JSON.parse(localStorage.getItem("0"))["cart"];
-				let existingCart;
-				let itemsCount = JSON.parse(localStorage.getItem("0"))["itemsCount"];
+				setCurrentUserId(userId);
 
-				if(localStorage.getItem(getCurrentUserId()) !== null) {
-					existingCart = JSON.parse(localStorage.getItem(getCurrentUserId()))["cart"];
-					itemsCount += JSON.parse(localStorage.getItem(getCurrentUserId()))["itemsCount"];
+				let cart = JSON.parse(localStorage.getItem("cart"));
+				let guestCart = cart["0"];
+				let userCart = [];
+
+				if(cart[userId] !== null) {
+					userCart = cart[userId];
 				}
 				
-				let cart = addNewCartToExistingCart(newCart, existingCart);
-				data = {
-					"itemsCount" : itemsCount,
-					"cart" : cart,
-				}
-				localStorage.setItem(getCurrentUserId(), JSON.stringify(data));
-             	localStorage.setItem("0", JSON.stringify({
-					"itemsCount" : 0,
-					"cart" : [],
-				}));
+				let newCart = addGuestCartToUserCart(guestCart, userCart);
+				
+				cart[userId] = newCart;
+				cart["0"] = [];
+
+				updateCart(cart);
 				window.location.href = "home.html";
 			}
 		},
 	});
 }
 
-function addNewCartToExistingCart(newCart, existingCart) {
+function addGuestCartToUserCart(guestCart, userCart) {
 	let cart = [];
 
-	for(let i in existingCart) {
+	for(let i in userCart) {
 		let flag = 0;
-		for(let j in newCart) {
-			if(existingCart[i]["barcode"] === newCart[j]["barcode"]) {
+		for(let j in guestCart) {
+			if(userCart[i]["barcode"] === guestCart[j]["barcode"]) {
 				cart.push({
-					"barcode" : existingCart[i]["barcode"], 
-					"quantity" : existingCart[i]["quantity"] + newCart[j]["quantity"]
+					"barcode" : userCart[i]["barcode"], 
+					"quantity" : userCart[i]["quantity"] + guestCart[j]["quantity"]
 				});
 				flag = 1;
 				break;
@@ -67,24 +63,24 @@ function addNewCartToExistingCart(newCart, existingCart) {
 		}
 		if(flag === 0) {
 			cart.push({
-				"barcode" : existingCart[i]["barcode"], 
-				"quantity" : existingCart[i]["quantity"]
+				"barcode" : userCart[i]["barcode"], 
+				"quantity" : userCart[i]["quantity"]
 			});
 		}
 	}
 
-	for(let i in newCart) {
+	for(let i in guestCart) {
 		let flag = 0;
-		for(let j in existingCart) {
-			if(existingCart[j]["barcode"] === newCart[i]["barcode"]) {
+		for(let j in userCart) {
+			if(userCart[j]["barcode"] === guestCart[i]["barcode"]) {
 				flag = 1;
 				break;
 			}
 		}
 		if(flag === 0) {
 			cart.push({
-				"barcode" : newCart[i]["barcode"], 
-				"quantity" : newCart[i]["quantity"]
+				"barcode" : guestCart[i]["barcode"], 
+				"quantity" : guestCart[i]["quantity"]
 			});
 		}
 	}
@@ -93,8 +89,8 @@ function addNewCartToExistingCart(newCart, existingCart) {
 }
 
 function checkLogin() {
-	if(localStorage.getItem('current-user-id') !== '0') {
-		window.location.href = "home.html";
+	if(getCurrentUserId() !== null && getCurrentUserId() !== "0") {
+		// window.location.href = "home.html";
 	}
 	setLoginLogoutIcon();
 }

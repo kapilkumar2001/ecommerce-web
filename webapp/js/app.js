@@ -17,26 +17,18 @@ function filterByBarcode(data, barcode) {
 }
 
 function setLoginLogoutIcon() { 
-    let currentUserId = getCurrentUserId(); 
+    let userId = getCurrentUserId(); 
 
-    console.log("set login logout");
-
-    if(currentUserId === '0') {
-        console.log("this");
-        $("#navbar-login-logout").html("<a class='nav-link' href='login.html'><i class=;bi bi-box-arrow-right'></i></a>");
+    if(userId === '0') {
+        $("#navbar-login-logout").html("<a class='nav-link' href='login.html'><i class='bi bi-box-arrow-right'></i></a>");
     } else {
-        console.log("that");
-        console.log($("#navbar-login-logout"));
         $("#navbar-login-logout").html("<a class='nav-link' href='login.html'><i class='bi bi-box-arrow-in-right'></i></a>");
     } 
 } 
 
-function loginLogoutAction() {
-    let currentUserId = getCurrentUserId();
-
-    if(currentUserId !== '0') {
-        localStorage.setItem('current-user-id', 0);
-    } 
+function logout() {
+    console.log("logout");
+    localStorage.setItem("current-user-id", 0); 
 } 
 
 function containsOnlyNumbers(str) {
@@ -79,9 +71,18 @@ function writeFileData(arr){
     tempLink.remove();
 }
 
-function init() {
-    setLoginLogoutIcon();
-    $("#navbar-login-logout").click(loginLogoutAction);
-} 
+function getCart() {
+    return JSON.parse(localStorage.getItem("cart"));
+}
 
-$(document).ready(init); 
+function getFilters() {
+    return sessionStorage.getItem("filters");
+}
+
+function setCurrentUserId(userId) {
+    localStorage.setItem("current-user-id", userId);
+}
+
+function updateCart(cart) {
+    localStorage.setItem("cart", JSON.stringify(cart));
+}

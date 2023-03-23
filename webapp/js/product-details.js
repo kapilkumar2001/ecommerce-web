@@ -30,12 +30,15 @@ function displayProductDetails(barcode){
                 $(".product-discount").find("b").html(productData['discountPercent'] + "% off");
                 $(".product-color").html("Color: " + productData['color']);
                 $(".product-style").html("Style Name: " + productData['styleName']);
- 
-                if(JSON.parse(localStorage.getItem(getCurrentUserId())) == null 
-                    || JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'] == null 
-                    || filterByBarcode(JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'], barcode) == null 
-                    || filterByBarcode(JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'], barcode).quantity == null 
-                    || parseInt(filterByBarcode(JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'], barcode).quantity) === 0) {
+
+                let cart = getCart();
+                let userId = getCurrentUserId();
+
+        
+                if(cart == null || cart[userId] == undefined
+                    || filterByBarcode(cart[userId], barcode) == undefined 
+                    || filterByBarcode(cart[userId], barcode).quantity == undefined 
+                    || parseInt(filterByBarcode(cart[userId], barcode).quantity) === 0) {
                         $(".add-to-cart-btn").attr("onclick", "changeToCountButton('" + barcode + "')");
                         $(".add-to-cart-span").removeClass("d-none");
                         $(".inc-dec-qty-span").addClass("d-none");
@@ -47,7 +50,7 @@ function displayProductDetails(barcode){
                     $(".dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "')");
                     $(".inc-dec-qty-span").removeClass("d-none");
                     $(".add-to-cart-span").addClass("d-none");
-                    $(".product-qty").html(filterByBarcode(JSON.parse(localStorage.getItem(getCurrentUserId()))['cart'], barcode).quantity);
+                    $(".product-qty").html(filterByBarcode(cart[userId], barcode).quantity);
                     $(".go-to-cart-btn").removeClass("d-none"); 
                     $(".go-to-cart-btn").attr("onclick", "viewCart()"); 
                     $(".buy-now-btn").addClass("d-none");
@@ -55,6 +58,7 @@ function displayProductDetails(barcode){
             }
 
             setLoginLogoutIcon();
+            $("#navbar-login-logout").click(logout);
         },
     });
 }
@@ -64,37 +68,35 @@ function viewCart() {
 }
 
 function buyNow(barcode) {
+    let cart = getCart();
+    let userId = getCurrentUserId();
     let item = {'barcode': barcode, 'quantity': 1};
-    let data =  JSON.parse(localStorage.getItem(getCurrentUserId()));
 
-    if(data !== null) {
-        let cart = data['cart'];
-        let flag = 0;
+    if(cart !== null) {
+        let userCart = cart[userId];
+        let existsInUserCart = 0;
 
-        for(let i in cart) {
-            if(cart[i]['barcode'] === barcode) {
-                cart[i]['barcode'] = barcode;
-                cart[i]['quantity'] = 1;
-                flag = 1;
+        for(let i in userCart) {
+            if(userCart[i]['barcode'] === barcode) {
+                userCart[i]['quantity'] = 1;
+                existsInUserCart = 1;
+                break;
             }
         }
 
-        if(flag === 0) {
-            cart.push(item);
+        if(existsInUserCart === 0) {
+            userCart.push(item);
         }
 
-        data['itemsCount'] = data['itemsCount'] + 1;
-        data['cart'] = cart;  
+        cart[userId] = userCart;  
     } else {
-        data = {
-            'itemsCount' : 1,
-            'cart' : [item],
-            'email' : '',
-            'password' : '',
-            'id' : ''
-        }
+        let userCart = [];
+        userCart.push(item);
+        cart = {};
+        cart[userId] = userCart;  
     }
-    localStorage.setItem(getCurrentUserId(), JSON.stringify(data));
+
+    updateCart(cart);
     window.location.href = "cart.html";
 }
 
@@ -102,37 +104,35 @@ function changeToCountButton(barcode) {
     let button = $(".add-to-cart-btn");
     button.empty();
     
+    let cart = getCart();
+    let userId = getCurrentUserId();
     let item = {'barcode': barcode, 'quantity': 1};
-    let data =  JSON.parse(localStorage.getItem(getCurrentUserId()));
 
-    if(data !== null) {
-        let cart = data['cart'];
-        let flag = 0;
+    if(cart !== null) {
+        let userCart = cart[userId];
+        let existsInUserCart = 0;
 
-        for(let i in cart) {
-            if(cart[i]['barcode'] === barcode) {
-                cart[i]['barcode'] = barcode;
-                cart[i]['quantity'] = 1;
-                flag = 1;
+        for(let i in userCart) {
+            if(userCart[i]['barcode'] === barcode) {
+                userCart[i]['quantity'] = 1;
+                existsInUserCart = 1;
+                break;
             }
         }
 
-        if(flag === 0) {
-            cart.push(item);
+        if(existsInUserCart === 0) {
+            userCart.push(item);
         }
 
-        data['itemsCount'] = data['itemsCount'] + 1;
-        data['cart'] = cart;  
+        cart[userId] = userCart;
     } else {
-        data = {
-            'itemsCount' : 1,
-            'cart' : [item],
-            'email' : '',
-            'password' : '',
-            'id' : ''
-        }
+        let userCart = [];
+        userCart.push(item);
+        cart = {};
+        cart[userId] = userCart;
     }
-    localStorage.setItem(getCurrentUserId(), JSON.stringify(data));
+    
+    updateCart(cart);
 
     $(".inc-qty-btn").attr("onclick", "increaseQuantity('" + barcode + "')");
     $(".dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "')");
@@ -146,60 +146,56 @@ function changeToCountButton(barcode) {
 }
 
 function increaseQuantity(barcode) {
-    let data = JSON.parse(localStorage.getItem(getCurrentUserId()));
-    let cart = data['cart'];
-    let quantity = parseInt(filterByBarcode(cart, barcode).quantity);
+    let cart = getCart();
+    let userId = getCurrentUserId();
+    let userCart = cart[userId];
+    let quantity = parseInt(filterByBarcode(userCart, barcode).quantity);
 
-    for(let i in cart) {
-        if(cart[i]['barcode'] === barcode) {
-            cart[i]['barcode'] = barcode;
-            cart[i]['quantity'] = quantity + 1;
+    for(let i in userCart) {
+        if(userCart[i]['barcode'] === barcode) {
+            userCart[i]['quantity'] = quantity + 1;
             break;
         }
     }
 
-    data['itemsCount'] = data['itemsCount'] + 1;
-    data['cart'] = cart;  
-    localStorage.setItem(getCurrentUserId(), JSON.stringify(data));
+    cart[userId] = userCart;  
+    updateCart(cart);
     
     $(".product-qty").html(quantity + 1);
 }
 
 function decreaseQuantity(barcode) {
-    let data =  JSON.parse(localStorage.getItem(getCurrentUserId()));
-    let cart = data['cart'];
+    let cart = getCart();
+    let userId = getCurrentUserId();
+    let userCart = cart[userId];
     let quantity = 0;
     
-    if(filterByBarcode(cart, barcode) != null) {
-        quantity = parseInt(filterByBarcode(cart, barcode).quantity);
+    if(filterByBarcode(userCart, barcode) != null) {
+        quantity = parseInt(filterByBarcode(userCart, barcode).quantity);
     }
 
     if(quantity > 1) {
-        for(let i in cart) {
-            if(cart[i]['barcode'] === barcode) {
-                cart[i]['barcode'] = barcode;
-                cart[i]['quantity'] = quantity - 1;
+        for(let i in userCart) {
+            if(userCart[i]['barcode'] === barcode) {
+                userCart[i]['quantity'] = quantity - 1;
                 break;
             }
         }
 
-        data['itemsCount'] = data['itemsCount'] - 1;
-        data['cart'] = cart;  
-        localStorage.setItem(getCurrentUserId(), JSON.stringify(data));
+        cart[userId] = userCart;
+        updateCart(cart);
 
         $(".product-qty").html(quantity - 1);
     } else if(quantity === 1) {
-        for(let i in cart) {
-            if(cart[i]['barcode'] === barcode) {
-                cart[i]['barcode'] = barcode;
-                cart[i]['quantity'] = 0;
+        for(let i in userCart) {
+            if(userCart[i]['barcode'] === barcode) {
+                userCart[i]['quantity'] = 0;
                 break;
             }
         }
 
-        data['itemsCount'] = data['itemsCount'] - 1;
-        data['cart'] = cart;  
-        localStorage.setItem(getCurrentUserId(), JSON.stringify(data));
+        cart[userId] = userCart; 
+        updateCart(cart);
         
         $(".add-to-cart-btn").attr("onclick", "changeToCountButton('" + barcode + "')");
         $(".add-to-cart-btn").html("Add to cart");
