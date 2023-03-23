@@ -1,14 +1,3 @@
-function getCurrentUserId() {
-    let currentUserId = localStorage.getItem('current-user-id');
-
-    if(currentUserId === null) {
-        localStorage.setItem('current-user-id', 0);
-        currentUserId = 0;
-    }
-
-    return currentUserId;
-}
-
 function filterByBarcode(data, barcode) {
     return data.filter(
         function(data) {
@@ -71,18 +60,35 @@ function writeFileData(arr){
     tempLink.remove();
 }
 
-function getCart() {
-    return JSON.parse(localStorage.getItem("cart"));
-}
+function getCurrentUserId() {
+    let currentUserId = localStorage.getItem('current-user-id');
 
-function getFilters() {
-    return sessionStorage.getItem("filters");
+    if(currentUserId === null) {
+        localStorage.setItem('current-user-id', 0);
+        currentUserId = 0;
+    }
+
+    return currentUserId;
 }
 
 function setCurrentUserId(userId) {
     localStorage.setItem("current-user-id", userId);
 }
 
+function getCart() {
+    return JSON.parse(localStorage.getItem("cart"));
+}
+
 function updateCart(cart) {
     localStorage.setItem("cart", JSON.stringify(cart));
 }
+
+function getFilters() {
+    return sessionStorage.getItem("filters");
+}
+
+function setFilters(filters) {
+    sessionStorage.setItem("filters", JSON.stringify(filters));
+}
+
+

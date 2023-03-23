@@ -14,7 +14,7 @@ function displayFilters(data) {
     displayCategories(data);
     displayColors(data);
 
-    let filters = sessionStorage.getItem("filters");
+    let filters = getFilters();
     if(filters !== null) {
         let brands = JSON.parse(filters)["brand"];
         let categories = JSON.parse(filters)["category"];
@@ -90,7 +90,7 @@ function displayColors(data) {
 }
 
 function displayProducts(data) {
-    let filters = sessionStorage.getItem("filters");
+    let filters = getFilters();
                 
     if(filters === null) {
         showProductCard(data);
@@ -295,7 +295,7 @@ function filterProducts() {
         selectedFilters[this.name].push(this.value);
     });
 
-    sessionStorage.setItem("filters", JSON.stringify(selectedFilters));
+    setFilters(selectedFilters);
 
     window.location.href = "home.html";
 }

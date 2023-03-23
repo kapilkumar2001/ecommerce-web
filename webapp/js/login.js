@@ -26,7 +26,7 @@ function login(){
 			} else {
 				setCurrentUserId(userId);
 
-				let cart = JSON.parse(localStorage.getItem("cart"));
+				let cart = getCart();
 				let guestCart = cart["0"];
 				let userCart = [];
 
