@@ -160,8 +160,6 @@ function checkLogin() {
 }
 
 function init() {
-    $("#navbar-placeholder").load("navbar.html");
-    $("#footer-placeholder").load("footer.html");
     $("#browse-btn").click(clickInputFile);
     $("#file-input").on("change", updateFileName);
     $("#upload-btn").click(validateFile);
@@ -169,3 +167,4 @@ function init() {
 }
 
 $(document).ready(init);
+$(document).ready(updateNavbar);

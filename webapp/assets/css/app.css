@@ -32,3 +32,12 @@ body {
 	right: 2rem;
 	top: 0.75rem;
 }
+
+.cart-icon {
+	position: relative;
+}
+.cart-icon span{
+	position: absolute;
+	top: 0px;
+	right: -6px;
+}

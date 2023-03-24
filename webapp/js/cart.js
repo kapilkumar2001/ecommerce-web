@@ -6,7 +6,7 @@ function displayCart() {
     let i = userCart.length;
 
     // items count cart length
-    if(i === 0) {
+    if(getCartItemsCount() === 0) {
         $("#empty-cart").removeClass("d-none");
         $("#cart-items").addClass("d-none");
         $("#order-summary").addClass("d-none");
@@ -61,14 +61,9 @@ function displayCart() {
         }
     
         Promise.all(promises).then(() => {
-            $(".order-value").html("₹15490");
-            $(".discount").html("-₹1490");
-            $(".shipping-price").html("₹90");
-            $(".total-amount").html("₹14090");
             $("#cart-item").remove();
-
-            setLoginLogoutIcon();
-            $("#navbar-login-logout").click(logout);
+            updateOrderSummary();
+            updateNavbar();
         });
     }
 }
@@ -87,7 +82,8 @@ function increaseQuantity(barcode) {
     }
 
     cart[userId] = userCart;
-    updateCart(cart);
+    setCart(cart);
+    updateOrderSummary()
     
     $("#cart-item-" + barcode + " .product-qty").html(quantity + 1);
 }
@@ -111,7 +107,8 @@ function decreaseQuantity(barcode) {
         }
 
         cart[userId] = userCart;  
-        updateCart(cart);
+        setCart(cart);
+        updateOrderSummary()
 
         $("#cart-item-" + barcode + " .product-qty").html(quantity - 1);
     } 
@@ -149,8 +146,8 @@ function checkLogin() {
                 writeFileData(orderData);
                 
                 cart[userId] = [];
-                updateCart(cart);
-        
+                setCart(cart);
+            
                 // TODO: success message
                 displayCart();
             },
@@ -172,7 +169,8 @@ function removeItem(barcode) {
     }
 
     cart[userId] = userCart;  
-    updateCart(cart);
+    setCart(cart);
+    updateOrderSummary();
 
     $("#cart-item-" + barcode).remove();
 
@@ -186,10 +184,9 @@ function removeItem(barcode) {
 function clearCart() {
     let cart = getCart();
     let userId = getCurrentUserId();
-    let userCart = cart[userId];
     
     cart[userId] = [];  
-    updateCart(cart);
+    setCart(cart);
 
     displayCart();  // should display empty cart page
 }
@@ -204,8 +201,6 @@ function viewHomePage() {
 }
 
 function init(){
-    $("#navbar-placeholder").load("navbar.html");
-    $("#footer-placeholder").load("footer.html");
 	displayCart();
     $("#clear-cart-btn").click(clearCart);
     $("#place-order-btn").click(checkLogin);

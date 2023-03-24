@@ -57,8 +57,7 @@ function displayProductDetails(barcode){
                 }     
             }
 
-            setLoginLogoutIcon();
-            $("#navbar-login-logout").click(logout);
+            updateNavbar();
         },
     });
 }
@@ -96,7 +95,7 @@ function buyNow(barcode) {
         cart[userId] = userCart;  
     }
 
-    updateCart(cart);
+    setCart(cart);
     window.location.href = "cart.html";
 }
 
@@ -132,7 +131,7 @@ function changeToCountButton(barcode) {
         cart[userId] = userCart;
     }
     
-    updateCart(cart);
+    setCart(cart);
 
     $(".inc-qty-btn").attr("onclick", "increaseQuantity('" + barcode + "')");
     $(".dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "')");
@@ -159,7 +158,7 @@ function increaseQuantity(barcode) {
     }
 
     cart[userId] = userCart;  
-    updateCart(cart);
+    setCart(cart);
     
     $(".product-qty").html(quantity + 1);
 }
@@ -183,7 +182,7 @@ function decreaseQuantity(barcode) {
         }
 
         cart[userId] = userCart;
-        updateCart(cart);
+        setCart(cart);
 
         $(".product-qty").html(quantity - 1);
     } else if(quantity === 1) {
@@ -195,7 +194,7 @@ function decreaseQuantity(barcode) {
         }
 
         cart[userId] = userCart; 
-        updateCart(cart);
+        setCart(cart);
         
         $(".add-to-cart-btn").attr("onclick", "changeToCountButton('" + barcode + "')");
         $(".add-to-cart-btn").html("Add to cart");
@@ -209,8 +208,6 @@ function decreaseQuantity(barcode) {
 }
 
 function init(){
-    $("#navbar-placeholder").load("navbar.html");
-    $("#footer-placeholder").load("footer.html");
     getProductDetails();
 }
 

@@ -123,8 +123,7 @@ function displayProducts(data) {
         filterProducts();
     });
 
-    setLoginLogoutIcon();
-    $("#navbar-login-logout").click(logout);
+    updateNavbar();
 }
 
 function showProductCard(data) {
@@ -210,8 +209,7 @@ function changeToCountButton(barcode) {
         cart[userId] = userCart;  
     }
 
-    updateCart(cart);
-
+    setCart(cart);
     $("#product-card-" + barcode + " .inc-qty-btn").attr("onclick", "increaseQuantity('" + barcode + "')");
     $("#product-card-" + barcode + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "')");
     $("#product-card-" + barcode + " .inc-dec-qty-span").removeClass("d-none");
@@ -233,8 +231,7 @@ function increaseQuantity(barcode) {
     }
 
     cart[userId] = userCart;  
-    updateCart(cart);
-    
+    setCart(cart);
     $("#product-card-" + barcode + " .product-qty").html(quantity + 1);
 }
 
@@ -257,7 +254,7 @@ function decreaseQuantity(barcode) {
         }
 
         cart[userId] = userCart;  
-        updateCart(cart);
+        setCart(cart);
 
         $("#product-card-" + barcode + " .product-qty").html(quantity - 1);
     } else if(quantity === 1) {
@@ -269,8 +266,7 @@ function decreaseQuantity(barcode) {
         }
 
         cart[userId] = userCart;  
-        updateCart(cart);
-
+        setCart(cart);
         $("#product-card-" + barcode + " .add-to-cart-btn").attr("onclick", "changeToCountButton('" + barcode + "')");
         $("#product-card-" + barcode + " .add-to-cart-btn").html("Add to cart");
         $("#product-card-" + barcode + " .inc-dec-qty-span").addClass("d-none");
@@ -343,8 +339,8 @@ function filterByColor(data, colors) {
 }
  
 function init() {
-    $("#navbar-placeholder").load("navbar.html");
-    $("#footer-placeholder").load("footer.html");
+    // $("#navbar-placeholder").load("navbar.html");
+    // $("#footer-placeholder").load("footer.html");
 	displayPage();
 }
 

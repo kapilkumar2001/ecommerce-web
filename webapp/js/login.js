@@ -39,7 +39,7 @@ function login(){
 				cart[userId] = newCart;
 				cart["0"] = [];
 
-				updateCart(cart);
+				setCart(cart);
 				window.location.href = "home.html";
 			}
 		},
@@ -92,13 +92,11 @@ function checkLogin() {
 	if(getCurrentUserId() !== null && getCurrentUserId() !== "0") {
 		// window.location.href = "home.html";
 	}
-	setLoginLogoutIcon();
+	updateNavbar();
 }
 
 function init(){
 	checkLogin();
-    $("#navbar-placeholder").load("navbar.html");
-    $("#footer-placeholder").load("footer.html");
 	$("#login-button").click(login);
 }
 
