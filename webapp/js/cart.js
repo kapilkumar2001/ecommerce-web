@@ -11,6 +11,7 @@ function displayCart() {
         $("#cart-items").addClass("d-none");
         $("#order-summary").addClass("d-none");
         $("#start-shopping-btn").click(viewHomePage);
+        updateNavbar();
     } else {
         $("#empty-cart").addClass("d-none");
         $("#cart-items").removeClass("d-none");
@@ -28,32 +29,15 @@ function displayCart() {
                         success: function(data) {
                             let productData = null;
                     
-                            for(let i in data) {
-                                if(data[i]['barcode'] === barcode) {
-                                    productData = data[i];
+                            for(let j in data) {
+                                if(data[j]['barcode'] === barcode) {
+                                    productData = data[j];
                                     break;
                                 }
                             }
 
                             if((productData !== null)) { 
-                                let node = $("#cart-item");
-                                let clone = node.clone().attr("id", "cart-item-" + barcode);
-                                $("#cart-items .card-body").append(clone);
-    
-                                $("#cart-item-" + barcode + " .product-img").attr("src", productData["imageUrl"]);
-                                $("#cart-item-" + barcode + " .product-img").attr("onclick", "viewProduct('" + barcode + "')");
-                                $("#cart-item-" + barcode + " .brand-name").html(productData["brand"]);
-                                $("#cart-item-" + barcode + " .product-name").html(productData["name"]);
-                                $("#cart-item-" + barcode + " .product-name").attr("href", "product-details.html?barcode=" + barcode);
-                                $("#cart-item-" + barcode + " .product-color").html("Color - " + productData["color"]);
-                                $("#cart-item-" + barcode + " .product-price").html("₹" + (productData["mrp"] - parseInt(productData["mrp"] * productData["discountPercent"] / 100)));
-                                $("#cart-item-" + barcode + " .product-mrp").find("s").html("₹" + productData["mrp"]);
-                                $("#cart-item-" + barcode + " .product-discount").html(productData["discountPercent"] + "% off");
-                                
-                                $("#cart-item-" + barcode + " .inc-qty-btn").attr("onclick", "increaseQuantity('" + barcode + "')");
-                                $("#cart-item-" + barcode + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "')");
-                                $("#cart-item-" + barcode + " .remove-item-btn").attr("onclick", "removeItem('" + barcode + "')");
-                                $("#cart-item-" + barcode + " .product-qty").html(quantity);
+                                showCartItem(barcode, quantity, productData);
                             }
                         }
                 }));
@@ -66,6 +50,27 @@ function displayCart() {
             updateNavbar();
         });
     }
+}
+
+function showCartItem(barcode, quantity, productData) {
+    let node = $("#cart-item");
+    let clone = node.clone().attr("id", "cart-item-" + barcode);
+    $("#cart-items .card-body").append(clone);
+
+    $("#cart-item-" + barcode + " .product-img").attr("src", productData["imageUrl"]);
+    $("#cart-item-" + barcode + " .product-img").attr("onclick", "viewProduct('" + barcode + "')");
+    $("#cart-item-" + barcode + " .brand-name").html(productData["brand"]);
+    $("#cart-item-" + barcode + " .product-name").html(productData["name"]);
+    $("#cart-item-" + barcode + " .product-name").attr("href", "product-details.html?barcode=" + barcode);
+    $("#cart-item-" + barcode + " .product-color").html("Color - " + productData["color"]);
+    $("#cart-item-" + barcode + " .product-price").html("₹" + (productData["mrp"] - parseInt(productData["mrp"] * productData["discountPercent"] / 100)));
+    $("#cart-item-" + barcode + " .product-mrp").find("s").html("₹" + productData["mrp"]);
+    $("#cart-item-" + barcode + " .product-discount").html(productData["discountPercent"] + "% off");
+    
+    $("#cart-item-" + barcode + " .inc-qty-btn").attr("onclick", "increaseQuantity('" + barcode + "')");
+    $("#cart-item-" + barcode + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "')");
+    $("#cart-item-" + barcode + " .remove-item-btn").attr("onclick", "openRemoveItemModal('" + barcode + "')");
+    $("#cart-item-" + barcode + " .product-qty").html(quantity);
 }
 
 function increaseQuantity(barcode) {
@@ -98,7 +103,7 @@ function decreaseQuantity(barcode) {
         quantity = parseInt(filterByBarcode(userCart, barcode).quantity);
     }
 
-    if(quantity > 0) {
+    if(quantity > 1) {
         for(let i in userCart) {
             if(userCart[i]['barcode'] === barcode) {
                 userCart[i]['quantity'] = quantity - 1;
@@ -111,7 +116,19 @@ function decreaseQuantity(barcode) {
         updateOrderSummary()
 
         $("#cart-item-" + barcode + " .product-qty").html(quantity - 1);
-    } 
+    } else {
+        openRemoveItemModal(barcode);
+    }
+}
+
+function openRemoveItemModal(barcode) {
+    $(".confirm-modal").modal("toggle");
+    $(".modal-title").html("Confirm");
+    $(".modal-body").html("The product will be removed from cart. Are you sure?");
+    $(".btn-yes").attr("onclick", "removeItem('" + barcode + "')");
+    $(".btn-no").click(() => {
+        $(".confirm-modal").modal("hide");
+    });
 }
 
 function checkLogin() {
@@ -157,6 +174,7 @@ function checkLogin() {
 }
 
 function removeItem(barcode) {
+    console.log("removeItem");
     let cart = getCart();
     let userId = getCurrentUserId();
     let userCart = cart[userId];
@@ -172,6 +190,7 @@ function removeItem(barcode) {
     setCart(cart);
     updateOrderSummary();
 
+    $(".confirm-modal").modal("hide");
     $("#cart-item-" + barcode).remove();
 
     // TODO : on item count 0 - display cart again or display empty cart 
@@ -181,6 +200,16 @@ function removeItem(barcode) {
     // }
 }
 
+function openClearCartModal() {
+    $(".confirm-modal").modal("toggle");
+    $(".modal-title").html("Confirm");
+    $(".modal-body").html("The cart will be empty. Are you sure");
+    $(".btn-yes").attr("onclick", "clearCart()");
+    $(".btn-no").click(() => {
+        $(".confirm-modal").modal("hide");
+    });
+}
+
 function clearCart() {
     let cart = getCart();
     let userId = getCurrentUserId();
@@ -188,7 +217,8 @@ function clearCart() {
     cart[userId] = [];  
     setCart(cart);
 
-    displayCart();  // should display empty cart page
+    $(".confirm-modal").modal("hide");
+    displayCart();  
 }
 
 function viewProduct(barcode) {
@@ -202,7 +232,7 @@ function viewHomePage() {
 
 function init(){
 	displayCart();
-    $("#clear-cart-btn").click(clearCart);
+    $("#clear-cart-btn").click(openClearCartModal);
     $("#place-order-btn").click(checkLogin);
 }
 

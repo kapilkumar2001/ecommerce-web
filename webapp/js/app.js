@@ -56,7 +56,6 @@ function setLoginLogoutIcon() {
 } 
 
 function logout() {
-    console.log("logout");
     localStorage.setItem("current-user-id", 0); 
 } 
 
@@ -113,7 +112,7 @@ function updateOrderSummary() {
         $(".order-value").html("₹" + totalPrice);
         $(".discount").html("-₹" + totalDiscount);
         if(totalPrice >= 4999) {
-            $(".shipping-price").html("FREE");
+            $(".shipping-price").html("<span class='text-body'><s>₹199</s></span> FREE");
             $(".shipping-price").addClass("text-success");
             $(".free-delivery").addClass("d-none");
         } else {
