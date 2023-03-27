@@ -48,7 +48,7 @@ function displayBrands(data) {
         let clone = node.clone().attr("id", "input-brand-" + brands[i]);
         $("#brand-collapse").append(clone);
 
-        $("#input-brand-" + brands[i]).find("label").html(brands[i]);
+        $("#input-brand-" + brands[i]).find("label").append(brands[i]);
         $("#input-brand-" + brands[i]).find("input").attr("value", brands[i]);
     }
 
@@ -67,7 +67,7 @@ function displayCategories(data) {
         let clone = node.clone().attr("id", "input-category-" + categories[i]);
         $("#category-collapse").append(clone);
 
-        $("#input-category-" + categories[i]).find("label").html(categories[i]);
+        $("#input-category-" + categories[i]).find("label").append(categories[i]);
         $("#input-category-" + categories[i]).find("input").attr("value", categories[i]);
     }
 
@@ -86,7 +86,7 @@ function displayColors(data) {
         let clone = node.clone().attr("id", "input-color-" + colors[i]);
         $("#color-collapse").append(clone);
 
-        $("#input-color-" + colors[i]).find("label").html(colors[i]);
+        $("#input-color-" + colors[i]).find("label").append(colors[i]);
         $("#input-color-" + colors[i]).find("input").attr("value", colors[i]);
     }
 
@@ -125,7 +125,6 @@ function sortProducts(data) {
 }
 
 function displayProducts(data) {
-    console.log('DISPLAY')
     let filters = getFilters();
                 
     if(filters === null) {
@@ -160,8 +159,6 @@ function displayProducts(data) {
 }
 
 function showProductCard(data) {
-    console.log('SHOW')
-
     if(data.length === 0) {
         $("#no-product").removeClass("d-none");
     } else {
@@ -180,13 +177,12 @@ function showProductCard(data) {
             $("#product-card-" + e["barcode"] + " .brand-name").attr("href", "product-details.html?barcode=" + e['barcode']);
             $("#product-card-" + e["barcode"] + " .product-name").find("div").html(e["name"]);
             $("#product-card-" + e["barcode"] + " .product-name").attr("href", "product-details.html?barcode=" + e['barcode']);
-            $("#product-card-" + e["barcode"] + " .product-short-desc").find("div").html(e["shortDescription"]);
-            $("#product-card-" + e["barcode"] + " .product-short-desc").attr("href", "product-details.html?barcode=" + e['barcode']);
+            $("#product-card-" + e["barcode"] + " .rating-reviews").attr("href", "product-details.html?barcode=" + e['barcode']);
             $("#product-card-" + e["barcode"] + " .product-rating").html(e["rating"] + " <i class='fa fa-star'></i>");
             $("#product-card-" + e["barcode"] + " .product-reviews").html("(" + e["reviews"] + ")");
-            $("#product-card-" + e["barcode"] + " .product-price").find("b").html("₹" + (e["mrp"] - parseInt(e["mrp"] * e["discountPercent"] / 100)));
+            $("#product-card-" + e["barcode"] + " .product-price").find("b").html("₹" + (e["mrp"] - parseInt(e["mrp"] * e["discountPercent"] / 100)).toLocaleString());
             $("#product-card-" + e["barcode"] + " .product-price").attr("href", "product-details.html?barcode=" + e['barcode']);
-            $("#product-card-" + e["barcode"] + " .product-mrp").find("s").html("₹" + e["mrp"]);
+            $("#product-card-" + e["barcode"] + " .product-mrp").find("s").html("₹" + e["mrp"].toLocaleString());
             $("#product-card-" + e["barcode"] + " .product-mrp").attr("href", "product-details.html?barcode=" + e['barcode']);
             $("#product-card-" + e["barcode"] + " .product-discount").html(e["discountPercent"] + "%off");
             $("#product-card-" + e["barcode"] + " .product-discount").attr("href", "product-details.html?barcode=" + e['barcode']);

@@ -25,8 +25,8 @@ function displayProductDetails(barcode){
                 $(".product-desc").html(productData['description']);
                 $(".product-rating").html(productData['rating'] + " <i class='fa fa-star'></i>");
                 $(".product-reviews").html("(" + productData['reviews'] + " reviews)");
-                $(".product-price").html("₹" + (productData["mrp"] - parseInt(productData["mrp"] * productData["discountPercent"] / 100)));
-                $(".product-mrp").find("s").html("₹" + productData['mrp']);
+                $(".product-price").html("₹" + (productData["mrp"] - parseInt(productData["mrp"] * productData["discountPercent"] / 100)).toLocaleString());
+                $(".product-mrp").find("s").html("₹" + parseInt(productData['mrp']).toLocaleString());
                 $(".product-discount").find("b").html(productData['discountPercent'] + "% off");
                 $(".product-color").html("Color: " + productData['color']);
                 $(".product-style").html("Style Name: " + productData['styleName']);
@@ -34,7 +34,6 @@ function displayProductDetails(barcode){
                 let cart = getCart();
                 let userId = getCurrentUserId();
 
-        
                 if(cart == null || cart[userId] == undefined
                     || filterByBarcode(cart[userId], barcode) == undefined 
                     || filterByBarcode(cart[userId], barcode).quantity == undefined 

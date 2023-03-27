@@ -28,7 +28,7 @@
               Category <i class="fa fa-angle-down ml-auto"></i>
             </button>
             <div class="collapse pt-2 px-2" id="category-collapse">
-              <div id="input-category"><input type="checkbox" name="category"><label class="ml-2"></label><br></div>
+              <div id="input-category"><label><input type="checkbox" name="category" class="mr-2"></label><br></div>
             </div>
           </div>
           <hr>
@@ -37,7 +37,7 @@
               Brand <i class="fa fa-angle-down ml-auto"></i>
             </button>
             <div class="collapse pt-2 px-2" id="brand-collapse">
-              <div id="input-brand"><input type="checkbox" name="brand"><label class="ml-2"></label><br></div>
+              <div id="input-brand"><label><input type="checkbox" name="brand" class="mr-2"></label><br></div>
             </div>
           </div>
           <hr>
@@ -46,7 +46,7 @@
               Color <i class="fa fa-angle-down ml-auto"></i>
             </button>
             <div class="collapse pt-2 px-2" id="color-collapse">
-              <div id="input-color"><input type="checkbox" name="color"><label class="ml-2"></label><br></div>
+              <div id="input-color"><label><input type="checkbox" name="color" class="mr-2"></label><br></div>
             </div>
           </div>
           <hr>
@@ -79,10 +79,12 @@
                 </div>
                 <a class="brand-name"><div class="ml-2 mr-2 mt-2 text-muted text-wrap"></div></a>
                 <a class="product-name"><div class="row mx-2 text-body text-wrap"></div></a>
-                <div class="row align-items-baseline mx-2 mb-2 mt-2">
-                  <span class="product-rating bg-success small rounded px-1 d-inline-block text-light"></span>
-                  <span class="product-reviews ml-2 text-secondary"></span>
-                </div>
+                <a class="rating-reviews">
+                  <div class="row align-items-baseline mx-2 mb-2 mt-2">
+                    <span class="product-rating bg-success small rounded px-1 d-inline-block text-light"></span>
+                    <span class="product-reviews ml-2 text-secondary"></span>
+                  </div>
+                </a>
                 <div class="row mt-3 mb-2 align-items-center">
                   <div class="ml-4">
                     <a class="product-price text-body"><b></b></a><br>
@@ -105,12 +107,12 @@
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title"></h5>
+                <h5 class="modal-title">Confirm</h5>
               </div>
-              <div class="modal-body"></div>
+              <div class="modal-body">Are you sure, you want to logout?</div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-primary btn-sm btn-no">Cancel</button>
-                <button type="button" class="btn btn-primary btn-sm btn-yes">Logout</button>
+                <button type="button" class="btn btn-secondary btn-sm btn-no px-2">Cancel</button>
+                <button type="button" class="btn btn-outline-dark btn-sm btn-yes px-2">Logout</button>
               </div>
             </div>
           </div>

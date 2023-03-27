@@ -49,22 +49,36 @@ function setLoginLogoutIcon() {
     let userId = getCurrentUserId(); 
 
     if(userId === '0') {
-        $("#navbar-login-logout").html("<a class='nav-link' href='login.html'><i class='bi bi-box-arrow-in-right fa-lg'></i></a>");
+        $("#navbar-login-logout").html("<a class='nav-link'><i class='bi bi-box-arrow-in-right fa-lg'></i></a>");
     } else {
-        $("#navbar-login-logout").html("<a class='nav-link' href='login.html'><i class='bi bi-box-arrow-right fa-lg'></i></a>");
+        $("#navbar-login-logout").html("<a class='nav-link'><i class='bi bi-box-arrow-right fa-lg'></i></a>");
     } 
 } 
 
+function openLogoutModal() {
+    $(".logout-modal").modal("toggle");
+    $(".btn-yes").click(logout);
+    $(".btn-no").click(() => {
+        $(".logout-modal").modal("hide");
+    });
+}
+
 function logout() {
     localStorage.setItem("current-user-id", 0); 
+    window.location.href = "home.html";
 } 
 
 function updateNavbar() {
     updateCartIcon();
-    console.log(window.location.pathname);
     if(window.location.pathname !== "/webapp/login.html") {
         setLoginLogoutIcon();
-        $("#navbar-login-logout").click(logout);
+        $("#navbar-login-logout").click(function() {
+            if(localStorage.getItem("current-user-id") === "0"){
+                window.location.href = "login.html";
+            } else {
+                openLogoutModal();
+            }
+        });
     }
 }
 
@@ -72,7 +86,7 @@ function getCartItemsCount() {
     let cart = getCart();
     let userId = getCurrentUserId();
     let userCart;
-    console.log(cart);
+
     if(cart !== null) {
         if(cart[userId] !== undefined) {
             userCart = cart[userId];
@@ -91,47 +105,6 @@ function getCartItemsCount() {
 function updateCartIcon() {
     let cartItemsCount = getCartItemsCount();
     $(".cart-icon span").html(cartItemsCount);
-}
-
-function updateOrderSummary() {
-    let cart = getCart();
-    let userId = getCurrentUserId();
-    let userCart = cart[userId];
-    let totalPrice = 0;
-    let totalDiscount = 0;
-    const promises = [];
-
-    for(let i in userCart) {
-        let barcode = userCart[i]["barcode"];
-        let quantity = userCart[i]["quantity"];
-
-        promises.push(
-            $.ajax({
-            url: 'data/products.json',
-            dataType: 'json',
-            success: function(data) {
-                productData = filterByBarcode(data, barcode);
-                
-                totalPrice += (productData["mrp"] * quantity);
-                totalDiscount += ((productData["mrp"] * productData["discountPercent"] / 100) * quantity);
-            },
-        }));
-    }
-
-    Promise.all(promises).then(() => {
-        $(".order-value").html("₹" + totalPrice);
-        $(".discount").html("-₹" + totalDiscount);
-        if(totalPrice >= 4999) {
-            $(".shipping-price").html("<span class='text-body'><s>₹199</s></span> FREE");
-            $(".shipping-price").addClass("text-success");
-            $(".free-delivery").addClass("d-none");
-        } else {
-            $(".shipping-price").html("₹" + 199);
-            $(".free-delivery").html("Add items worth ₹" + (4999-totalPrice) + " more to get free delivery on this order.");
-            $(".free-delivery").removeClass("d-none");
-        }
-        $(".total-amount").html("₹" + (totalPrice - totalDiscount));
-    });
 }
 
 function getCurrentUserId() {

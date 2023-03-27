@@ -5,7 +5,6 @@ function displayCart() {
     let userCart = cart[userId];
     let i = userCart.length;
 
-    // items count cart length
     if(getCartItemsCount() === 0) {
         $("#empty-cart").removeClass("d-none");
         $("#cart-items").addClass("d-none");
@@ -61,13 +60,13 @@ function showCartItem(barcode, quantity, productData) {
     $("#cart-item-" + barcode + " .product-name").html(productData["name"]);
     $("#cart-item-" + barcode + " .product-name").attr("href", "product-details.html?barcode=" + barcode);
     $("#cart-item-" + barcode + " .product-color").html("Color - " + productData["color"]);
-    $("#cart-item-" + barcode + " .product-price").html("₹" + (productData["mrp"] - parseInt(productData["mrp"] * productData["discountPercent"] / 100)));
-    $("#cart-item-" + barcode + " .product-mrp").find("s").html("₹" + productData["mrp"]);
+    $("#cart-item-" + barcode + " .product-price").html("₹" + (productData["mrp"] - parseInt(productData["mrp"] * productData["discountPercent"] / 100)).toLocaleString());
+    $("#cart-item-" + barcode + " .product-mrp").find("s").html("₹" + productData["mrp"].toLocaleString());
     $("#cart-item-" + barcode + " .product-discount").html(productData["discountPercent"] + "% off");
     
     $("#cart-item-" + barcode + " .inc-qty-btn").attr("onclick", "increaseQuantity('" + barcode + "')");
-    $("#cart-item-" + barcode + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "')");
-    $("#cart-item-" + barcode + " .remove-item-btn").attr("onclick", "openRemoveItemModal('" + barcode + "')");
+    $("#cart-item-" + barcode + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "', '" + productData["name"] + "')");
+    $("#cart-item-" + barcode + " .remove-item-btn").attr("onclick", "openRemoveItemModal('" + barcode + "', '" + productData["name"] + "')");
     $("#cart-item-" + barcode + " .product-qty").html(quantity);
 }
 
@@ -91,7 +90,7 @@ function increaseQuantity(barcode) {
     $("#cart-item-" + barcode + " .product-qty").html(quantity + 1);
 }
 
-function decreaseQuantity(barcode) {
+function decreaseQuantity(barcode, productName) {
     let cart = getCart();
     let userId = getCurrentUserId();
     let userCart = cart[userId];
@@ -115,17 +114,58 @@ function decreaseQuantity(barcode) {
 
         $("#cart-item-" + barcode + " .product-qty").html(quantity - 1);
     } else {
-        openRemoveItemModal(barcode);
+        openRemoveItemModal(barcode, productName);
     }
 }
 
-function openRemoveItemModal(barcode) {
+function openRemoveItemModal(barcode, productName) {
     $(".confirm-modal").modal("toggle");
     $(".modal-title").html("Confirm");
-    $(".modal-body").html("The product will be removed from cart. Are you sure?");
+    $(".modal-body").html("<span class='font-weight-bold'>" +  productName + "</span> will be removed from cart. Are you sure?");
     $(".btn-yes").attr("onclick", "removeItem('" + barcode + "')");
     $(".btn-no").click(() => {
         $(".confirm-modal").modal("hide");
+    });
+}
+
+function updateOrderSummary() {
+    let cart = getCart();
+    let userId = getCurrentUserId();
+    let userCart = cart[userId];
+    let totalPrice = 0;
+    let totalDiscount = 0;
+    const promises = [];
+
+    for(let i in userCart) {
+        let barcode = userCart[i]["barcode"];
+        let quantity = userCart[i]["quantity"];
+
+        promises.push(
+            $.ajax({
+            url: 'data/products.json',
+            dataType: 'json',
+            success: function(data) {
+                productData = filterByBarcode(data, barcode);
+                
+                totalPrice += (productData["mrp"] * quantity);
+                totalDiscount += ((productData["mrp"] * productData["discountPercent"] / 100) * quantity);
+            },
+        }));
+    }
+
+    Promise.all(promises).then(() => {
+        $(".order-value").html("₹" + totalPrice.toLocaleString());
+        $(".discount").html("-₹" + totalDiscount.toLocaleString());
+        if(totalPrice >= 4999) {
+            $(".shipping-price").html("<span class='text-body'><s>₹199</s></span> FREE");
+            $(".shipping-price").addClass("text-success");
+            $(".free-delivery").addClass("d-none");
+        } else {
+            $(".shipping-price").html("₹" + 199);
+            $(".free-delivery").html("Add items worth ₹" + (4999-totalPrice).toLocaleString() + " more to get free delivery on this order.");
+            $(".free-delivery").removeClass("d-none");
+        }
+        $(".total-amount").html("₹" + (totalPrice - totalDiscount).toLocaleString());
     });
 }
 
@@ -135,44 +175,52 @@ function checkLogin() {
     if(userId === '0') {
         window.location.href = "login.html";
     } else {
-        let cart = getCart();
-        let userCart = cart[userId];
-        let orderData = [];
-        let products;
-
-        $.ajax({
-            url: 'data/products.json',
-            dataType: 'json',
-            success: function(response) {
-                products = response;
-        
-                for(let i in userCart) {
-                    if(parseInt(userCart[i]["quantity"]) !== 0) {
-                        let row = {};
-                        row.barcode = userCart[i]["barcode"];
-                        row.name = filterByBarcode(products, userCart[i]["barcode"]).name;
-                        row.quantity = userCart[i]["quantity"];
-                        row.mrp = filterByBarcode(products, userCart[i]["barcode"]).mrp;
-                        row.amount = (row.quantity) * (row.mrp);
-                        orderData.push(row);
-                    }
-                }
-        
-                writeFileData(orderData);
-                
-                cart[userId] = [];
-                setCart(cart);
-            
-                // TODO: success message
-                displayCart();
-            },
-        });
-
+        $(".place-order-modal").modal("toggle");
+        $(".btn-yes").click(placeOrder);
+        $(".btn-no").click(() => {
+            $(".place-order-modal").modal("hide");
+        });   
     }
 }
 
+function placeOrder() {
+    let cart = getCart();
+    let userId = getCurrentUserId();
+    let userCart = cart[userId];
+    let orderData = [];
+    let products;
+
+    $.ajax({
+        url: 'data/products.json',
+        dataType: 'json',
+        success: function(response) {
+            products = response;
+    
+            for(let i in userCart) {
+                if(parseInt(userCart[i]["quantity"]) !== 0) {
+                    let row = {};
+                    row.barcode = userCart[i]["barcode"];
+                    row.name = filterByBarcode(products, userCart[i]["barcode"]).name;
+                    row.quantity = userCart[i]["quantity"];
+                    row.mrp = filterByBarcode(products, userCart[i]["barcode"]).mrp;
+                    row.amount = (row.quantity) * (row.mrp);
+                    orderData.push(row);
+                }
+            }
+    
+            writeFileData(orderData);
+            
+            cart[userId] = [];
+            setCart(cart);
+        
+            // TODO: success message
+            displayCart();
+            $(".place-order-modal").modal("hide");
+        },
+    });
+}
+
 function removeItem(barcode) {
-    console.log("removeItem");
     let cart = getCart();
     let userId = getCurrentUserId();
     let userCart = cart[userId];
@@ -201,7 +249,7 @@ function removeItem(barcode) {
 function openClearCartModal() {
     $(".confirm-modal").modal("toggle");
     $(".modal-title").html("Confirm");
-    $(".modal-body").html("The cart will be empty. Are you sure");
+    $(".modal-body").html("The cart will be empty. Are you sure?");
     $(".btn-yes").attr("onclick", "clearCart()");
     $(".btn-no").click(() => {
         $(".confirm-modal").modal("hide");
