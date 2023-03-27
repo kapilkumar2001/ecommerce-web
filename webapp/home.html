@@ -20,7 +20,7 @@
     <div id="navbar-placeholder"></div>
     <div class="container-fluid">
       <div class="row">
-        <div class="col-2 shadow-sm pt-4 pb-2">
+        <div class="col-2 shadow-sm pt-2 pb-2">
           <h5>Filters</h5>
           <hr>
           <div class="category-filter">
@@ -52,23 +52,41 @@
           <hr>
         </div>
         <div class="col-10">
+          <div class="row">
+            <div class="ml-auto mr-4">
+              <div class="dropdown">
+                <button class="btn btn-sm btn-outline-dark border-0 shadow-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span class="font-weight-bold">Sort By - </span>
+                  <span class="sort-by"></span>
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" onclick="sortByPriceHighToLow()">Price: High to Low</a>
+                  <a class="dropdown-item" onclick="sortByPriceLowToHigh()">Price: Low to High</a>
+                  <a class="dropdown-item" onclick="sortByRating()">Rating</a>
+                </div>
+              </div>
+            </div>
+          </div>
           <div id="products-area" class="row my-4 mx-1">
             <div id="no-product" class="col-12 d-none">
               <img class="img-fluid mx-auto d-block" src="https://img.freepik.com/free-vector/empty-concept-illustration_114360-1233.jpg?w=740&t=st=1679461891~exp=1679462491~hmac=3fe17290709f681240b89cc649606353220e0bf7437be1b2be6a5e0dc6d6dee5" style="height: 50%">
               <h5 class="text-center mt-4">Sorry! No product found in this category.</h5>
             </div>
-            </div>
-            <div id="product-card" class="product-card p-1 col-sm-12 col-md-6 col-lg-3">
+            <div id="product-card" class="product-card d-none p-2 col-sm-12 col-md-6 col-lg-3">
               <div class="card-shadow p-2">
                 <div> 
                   <img class="product-img img-fluid rounded img-thumbnail border-0 mx-auto d-block" src="" style="height:200px" width="250"> 
                 </div>
-                <a class="brand-name"><div class="row mx-2 mt-2 text-muted text-wrap"></div></a>
+                <a class="brand-name"><div class="ml-2 mr-2 mt-2 text-muted text-wrap"></div></a>
                 <a class="product-name"><div class="row mx-2 text-body text-wrap"></div></a>
+                <div class="row align-items-baseline mx-2 mb-2 mt-2">
+                  <span class="product-rating bg-success small rounded px-1 d-inline-block text-light"></span>
+                  <span class="product-reviews ml-2 text-secondary"></span>
+                </div>
                 <div class="row mt-3 mb-2 align-items-center">
                   <div class="ml-4">
                     <a class="product-price text-body"><b></b></a><br>
-                    <a class="product-mrp text-muted"><s></s></a>
+                    <a class="product-mrp text-secondary"><s></s></a>
                   </div>
                   <span class='add-to-cart-span ml-auto d-none mr-2'>
                     <button class='add-to-cart-btn border border-success btn btn-outline-success btn-sm mx-2 px-2 py-1 rounded'>Add to cart</button>
@@ -81,18 +99,18 @@
                 </div>
               </div>
             </div>
-            <div class="modal logout-modal" tabindex="-1" role="dialog">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title"></h5>
-                  </div>
-                  <div class="modal-body"></div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-primary btn-sm btn-no">Cancel</button>
-                    <button type="button" class="btn btn-primary btn-sm btn-yes">Logout</button>
-                  </div>
-                </div>
+          </div>
+        </div>
+        <div class="modal fade logout-modal" tabindex="-1" role="dialog">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title"></h5>
+              </div>
+              <div class="modal-body"></div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm btn-no">Cancel</button>
+                <button type="button" class="btn btn-primary btn-sm btn-yes">Logout</button>
               </div>
             </div>
           </div>
@@ -101,6 +119,7 @@
     </div>
     <div id="footer-placeholder"></div>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
     <script src="js/app.js"></script>
     <script src="js/home.js"></script>
   </body>

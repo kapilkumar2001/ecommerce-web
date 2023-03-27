@@ -49,9 +49,9 @@ function setLoginLogoutIcon() {
     let userId = getCurrentUserId(); 
 
     if(userId === '0') {
-        $("#navbar-login-logout").html("<a class='nav-link' href='login.html'><i class='bi bi-box-arrow-right fa-lg'></i></a>");
-    } else {
         $("#navbar-login-logout").html("<a class='nav-link' href='login.html'><i class='bi bi-box-arrow-in-right fa-lg'></i></a>");
+    } else {
+        $("#navbar-login-logout").html("<a class='nav-link' href='login.html'><i class='bi bi-box-arrow-right fa-lg'></i></a>");
     } 
 } 
 
@@ -61,21 +61,31 @@ function logout() {
 
 function updateNavbar() {
     updateCartIcon();
-    setLoginLogoutIcon();
-    $("#navbar-login-logout").click(logout);
+    console.log(window.location.pathname);
+    if(window.location.pathname !== "/webapp/login.html") {
+        setLoginLogoutIcon();
+        $("#navbar-login-logout").click(logout);
+    }
 }
 
 function getCartItemsCount() {
     let cart = getCart();
     let userId = getCurrentUserId();
-    let userCart = cart[userId];
-    let itemsCount = 0;
-
-    for(let i in userCart) {
-        itemsCount += (userCart[i]["quantity"]);
+    let userCart;
+    console.log(cart);
+    if(cart !== null) {
+        if(cart[userId] !== undefined) {
+            userCart = cart[userId];
+            let itemsCount = 0;
+    
+            for(let i in userCart) {
+                itemsCount += (userCart[i]["quantity"]);
+            }
+    
+            return itemsCount;
+        } 
     }
-
-    return itemsCount;
+    return 0;
 }
 
 function updateCartIcon() {
@@ -156,10 +166,19 @@ function setFilters(filters) {
     sessionStorage.setItem("filters", JSON.stringify(filters));
 }
 
+function getSortBy() {
+    return sessionStorage.getItem("sort-by");
+}
+
+function setSortBy(sortBy) {
+    sessionStorage.setItem("sort-by", sortBy); 
+} 
+
 function init() {
-    $("#navbar-placeholder").load("navbar.html");
+    $("#navbar-placeholder").load("navbar.html", function() {
+        updateNavbar();
+    });
     $("#footer-placeholder").load("footer.html");
-    updateNavbar();
 }
 
 $(document).ready(init)

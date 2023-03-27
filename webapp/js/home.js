@@ -4,6 +4,27 @@ function displayPage(){
         dataType: 'json',
         success: function(data) {
             displayFilters(data);
+            let sortBy = getSortBy();
+            
+            switch(sortBy) {
+                case "price-hl" :
+                    data = data.sort((d1, d2) => 
+                    ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) < (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? 1 
+                    : ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) > (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? -1 : 0);
+                    $(".sort-by").html("Price: High to Low");
+                    break;
+                case "price-lh" :
+                    data = data.sort((d1, d2) => 
+                    ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) > (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? 1 
+                    : ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) < (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? -1 : 0);
+                    $(".sort-by").html("Price: Low to High");
+                    break;
+                case "rating" :
+                    data = data.sort((d1, d2) => (d1.rating < d2.rating) ? 1 : (d1.rating > d2.rating) ? -1 : 0);
+                    $(".sort-by").html("Rating");
+                    break;
+            }
+            console.log(data);
             displayProducts(data);
         },
     });
@@ -90,6 +111,7 @@ function displayColors(data) {
 }
 
 function displayProducts(data) {
+    console.log('DISPLAY')
     let filters = getFilters();
                 
     if(filters === null) {
@@ -118,15 +140,13 @@ function displayProducts(data) {
         }
     }
 
-    $("#product-card").remove();
     $("input[type='checkbox']").on("change", function(e){
         filterProducts();
     });
-
-    updateNavbar();
 }
 
 function showProductCard(data) {
+    console.log('SHOW')
 
     if(data.length === 0) {
         $("#no-product").removeClass("d-none");
@@ -138,7 +158,8 @@ function showProductCard(data) {
             let node = $("#product-card");
             let clone = node.clone().attr("id", "product-card-" + e["barcode"]);
             $("#products-area").append(clone);
-            
+
+            $("#product-card-" + e["barcode"]).removeClass("d-none");
             $("#product-card-" + e["barcode"] + " .product-img").attr("src", e["imageUrl"]);
             $("#product-card-" + e["barcode"] + " .product-img").attr("onclick", "viewProduct('" + e['barcode'] + "')")
             $("#product-card-" + e["barcode"] + " .brand-name").find("div").html(e["brand"]);
@@ -147,7 +168,7 @@ function showProductCard(data) {
             $("#product-card-" + e["barcode"] + " .product-name").attr("href", "product-details.html?barcode=" + e['barcode']);
             $("#product-card-" + e["barcode"] + " .product-short-desc").find("div").html(e["shortDescription"]);
             $("#product-card-" + e["barcode"] + " .product-short-desc").attr("href", "product-details.html?barcode=" + e['barcode']);
-            $("#product-card-" + e["barcode"] + " .product-rating").html(e["rating"] + " <i class='fa fa-star text-success'></i>");
+            $("#product-card-" + e["barcode"] + " .product-rating").html(e["rating"] + " <i class='fa fa-star'></i>");
             $("#product-card-" + e["barcode"] + " .product-reviews").html("(" + e["reviews"] + ")");
             $("#product-card-" + e["barcode"] + " .product-price").find("b").html("₹" + (e["mrp"] - parseInt(e["mrp"] * e["discountPercent"] / 100)));
             $("#product-card-" + e["barcode"] + " .product-price").attr("href", "product-details.html?barcode=" + e['barcode']);
@@ -186,6 +207,12 @@ function changeToCountButton(barcode) {
     let item = {'barcode': barcode, 'quantity': 1};
 
     if(cart !== null) {
+        if(cart[userId] === undefined || cart[userId] === null) {
+            let userCart = [];
+            userCart.push(item);
+            cart[userId] = userCart;
+        }
+
         let userCart = cart[userId];
         let existsInUserCart = 0;
 
@@ -205,7 +232,7 @@ function changeToCountButton(barcode) {
     } else {
         let userCart = [];
         userCart.push(item);
-        cart = {};
+        cart= {};
         cart[userId] = userCart;  
     }
 
@@ -337,10 +364,23 @@ function filterByColor(data, colors) {
 
     return Array.from(filteredData);
 }
+
+function sortByPriceHighToLow() {
+    setSortBy("price-hl"); // sort by price high to low
+    window.location.href = "home.html";
+}
+
+function sortByPriceLowToHigh() {
+    setSortBy("price-lh"); // sort by price low to high
+    window.location.href = "home.html";
+}
+
+function sortByRating() {
+    setSortBy("rating"); // sort by rating
+    window.location.href = "home.html";
+}
  
 function init() {
-    // $("#navbar-placeholder").load("navbar.html");
-    // $("#footer-placeholder").load("footer.html");
 	displayPage();
 }
 

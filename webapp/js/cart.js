@@ -11,7 +11,6 @@ function displayCart() {
         $("#cart-items").addClass("d-none");
         $("#order-summary").addClass("d-none");
         $("#start-shopping-btn").click(viewHomePage);
-        updateNavbar();
     } else {
         $("#empty-cart").addClass("d-none");
         $("#cart-items").removeClass("d-none");
@@ -47,7 +46,6 @@ function displayCart() {
         Promise.all(promises).then(() => {
             $("#cart-item").remove();
             updateOrderSummary();
-            updateNavbar();
         });
     }
 }

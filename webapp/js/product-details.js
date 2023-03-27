@@ -21,10 +21,10 @@ function displayProductDetails(barcode){
             if(productData !== null) {
                 $(".product-name").html(productData['name']);
                 $(".product-img").attr("src", productData['imageUrl']);
-                $(".headline").html(productData['category'] + " / "  + productData['brand'] + " / " + productData['name']);
+                // $(".headline").html(productData['category'] + " / "  + productData['brand'] + " / " + productData['name']);
                 $(".product-desc").html(productData['description']);
-                $(".product-rating").html(productData['rating'] + " <i class='fa fa-star text-success'></i>");
-                $(".product-reviews").html("(" + productData['reviews'] + ")");
+                $(".product-rating").html(productData['rating'] + " <i class='fa fa-star'></i>");
+                $(".product-reviews").html("(" + productData['reviews'] + " reviews)");
                 $(".product-price").html("₹" + (productData["mrp"] - parseInt(productData["mrp"] * productData["discountPercent"] / 100)));
                 $(".product-mrp").find("s").html("₹" + productData['mrp']);
                 $(".product-discount").find("b").html(productData['discountPercent'] + "% off");
@@ -56,8 +56,6 @@ function displayProductDetails(barcode){
                     $(".buy-now-btn").addClass("d-none");
                 }     
             }
-
-            updateNavbar();
         },
     });
 }
