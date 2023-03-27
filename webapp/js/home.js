@@ -4,33 +4,7 @@ function displayPage(){
         dataType: 'json',
         success: function(data) {
             displayFilters(data);
-            let sortBy = getSortBy();
-            
-            switch(sortBy) {
-                case "price-hl" :
-                    data = data.sort((d1, d2) => 
-                    ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) < (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? 1 
-                    : ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) > (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? -1 : 0);
-                    $(".sort-by").html("Price: High to Low");
-                    break;
-                case "price-lh" :
-                    data = data.sort((d1, d2) => 
-                    ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) > (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? 1 
-                    : ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) < (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? -1 : 0);
-                    $(".sort-by").html("Price: Low to High");
-                    break;
-                case "rating" :
-                    data = data.sort((d1, d2) => (d1.rating < d2.rating) ? 1 : (d1.rating > d2.rating) ? -1 : 0);
-                    $(".sort-by").html("Rating");
-                    break;
-                default :
-                    data = data.sort((d1, d2) => 
-                    ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) < (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? 1 
-                    : ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) > (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? -1 : 0);
-                    $(".sort-by").html("Price: High to Low");
-                    break;
-            }
-            console.log(data);
+            data = sortProducts(data);
             displayProducts(data);
         },
     });
@@ -48,12 +22,15 @@ function displayFilters(data) {
         let colors = JSON.parse(filters)["color"];
     
         for(let i in brands) {
+            $("#brand-collapse").addClass("show");
             $("#input-brand-" + brands[i]).find("input").attr("checked" , true);
         }
         for(let i in categories) {
+            $("#category-collapse").addClass("show");
             $("#input-category-" + categories[i]).find("input").attr("checked" , true);
         }
         for(let i in colors) {
+            $("#color-collapse").addClass("show");
             $("#input-color-" + colors[i]).find("input").attr("checked" , true);
         }
     }
@@ -114,6 +91,37 @@ function displayColors(data) {
     }
 
     $("#input-color").remove();
+}
+
+function sortProducts(data) {
+    let sortBy = getSortBy();
+            
+    switch(sortBy) {
+        case "price-hl" :
+            data = data.sort((d1, d2) => 
+            ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) < (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? 1 
+            : ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) > (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? -1 : 0);
+            $(".sort-by").html("Price: High to Low");
+            break;
+        case "price-lh" :
+            data = data.sort((d1, d2) => 
+            ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) > (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? 1 
+            : ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) < (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? -1 : 0);
+            $(".sort-by").html("Price: Low to High");
+            break;
+        case "rating" :
+            data = data.sort((d1, d2) => (d1.rating < d2.rating) ? 1 : (d1.rating > d2.rating) ? -1 : 0);
+            $(".sort-by").html("Rating");
+            break;
+        default :
+            data = data.sort((d1, d2) => 
+            ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) < (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? 1 
+            : ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) > (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? -1 : 0);
+            $(".sort-by").html("Price: High to Low");
+            break;
+    }
+
+    return data;
 }
 
 function displayProducts(data) {
