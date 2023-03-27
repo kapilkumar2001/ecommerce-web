@@ -23,6 +23,12 @@ function displayPage(){
                     data = data.sort((d1, d2) => (d1.rating < d2.rating) ? 1 : (d1.rating > d2.rating) ? -1 : 0);
                     $(".sort-by").html("Rating");
                     break;
+                default :
+                    data = data.sort((d1, d2) => 
+                    ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) < (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? 1 
+                    : ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) > (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? -1 : 0);
+                    $(".sort-by").html("Price: High to Low");
+                    break;
             }
             console.log(data);
             displayProducts(data);
