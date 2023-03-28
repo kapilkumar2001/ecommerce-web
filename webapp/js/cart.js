@@ -122,10 +122,39 @@ function openRemoveItemModal(barcode, productName) {
     $(".confirm-modal").modal("toggle");
     $(".modal-title").html("Confirm");
     $(".modal-body").html("<span class='font-weight-bold'>" +  productName + "</span> will be removed from cart. Are you sure?");
-    $(".btn-yes").attr("onclick", "removeItem('" + barcode + "')");
+    $(".btn-yes").attr("onclick", "removeItem('" + barcode + "','" + productName + "')");
     $(".btn-no").click(() => {
         $(".confirm-modal").modal("hide");
     });
+}
+
+function removeItem(barcode, productName) {
+    let cart = getCart();
+    let userId = getCurrentUserId();
+    let userCart = cart[userId];
+
+    for(let i in userCart) {
+        if(userCart[i]['barcode'] === barcode) {
+            userCart[i]['quantity'] = 0;
+            break;
+        }
+    }
+
+    cart[userId] = userCart;  
+    setCart(cart);
+    updateOrderSummary();
+
+    $(".confirm-modal").modal("hide");
+    $(".toast-success").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>" + productName + " removed from the cart.</span></div>");
+    $(".toast-success").toast("show");
+
+    $("#cart-item-" + barcode).remove();
+
+    // TODO : on item count 0 - display cart again or display empty cart 
+
+    // if(parseInt(JSON.parse(localStorage.getItem(getCurrentUserId()))['itemsCount']) === 0) {
+    //     displayCart();
+    // }
 }
 
 function updateOrderSummary() {
@@ -213,37 +242,10 @@ function placeOrder() {
             cart[userId] = [];
             setCart(cart);
         
-            // TODO: success message
-            displayCart();
+            // TODO: display order placed screen
             $(".place-order-modal").modal("hide");
         },
     });
-}
-
-function removeItem(barcode) {
-    let cart = getCart();
-    let userId = getCurrentUserId();
-    let userCart = cart[userId];
-
-    for(let i in userCart) {
-        if(userCart[i]['barcode'] === barcode) {
-            userCart[i]['quantity'] = 0;
-            break;
-        }
-    }
-
-    cart[userId] = userCart;  
-    setCart(cart);
-    updateOrderSummary();
-
-    $(".confirm-modal").modal("hide");
-    $("#cart-item-" + barcode).remove();
-
-    // TODO : on item count 0 - display cart again or display empty cart 
-
-    // if(parseInt(JSON.parse(localStorage.getItem(getCurrentUserId()))['itemsCount']) === 0) {
-    //     displayCart();
-    // }
 }
 
 function openClearCartModal() {
@@ -264,6 +266,9 @@ function clearCart() {
     setCart(cart);
 
     $(".confirm-modal").modal("hide");
+    $(".toast-success").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>All the products are removed from the cart.</span></div>");
+    $(".toast-success").toast("show");
+
     displayCart();  
 }
 

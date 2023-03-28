@@ -23,7 +23,7 @@ function displayProductDetails(barcode){
                 $(".product-img").attr("src", productData['imageUrl']);
                 // $(".headline").html(productData['category'] + " / "  + productData['brand'] + " / " + productData['name']);
                 $(".product-desc").html(productData['description']);
-                $(".product-rating").html(productData['rating'] + " <i class='fa fa-star'></i>");
+                $(".product-rating").html(productData['rating'] + " <i class='bi bi--star'></i>");
                 $(".product-reviews").html("(" + productData['reviews'] + " reviews)");
                 $(".product-price").html("₹" + (productData["mrp"] - parseInt(productData["mrp"] * productData["discountPercent"] / 100)).toLocaleString());
                 $(".product-mrp").find("s").html("₹" + parseInt(productData['mrp']).toLocaleString());
@@ -183,25 +183,45 @@ function decreaseQuantity(barcode) {
 
         $(".product-qty").html(quantity - 1);
     } else if(quantity === 1) {
-        for(let i in userCart) {
-            if(userCart[i]['barcode'] === barcode) {
-                userCart[i]['quantity'] = 0;
-                break;
-            }
-        }
-
-        cart[userId] = userCart; 
-        setCart(cart);
-        
-        $(".add-to-cart-btn").attr("onclick", "changeToCountButton('" + barcode + "')");
-        $(".add-to-cart-btn").html("Add to cart");
-        $(".inc-dec-qty-span").addClass("d-none");
-        $(".add-to-cart-span").removeClass("d-none");
-
-        $(".buy-now-btn").removeClass("d-none");
-        $(".buy-now-btn").attr("onclick", "buyNow('" + barcode + "')"); 
-        $(".go-to-cart-btn").addClass("d-none");
+        openRemoveItemModal(barcode);
     }
+}
+
+function openRemoveItemModal(barcode) {
+    $(".confirm-modal").modal("toggle");
+    $(".btn-yes").attr("onclick", "removeItemFromCart('" + barcode + "')");
+    $(".btn-no").click(() => {
+        $(".confirm-modal").modal("hide");
+    });
+}
+
+function removeItemFromCart(barcode) {
+    let cart = getCart();
+    let userId = getCurrentUserId();
+    let userCart = cart[userId];
+   
+    for(let i in userCart) {
+        if(userCart[i]['barcode'] === barcode) {
+            userCart[i]['quantity'] = 0;
+            break;
+        }
+    }
+
+    cart[userId] = userCart; 
+    setCart(cart);
+    
+    $(".add-to-cart-btn").attr("onclick", "changeToCountButton('" + barcode + "')");
+    $(".add-to-cart-btn").html("Add to cart");
+    $(".inc-dec-qty-span").addClass("d-none");
+    $(".add-to-cart-span").removeClass("d-none");
+
+    $(".buy-now-btn").removeClass("d-none");
+    $(".buy-now-btn").attr("onclick", "buyNow('" + barcode + "')"); 
+    $(".go-to-cart-btn").addClass("d-none");
+
+    $(".confirm-modal").modal("hide");
+    $(".toast-success").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>Product removed from the cart.</span></div>");
+    $(".toast-success").toast("show");
 }
 
 function init(){

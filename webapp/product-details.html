@@ -19,7 +19,6 @@
   <body>
     <div id="navbar-placeholder"></div>
     <div class="container" id="product-details-container">
-      <!-- <div class="headline row mx-2"></div> -->
       <div class="row mt-4"> 
         <div class="col-sm-12 col-md-5">
           <img class="product-img img-fluid rounded img-thumbnail border-0 mx-auto d-block" style="width: 80%;"> 
@@ -62,6 +61,20 @@
             </span>
             <button class="buy-now-btn border border border-success btn btn-success btn-sm ml-4 px-3 rounded d-none">Buy Now</button>
             <button class="go-to-cart-btn border border border-success btn btn-success btn-sm ml-4 px-3 rounded d-none">Go to Cart</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade confirm-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Confirm</h5>
+            </div>
+            <div class="modal-body">Product will be removed from the cart. Are you sure?</div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary btn-sm btn-no px-3">No</button>
+              <button type="button" class="btn btn-outline-dark btn-sm btn-yes px-3">Yes</button>
+            </div>
           </div>
         </div>
       </div>

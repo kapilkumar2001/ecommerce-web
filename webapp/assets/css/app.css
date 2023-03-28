@@ -30,14 +30,29 @@ body {
 
 .toggle-password {
 	right: 2rem;
-	top: 0.75rem;
+	top: 0.55rem;
 }
 
 .cart-icon {
 	position: relative;
 }
-.cart-icon span{
+
+.cart-icon span {
 	position: absolute;
 	top: 0px;
 	right: -6px;
+}
+
+.toast {
+	position: absolute; 
+	top: 4rem; 
+	right: 0.3rem;
+}
+
+#navbar-login-logout {
+	cursor: pointer;
+}
+
+.dropdown-item {
+	cursor: pointer;
 }

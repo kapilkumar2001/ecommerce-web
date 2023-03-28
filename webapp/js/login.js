@@ -12,17 +12,28 @@ function login(){
         dataType: "json",	  	   
 		success: function(data) {
 			let userId;
-			let flag = 0;
+			let flag = -1;
 			for(let i in data) {
-                if(data[i]["email"] === email && data[i]["password"] === password) {
-					userId =  data[i]["id"]; 
-					flag =1;
-                    break;
+                if(data[i]["email"] === email) { 
+					if(data[i]["password"] === password) {
+						userId =  data[i]["id"]; 
+						flag = 1;
+						break;
+					} else {
+						flag = 0;
+						break;
+					}
                 }
             }
 
-			if(flag === 0) {
-				// TODO: show error - user not registered / invalid email id or password
+			if(flag === -1) {
+				console.log("-1");
+				// $(".toast-error").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>User not registered.</span></div>");
+                // $(".toast-error").toast("show");
+			} else if(flag == 0) {
+				console.log("0"); 
+				// $(".toast-error").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>Invalid email id or password.</span></div>");
+                // $(".toast-error").toast("show");
 			} else {
 				setCurrentUserId(userId);
 
@@ -94,9 +105,23 @@ function checkLogin() {
 	}
 }
 
+function showOrHidePassword() {
+	$(this).toggleClass("bi-eye bi-eye-slash");
+	var input = $($(this).attr("toggle"));
+
+	if (input.attr("type") == "password") {
+		$(this).attr('data-original-title', 'Hide');
+	  	input.attr("type", "text");
+	} else {
+		$(this).attr('data-original-title', 'Show');
+	  	input.attr("type", "password");
+	}
+}
+
 function init(){
 	checkLogin();
 	$("#login-button").click(login);
+	$(".toggle-password").click(showOrHidePassword);
 }
 
 $(document).ready(init);
