@@ -178,7 +178,7 @@ function showProductCard(data) {
             $("#product-card-" + e["barcode"] + " .product-name").find("div").html(e["name"]);
             $("#product-card-" + e["barcode"] + " .product-name").attr("href", "product-details.html?barcode=" + e['barcode']);
             $("#product-card-" + e["barcode"] + " .rating-reviews").attr("href", "product-details.html?barcode=" + e['barcode']);
-            $("#product-card-" + e["barcode"] + " .product-rating").html(e["rating"] + " <i class='bi bi-star'></i>");
+            $("#product-card-" + e["barcode"] + " .product-rating").html(e["rating"] + " <i class='bi bi-star-fill'></i>");
             $("#product-card-" + e["barcode"] + " .product-reviews").html("(" + e["reviews"] + ")");
             $("#product-card-" + e["barcode"] + " .product-price").find("b").html("₹" + (e["mrp"] - parseInt(e["mrp"] * e["discountPercent"] / 100)).toLocaleString());
             $("#product-card-" + e["barcode"] + " .product-price").attr("href", "product-details.html?barcode=" + e['barcode']);

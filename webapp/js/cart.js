@@ -44,6 +44,7 @@ function displayCart() {
     
         Promise.all(promises).then(() => {
             $("#cart-item").remove();
+            $('[data-toggle="tooltip"]').tooltip();
             updateOrderSummary();
         });
     }

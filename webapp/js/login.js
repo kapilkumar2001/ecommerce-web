@@ -2,8 +2,7 @@ function login(){
 	let email = $("#login-form input[name=email]").val();
 	let password = $("#login-form input[name=password]").val();
 
-	if((email === "") || (password === "")) {
-		// TODO: show error - fill all the fields
+	if(!validateEmailandPassword(email, password)) {
 		return;
     }
 
@@ -27,13 +26,11 @@ function login(){
             }
 
 			if(flag === -1) {
-				console.log("-1");
-				// $(".toast-error").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>User not registered.</span></div>");
-                // $(".toast-error").toast("show");
+				$(".toast-error").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>User not registered.</span></div>");
+                $(".toast-error").toast("show");
 			} else if(flag == 0) {
-				console.log("0"); 
-				// $(".toast-error").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>Invalid email id or password.</span></div>");
-                // $(".toast-error").toast("show");
+				$(".toast-error").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>Invalid email id or password.</span></div>");
+                $(".toast-error").toast("show");
 			} else {
 				setCurrentUserId(userId);
 
@@ -56,6 +53,30 @@ function login(){
 		},
 	});
 }
+
+function validateEmailandPassword(mail, password){
+	if(mail === "" || password === ""){
+		$(".toast-error").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>Please fill all the fields.</span></div>");
+		$(".toast-error").toast("show");
+	    return false;
+	}
+  
+	let mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  
+	if(!mail.match(mailformat)) {
+		$(".toast-error").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>Invalid email address.</span></div>");
+        $(".toast-error").toast("show");
+	    return false;
+	} 
+	else if(password.length<6) {
+		$(".toast-error").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>Password should contain more than 6 characters</span></div>");
+        $(".toast-error").toast("show");
+	    return false;
+	}
+	
+	return true;
+}
+  
 
 function addGuestCartToUserCart(guestCart, userCart) {
 	let cart = [];

@@ -49,9 +49,9 @@ function setLoginLogoutIcon() {
     let userId = getCurrentUserId(); 
 
     if(userId === '0') {
-        $("#navbar-login-logout").html("<a class='nav-link'><i class='bi bi-box-arrow-in-right fa-lg'></i></a>");
+        $("#navbar-login-logout").html("<a class='nav-link'><i class='bi bi-box-arrow-in-right fa-lg' data-toggle='tooltip' data-placement='bottom' title='login'></i></a>");
     } else {
-        $("#navbar-login-logout").html("<a class='nav-link'><i class='bi bi-box-arrow-right fa-lg'></i></a>");
+        $("#navbar-login-logout").html("<a class='nav-link'><i class='bi bi-box-arrow-right fa-lg' data-toggle='tooltip' data-placement='bottom' title='logout''></i></a>");
     } 
 } 
 
@@ -80,6 +80,7 @@ function updateNavbar() {
             }
         });
     }
+    $('[data-toggle="tooltip"]').tooltip();
 }
 
 function getCartItemsCount() {

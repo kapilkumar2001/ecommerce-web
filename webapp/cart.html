@@ -21,16 +21,16 @@
     <div class="container-fluid">
       <div class="row p-4" id="cart">
         <div id="empty-cart" class="col-12 d-none">
-          <img class="img-fluid mx-auto d-block" src="https://img.freepik.com/free-vector/man-shopping-supermarket_74855-7612.jpg?w=740&t=st=1679464460~exp=1679465060~hmac=1e4ec278c18a29946fe80221529f27944249f60c7873ee497f5255ed9cd408e8" style="height: 50%;"></img>
+          <img class="img-fluid mx-auto my-auto d-block" src="https://img.freepik.com/free-vector/man-shopping-supermarket_74855-7612.jpg?w=740&t=st=1679464460~exp=1679465060~hmac=1e4ec278c18a29946fe80221529f27944249f60c7873ee497f5255ed9cd408e8" style="height: 50%;"></img>
           <h5 class="text-center my-4">Oops! looks like your cart is empty.</h5>
-          <button id="start-shopping-btn" class="btn btn-secondary mx-auto d-block">Start Shopping</button>
+          <button id="start-shopping-btn" class="btn btn-success mx-auto d-block">Start Shopping</button>
         </div>
         <div id="cart-items" class="col-sm-12 col-md-7 col-lg-8 d-none">
           <div class="card">
             <div class="card-header">
-              <div class="row align-items-end">
-                <h5 class="ml-4">Your Cart</h5>
-                <button id="clear-cart-btn" class="btn ml-auto btn-dark-outlined rounded mr-2"><i class="bi bi-x mr-2"></i>Clear Cart</button>
+              <div class="row">
+                <h5 class="ml-4 my-auto">Your Cart</h5>
+                <button id="clear-cart-btn" class="btn btn-sm ml-auto rounded border-danger mr-2 my-auto"><i class="bi bi-x-lg text-danger" data-toggle="tooltip" data-placement="bottom" title="clear cart"></i></button>
               </div>
             </div> 
             <div class="card-body">
@@ -52,13 +52,13 @@
                       <button class="dec-qty-btn border-0 bg-transparent text-success">
                         <i class="bi bi-dash-lg pl-1 align-middle"></i>
                       </button> 
-                      <span class="product-qty px-2 align-middle text-success"></span> 
+                      <span class="product-qty px-1 align-middle text-success"></span> 
                       <button class="inc-qty-btn border-0 bg-transparent text-success">
                         <i class="bi bi-plus-lg pr-1 align-middle"></i>
                       </button>
                     </span>
                     <button class="remove-item-btn btn btn-sm rounded border px-2 ml-4 border-danger">
-                      <i class="bi bi-trash3 text-danger"></i>
+                      <i class="bi bi-trash3 text-danger" data-toggle="tooltip" data-placement="bottom" title="remove item"></i>
                     </button> 
                   </div>
                 </div>
@@ -69,7 +69,7 @@
         <div id='order-summary' class='col-sm-12 col-md-5 col-lg-4 d-none'> 
           <div class="card">
             <div class="card-header">
-              <h5 class="p-1">Order Summary</h5>
+              <h5 class="p-1 my-auto">Order Summary</h5>
             </div>
             <div class="card-body">
               <div class='row px-4 pt-4 pb-1'> 
@@ -144,6 +144,8 @@
     </div>
     <div id="footer-placeholder"></div>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="js/app.js"></script>
     <script src="js/cart.js"></script>
   </body>

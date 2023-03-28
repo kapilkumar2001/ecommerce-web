@@ -23,7 +23,7 @@ function displayProductDetails(barcode){
                 $(".product-img").attr("src", productData['imageUrl']);
                 // $(".headline").html(productData['category'] + " / "  + productData['brand'] + " / " + productData['name']);
                 $(".product-desc").html(productData['description']);
-                $(".product-rating").html(productData['rating'] + " <i class='bi bi--star'></i>");
+                $(".product-rating").html(productData['rating'] + " <i class='bi bi-star-fill'></i>");
                 $(".product-reviews").html("(" + productData['reviews'] + " reviews)");
                 $(".product-price").html("₹" + (productData["mrp"] - parseInt(productData["mrp"] * productData["discountPercent"] / 100)).toLocaleString());
                 $(".product-mrp").find("s").html("₹" + parseInt(productData['mrp']).toLocaleString());
