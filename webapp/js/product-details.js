@@ -53,7 +53,13 @@ function displayProductDetails(barcode){
                     $(".go-to-cart-btn").removeClass("d-none"); 
                     $(".go-to-cart-btn").attr("onclick", "viewCart()"); 
                     $(".buy-now-btn").addClass("d-none");
-                }     
+                }      
+                $(".product-details").removeClass("d-none");
+                $(".no-product-found").addClass("d-none");
+            } else {
+                $("#go-to-home-btn").attr("onclick", "viewHomePage()");
+                $(".product-details").addClass("d-none");
+                $(".no-product-found").removeClass("d-none");
             }
         },
     });
@@ -61,6 +67,10 @@ function displayProductDetails(barcode){
 
 function viewCart() {
     window.location.href = "cart.html";
+}
+
+function viewHomePage() {
+    window.location.href = "home.html";
 }
 
 function buyNow(barcode) {

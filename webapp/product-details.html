@@ -18,12 +18,17 @@
   </head>
   <body>
     <div id="navbar-placeholder"></div>
-    <div class="container" id="product-details-container">
-      <div class="row mt-4"> 
+    <div class="container-fluid">
+      <div class="no-product-found col-12 d-none">
+        <img class="img-fluid mx-auto my-auto d-block" src=""></img>
+        <h5 class="text-center my-4">Product not found.</h5>
+        <button id="go-to-home-btn" class="btn btn-success mx-auto d-block">Go Back to Products Page</button>
+      </div>
+      <div class="product-details row mt-4 d-none"> 
         <div class="col-sm-12 col-md-5">
           <img class="product-img img-fluid rounded img-thumbnail border-0 mx-auto d-block" style="width: 80%;"> 
         </div>
-        <div class="col-sm-12 col-md-7"> 
+        <div class="col-sm-12 col-md-7 pr-4"> 
           <h3 class="product-name my-2"></h3> 
           <p class="product-desc text-secondary"></p>
           <div class="row align-items-baseline mx-1 mb-4">

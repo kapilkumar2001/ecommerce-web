@@ -184,18 +184,30 @@ function updateOrderSummary() {
     }
 
     Promise.all(promises).then(() => {
-        $(".order-value").html("₹" + totalPrice.toLocaleString());
-        $(".discount").html("-₹" + totalDiscount.toLocaleString());
+        $(".order-value").html("₹" + totalPrice.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }));
+        $(".discount").html("-₹" + totalDiscount.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }));
         if(totalPrice >= 4999) {
             $(".shipping-price").html("<span class='text-body'><s>₹199</s></span> FREE");
             $(".shipping-price").addClass("text-success");
             $(".free-delivery").addClass("d-none");
         } else {
             $(".shipping-price").html("₹" + 199);
-            $(".free-delivery").html("Add items worth ₹" + (4999-totalPrice).toLocaleString() + " more to get free delivery on this order.");
+            $(".free-delivery").html("Add items worth ₹" + (4999-totalPrice).toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              }) + " more to get free delivery on this order.");
             $(".free-delivery").removeClass("d-none");
         }
-        $(".total-amount").html("₹" + (totalPrice - totalDiscount).toLocaleString());
+        $(".total-amount").html("₹" + (totalPrice - totalDiscount).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }));
     });
 }
 

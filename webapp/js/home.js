@@ -6,6 +6,7 @@ function displayPage(){
             displayFilters(data);
             data = sortProducts(data);
             displayProducts(data);
+            $(".container-fluid").removeClass("d-none");
         },
     });
 }
@@ -373,6 +374,12 @@ function filterByColor(data, colors) {
     }
 
     return Array.from(filteredData);
+}
+
+function resetFilters() {
+    let filters = {};
+    setFilters(filters);
+    window.location.href = "home.html";
 }
 
 function sortByPriceHighToLow() {
