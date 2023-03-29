@@ -212,6 +212,18 @@ function showProductCard(data) {
                 $("#product-card-" + e["barcode"] + " .add-to-cart-span").addClass("d-none");
                 $("#product-card-" + e["barcode"] + " .product-qty").html(parseInt(filterByBarcode(cart[userId], e['barcode']).quantity));
             }
+
+            $("#product-card-" + e["barcode"] + " .carousel").carousel({
+                interval: false 
+            });
+        
+            $("#product-card-" + e["barcode"] + " .carousel-item").hover(function(){
+                setTimeout(function(){
+                    $("#product-card-" + e["barcode"] + " .carousel").carousel('next'); 
+                }, 2000);
+            }, function(){
+                $("#product-card-" + e["barcode"] + " .carousel").carousel('pause');
+            });
         }
     }
 }
