@@ -6,31 +6,3 @@
     margin-top: 2rem;
     margin-bottom: 1rem;
 }
-
-.center {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.error-box {
-    border: 0.1rem solid red;
-    border-radius: 0.4rem;
-    padding-top: 1rem;
-    padding-bottom: 2rem;
-    padding-left: 4rem;
-    padding-right: 4rem;
-    margin-top: 3rem;
-    margin-bottom: 2rem;
-}
-
-.success-box {
-    border: 0.1rem solid green;
-    border-radius: 0.4rem;
-    padding-top: 1rem;
-    padding-bottom: 2rem;
-    padding-left: 4rem;
-    padding-right: 4rem;
-    margin-top: 3rem;
-    margin-bottom: 2rem;
-}

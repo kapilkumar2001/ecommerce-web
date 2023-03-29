@@ -10,33 +10,43 @@ function updateFileName() {
 }
 
 function showOrder(orderData) {
-    $("#success").removeClass("d-none");
-    $("#error").addClass("d-none");
-
-    let tbody = $("#order-items-table").find("tbody");
-    tbody.empty();
+    $("#uploaded-cart-items").removeClass("d-none");
+    $("#uploaded-items-error").addClass("d-none");
 
     let totalAmount = 0;
+    let itemsCount = 0;
 
     for(let i in orderData) {
         let data = orderData[i];
-        let row = "<tr>"
-            + "<td>" + (parseInt(i) + 1) + "</td>"
-            + "<td>" + data.barcode + "</td>"
-            + "<td>" + data.name + "</td>"
-            + "<td class='text-right'>" + data.quantity + "</td>"
-            + "<td class='text-right'>" + "₹" + data.mrp + "</td>"
-            + "<td class='text-right'>" + "₹" + (data.quantity *  data.mrp) + "</td></tr>";
-        totalAmount += (data.quantity *  data.mrp);
-        tbody.append(row);
+        showCartItem(data);
+        totalAmount += parseInt(data.price * data.quantity);
+        itemsCount += parseInt(data.quantity);
     }
-
-    $("#total-amount").find("b").html("Total Amount: ₹" + totalAmount);
+    $("#uploaded-cart-item").remove();
+    $(".card-title").html("Uploaded Items (" + itemsCount + ")");
+    $(".total-amount").html("₹" + parseFloat(totalAmount).toFixed(2).toLocaleString());
 }
 
+function showCartItem(productData) {
+    let node = $("#uploaded-cart-item");
+    let clone = node.clone().attr("id", "uploaded-cart-item-" + productData.barcode);
+    $("#uploaded-cart-items .card-body").append(clone);
+
+    $("#uploaded-cart-item-" + productData.barcode + " .product-img").attr("src", productData.image);
+    $("#uploaded-cart-item-" + productData.barcode + " .brand-name").html(productData.brand);
+    $("#uploaded-cart-item-" + productData.barcode + " .product-name").html(productData.name);
+    $("#uploaded-cart-item-" + productData.barcode + " .product-color").html("Color - " + productData.color);
+    $("#uploaded-cart-item-" + productData.barcode + " .product-price").html("₹" + productData.price.toLocaleString());
+    $("#uploaded-cart-item-" + productData.barcode + " .product-mrp").find("s").html("₹" + productData.mrp.toLocaleString());
+    $("#uploaded-cart-item-" + productData.barcode + " .product-discount").html(productData.discount);
+    $("#uploaded-cart-item-" + productData.barcode + " .product-qty").html("Quantity - " + productData.quantity);
+    $("#uploaded-cart-item-" + productData.barcode + " .subtotal").html("Amount - ₹" + (productData.price * productData.quantity).toLocaleString());
+}
+
+
 function showError(errorData) {
-    $("#success").addClass("d-none");
-    $("#error").removeClass("d-none");
+    $("#uploaded-cart-items").addClass("d-none");
+    $("#uploaded-items-error").removeClass("d-none");
 
     let tbody = $("#errors-table").find("tbody");
     tbody.empty();
@@ -44,10 +54,11 @@ function showError(errorData) {
     for(let i in errorData) {
         let data = errorData[i];
         let row = "<tr>"
-            + "<td>" + (parseInt(i) + 1) + "</td>"
-            + "<td>" + data.barcode + "</td>"
+            + "<td class='text-center'>" + data.rowNumber + "</td>"
+            + "<td class='text-right'>" + data.barcode + "</td>"
             + "<td class='text-right'>" + data.quantity + "</td>"
-            + "<td>" + data.error + "</td>"
+            + "<td></td>"
+            + "<td class='text-left'>" + data.error + "</td>"
         tbody.append(row);
     }
 }
@@ -111,10 +122,12 @@ function uploadRows(productsData){
 	processCount++;
 
     if(row.barcode == "") {
+        row.rowNumber = processCount;
         row.error = "Barcode should not be empty";
         errorData.push(row);
     }
     else if(row.quantity == "") {
+        row.rowNumber = processCount;
         row.error = "Quantity should not be empty";
         errorData.push(row);
     } 
@@ -129,17 +142,25 @@ function uploadRows(productsData){
         }
         
         if(product === null) {
+            row.rowNumber = processCount; 
             row.error = "Product doesn't exist";
             errorData.push(row);
         } else if(!containsOnlyNumbers(row.quantity)) {
+            row.rowNumber = processCount;
             row.error = "Quantity should be a integer";
             errorData.push(row);
         } else if(parseInt(row.quantity) <= 0) {
+            row.rowNumber = processCount;
             row.error = "Quantity should be greater than 0";
             errorData.push(row);
         } else {
+            row.image = product["searchImage"]
             row.name = product["name"];
             row.mrp = product["mrp"];
+            row.price = product["price"];
+            row.discount = product["discountDisplayLabel"];
+            row.brand = product["brand"];
+            row.color = product["color"];
             orderData.push(row);
         }
     } 
@@ -147,23 +168,22 @@ function uploadRows(productsData){
     uploadRows(productsData);  
 }
 
-function checkLogin() {
-    let currentUserId = getCurrentUserId();
+// function checkLogin() {
+//     let currentUserId = getCurrentUserId();
 
-    if(currentUserId === '0') {
-        window.location.href = "login.html";
-    } else {
-        // TODO: Add more data 
-        writeFileData(orderData);
-        // TODO: success message
-    }
-}
+//     if(currentUserId === '0') {
+//         window.location.href = "login.html";
+//     } else {
+//         // TODO: Add more data 
+//         writeFileData(orderData);
+//         // TODO: success message
+//     }
+// }
 
 function init() {
     $("#browse-btn").click(clickInputFile);
     $("#file-input").on("change", updateFileName);
     $("#upload-btn").click(validateFile);
-    $("#place-order-btn").click(checkLogin);
 }
 
 $(document).ready(init);

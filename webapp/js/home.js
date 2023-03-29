@@ -219,7 +219,7 @@ function showProductCard(data) {
         
             $("#product-card-" + e["barcode"] + " .carousel-item").hover(function(){
                 setTimeout(function(){
-                    $("#product-card-" + e["barcode"] + " .carousel").carousel('next'); 
+                    $("#product-card-" + e["barcode"] + " .carousel").carousel('next', {interval: 2000}); 
                 }, 2000);
             }, function(){
                 $("#product-card-" + e["barcode"] + " .carousel").carousel('pause');
