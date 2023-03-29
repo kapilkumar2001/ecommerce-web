@@ -150,9 +150,9 @@ function setSortBy(sortBy) {
 
 // function showTime() {
 //     var date = new Date();
-//     $(".footer").html("&copy; 2023 Increff  " 
-//     + ("0" + date.getDay()).substr(-2) + "/"
-//     + ("0" + date.getMonth()).substr(-2) + "/"
+//     $(".footer").html("&copy; 2023 Increff  <br>" 
+//     + ("0" + date.getDay()) + "/"
+//     + ("0" + date.getMonth()) + "/"
 //     + ("0" + date.getFullYear()).substr(-2) + " "
 //     + ("0" + date.getHours()).substr(-2) + ":" 
 //     + ("0" + date.getMinutes()).substr(-2) + ":" 

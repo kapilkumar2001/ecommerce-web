@@ -1,6 +1,7 @@
 function getProductDetails() {
     let searchParams = new URLSearchParams(window.location.search);
     let barcode = searchParams.get('barcode');
+    console.log(barcode);
     displayProductDetails(barcode);
 }
 
@@ -12,7 +13,7 @@ function displayProductDetails(barcode){
             let productData = null;
 
             for(let i in data) {
-                if(data[i]['barcode'] === barcode) {
+                if(data[i]['barcode'] == barcode) {
                     productData = data[i];
                     break;
                 }
@@ -20,16 +21,19 @@ function displayProductDetails(barcode){
 
             if(productData !== null) {
                 $(".product-name").html(productData['name']);
-                $(".product-img").attr("src", productData['imageUrl']);
-                // $(".headline").html(productData['category'] + " / "  + productData['brand'] + " / " + productData['name']);
-                $(".product-desc").html(productData['description']);
-                $(".product-rating").html(productData['rating'] + " <i class='bi bi-star-fill'></i>");
+                $(".product-img-1").attr("src", productData["images"][0]["src"]);
+                $(".product-img-2").attr("src", productData["images"][1]["src"]);
+                $(".product-img-3").attr("src", productData["images"][2]["src"]);
+                $(".product-img-4").attr("src", productData["images"][3]["src"]);
+                $(".product-img-5").attr("src", productData["images"][4]["src"]);
+                $(".product-desc").html(productData['additionalInfo']);
+                $(".product-rating").html(parseFloat(productData['rating']).toFixed(1) + " <i class='bi bi-star-fill'></i>");
                 $(".product-reviews").html("(" + productData['reviews'] + " reviews)");
-                $(".product-price").html("₹" + (productData["mrp"] - parseInt(productData["mrp"] * productData["discountPercent"] / 100)).toLocaleString());
+                $(".product-price").html("₹" + productData["price"].toLocaleString());
                 $(".product-mrp").find("s").html("₹" + parseInt(productData['mrp']).toLocaleString());
-                $(".product-discount").find("b").html(productData['discountPercent'] + "% off");
+                $(".product-discount").find("b").html(productData['discountDisplayLabel']);
                 $(".product-color").html("Color: " + productData['color']);
-                $(".product-style").html("Style Name: " + productData['styleName']);
+                $(".product-sizes").html("Available Sizes: " + productData['sizes']);
 
                 let cart = getCart();
                 let userId = getCurrentUserId();

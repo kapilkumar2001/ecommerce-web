@@ -114,7 +114,7 @@ function uploadRows(productsData){
         row.error = "Barcode should not be empty";
         errorData.push(row);
     }
-    else if(row.barcode == "") {
+    else if(row.quantity == "") {
         row.error = "Quantity should not be empty";
         errorData.push(row);
     } 
@@ -122,7 +122,7 @@ function uploadRows(productsData){
         let product = null;
 
         for(let i in productsData) {
-            if(productsData[i]["barcode"] === row.barcode) {
+            if(productsData[i]["barcode"] == row.barcode) {
                 product = productsData[i];
                 break;
             }

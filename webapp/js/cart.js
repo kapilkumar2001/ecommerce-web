@@ -28,7 +28,7 @@ function displayCart() {
                             let productData = null;
                     
                             for(let j in data) {
-                                if(data[j]['barcode'] === barcode) {
+                                if(data[j]['barcode'] == barcode) {
                                     productData = data[j];
                                     break;
                                 }
@@ -55,15 +55,15 @@ function showCartItem(barcode, quantity, productData) {
     let clone = node.clone().attr("id", "cart-item-" + barcode);
     $("#cart-items .card-body").append(clone);
 
-    $("#cart-item-" + barcode + " .product-img").attr("src", productData["imageUrl"]);
+    $("#cart-item-" + barcode + " .product-img").attr("src", productData["searchImage"]);
     $("#cart-item-" + barcode + " .product-img").attr("onclick", "viewProduct('" + barcode + "')");
     $("#cart-item-" + barcode + " .brand-name").html(productData["brand"]);
     $("#cart-item-" + barcode + " .product-name").html(productData["name"]);
     $("#cart-item-" + barcode + " .product-name").attr("href", "product-details.html?barcode=" + barcode);
     $("#cart-item-" + barcode + " .product-color").html("Color - " + productData["color"]);
-    $("#cart-item-" + barcode + " .product-price").html("₹" + (productData["mrp"] - parseInt(productData["mrp"] * productData["discountPercent"] / 100)).toLocaleString());
+    $("#cart-item-" + barcode + " .product-price").html("₹" + productData["price"].toLocaleString());
     $("#cart-item-" + barcode + " .product-mrp").find("s").html("₹" + productData["mrp"].toLocaleString());
-    $("#cart-item-" + barcode + " .product-discount").html(productData["discountPercent"] + "% off");
+    $("#cart-item-" + barcode + " .product-discount").html(productData["discountDisplayLabel"]);
     
     $("#cart-item-" + barcode + " .inc-qty-btn").attr("onclick", "increaseQuantity('" + barcode + "')");
     $("#cart-item-" + barcode + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "', '" + productData["name"] + "')");
@@ -178,7 +178,7 @@ function updateOrderSummary() {
                 productData = filterByBarcode(data, barcode);
                 
                 totalPrice += (productData["mrp"] * quantity);
-                totalDiscount += ((productData["mrp"] * productData["discountPercent"] / 100) * quantity);
+                totalDiscount += ((productData["mrp"] - productData["price"]) * quantity);
             },
         }));
     }

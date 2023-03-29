@@ -14,13 +14,13 @@ function displayPage(){
 function displayFilters(data) {
     displayBrands(data);
     displayCategories(data);
-    displayColors(data);
+    displayGenders(data);
 
     let filters = getFilters();
     if(filters !== null) {
         let brands = JSON.parse(filters)["brand"];
         let categories = JSON.parse(filters)["category"];
-        let colors = JSON.parse(filters)["color"];
+        let genders = JSON.parse(filters)["gender"];
     
         for(let i in brands) {
             $("#brand-collapse").addClass("show");
@@ -30,9 +30,9 @@ function displayFilters(data) {
             $("#category-collapse").addClass("show");
             $("#input-category-" + categories[i]).find("input").attr("checked" , true);
         }
-        for(let i in colors) {
-            $("#color-collapse").addClass("show");
-            $("#input-color-" + colors[i]).find("input").attr("checked" , true);
+        for(let i in genders) {
+            $("#gender-collapse").addClass("show");
+            $("#input-gender-" + genders[i]).find("input").attr("checked" , true);
         }
     }
 }
@@ -75,23 +75,23 @@ function displayCategories(data) {
     $("#input-category").remove();
 }
 
-function displayColors(data) {
-    let colors = [];
+function displayGenders(data) {
+    let genders = [];
     for(let i in data) {
-        colors.push(data[i]["color"]);
+        genders.push(data[i]["gender"]);
     }
-    colors = Array.from(new Set(colors));
+    genders = Array.from(new Set(genders));
 
-    for(let i in colors) {
-        let node = $("#input-color");
-        let clone = node.clone().attr("id", "input-color-" + colors[i]);
-        $("#color-collapse").append(clone);
+    for(let i in genders) {
+        let node = $("#input-gender");
+        let clone = node.clone().attr("id", "input-gender-" + genders[i]);
+        $("#gender-collapse").append(clone);
 
-        $("#input-color-" + colors[i]).find("label").append(colors[i]);
-        $("#input-color-" + colors[i]).find("input").attr("value", colors[i]);
+        $("#input-gender-" + genders[i]).find("label").append(genders[i]);
+        $("#input-gender-" + genders[i]).find("input").attr("value", genders[i]);
     }
 
-    $("#input-color").remove();
+    $("#input-gender").remove();
 }
 
 function sortProducts(data) {
@@ -99,15 +99,17 @@ function sortProducts(data) {
             
     switch(sortBy) {
         case "price-hl" :
-            data = data.sort((d1, d2) => 
-            ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) < (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? 1 
-            : ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) > (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? -1 : 0);
+            // data = data.sort((d1, d2) => 
+            // ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) < (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? 1 
+            // : ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) > (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? -1 : 0);
+            data = data.sort((d1, d2) => (d1.price < d2.price) ? 1 : (d1.price > d2.price) ? -1 : 0);
             $(".sort-by").html("Price: High to Low");
             break;
         case "price-lh" :
-            data = data.sort((d1, d2) => 
-            ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) > (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? 1 
-            : ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) < (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? -1 : 0);
+            // data = data.sort((d1, d2) => 
+            // ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) > (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? 1 
+            // : ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) < (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? -1 : 0);
+            data = data.sort((d1, d2) => (d1.price > d2.price) ? 1 : (d1.price < d2.price) ? -1 : 0);
             $(".sort-by").html("Price: Low to High");
             break;
         case "rating" :
@@ -115,9 +117,10 @@ function sortProducts(data) {
             $(".sort-by").html("Rating");
             break;
         default :
-            data = data.sort((d1, d2) => 
-            ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) < (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? 1 
-            : ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) > (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? -1 : 0);
+            // data = data.sort((d1, d2) => 
+            // ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) < (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? 1 
+            // : ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) > (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? -1 : 0);
+            data = data.sort((d1, d2) => (d1.price < d2.price) ? 1 : (d1.price > d2.price) ? -1 : 0);
             $(".sort-by").html("Price: High to Low");
             break;
     }
@@ -145,8 +148,8 @@ function displayProducts(data) {
                     case "category" :
                         data = filterByCategory(data, value);
                         break;
-                    case "color" :
-                        data = filterByColor(data, value);
+                    case "gender" :
+                        data = filterByGender(data, value);
                         break;
                 }
             }
@@ -172,16 +175,20 @@ function showProductCard(data) {
             $("#products-area").append(clone);
 
             $("#product-card-" + e["barcode"]).removeClass("d-none");
-            $("#product-card-" + e["barcode"] + " .product-img").attr("src", e["imageUrl"]);
-            $("#product-card-" + e["barcode"] + " .product-img").attr("onclick", "viewProduct('" + e['barcode'] + "')")
+            $("#product-card-" + e["barcode"] + " .product-img-1").attr("src", e["images"][0]["src"]);
+            $("#product-card-" + e["barcode"] + " .product-img-2").attr("src", e["images"][1]["src"]);
+            $("#product-card-" + e["barcode"] + " .product-img-3").attr("src", e["images"][2]["src"]);
+            $("#product-card-" + e["barcode"] + " .product-img-4").attr("src", e["images"][3]["src"]);
+            $("#product-card-" + e["barcode"] + " .product-img-5").attr("src", e["images"][4]["src"]);
+            $("#product-card-" + e["barcode"] + " .product-images").attr("onclick", "viewProduct('" + e['barcode'] + "')");
             $("#product-card-" + e["barcode"] + " .brand-name").find("div").html(e["brand"]);
             $("#product-card-" + e["barcode"] + " .brand-name").attr("href", "product-details.html?barcode=" + e['barcode']);
             $("#product-card-" + e["barcode"] + " .product-name").find("div").html(e["name"]);
             $("#product-card-" + e["barcode"] + " .product-name").attr("href", "product-details.html?barcode=" + e['barcode']);
             $("#product-card-" + e["barcode"] + " .rating-reviews").attr("href", "product-details.html?barcode=" + e['barcode']);
-            $("#product-card-" + e["barcode"] + " .product-rating").html(e["rating"] + " <i class='bi bi-star-fill'></i>");
+            $("#product-card-" + e["barcode"] + " .product-rating").html(parseFloat(e["rating"]).toFixed(1) + " <i class='bi bi-star-fill'></i>");
             $("#product-card-" + e["barcode"] + " .product-reviews").html("(" + e["reviews"] + ")");
-            $("#product-card-" + e["barcode"] + " .product-price").find("b").html("₹" + (e["mrp"] - parseInt(e["mrp"] * e["discountPercent"] / 100)).toLocaleString());
+            $("#product-card-" + e["barcode"] + " .product-price").find("b").html("₹" + e["price"].toLocaleString());     // html("₹" + (e["mrp"] - parseInt(e["mrp"] * e["discountPercent"] / 100)).toLocaleString());
             $("#product-card-" + e["barcode"] + " .product-price").attr("href", "product-details.html?barcode=" + e['barcode']);
             $("#product-card-" + e["barcode"] + " .product-mrp").find("s").html("₹" + e["mrp"].toLocaleString());
             $("#product-card-" + e["barcode"] + " .product-mrp").attr("href", "product-details.html?barcode=" + e['barcode']);
@@ -362,12 +369,12 @@ function filterByCategory(data, categories) {
     return Array.from(filteredData);
 }
 
-function filterByColor(data, colors) {
+function filterByGender(data, genders) {
     const filteredData = new Set();
 
     for(let i in data) {
-        for(let j in colors) {
-            if(data[i]["color"] === colors[j]) {
+        for(let j in genders) {
+            if(data[i]["gender"] === genders[j]) {
                 filteredData.add(data[i]);
             }
         }
