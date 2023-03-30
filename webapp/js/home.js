@@ -99,16 +99,10 @@ function sortProducts(data) {
             
     switch(sortBy) {
         case "price-hl" :
-            // data = data.sort((d1, d2) => 
-            // ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) < (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? 1 
-            // : ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) > (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? -1 : 0);
             data = data.sort((d1, d2) => (d1.price < d2.price) ? 1 : (d1.price > d2.price) ? -1 : 0);
             $(".sort-by").html("Price: High to Low");
             break;
         case "price-lh" :
-            // data = data.sort((d1, d2) => 
-            // ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) > (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? 1 
-            // : ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) < (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? -1 : 0);
             data = data.sort((d1, d2) => (d1.price > d2.price) ? 1 : (d1.price < d2.price) ? -1 : 0);
             $(".sort-by").html("Price: Low to High");
             break;
@@ -117,9 +111,6 @@ function sortProducts(data) {
             $(".sort-by").html("Rating");
             break;
         default :
-            // data = data.sort((d1, d2) => 
-            // ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) < (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? 1 
-            // : ((d1.mrp - (d1.mrp * d1.discountPercent / 100)) > (d2.mrp) - (d2.mrp * d2.discountPercent / 100)) ? -1 : 0);
             data = data.sort((d1, d2) => (d1.price < d2.price) ? 1 : (d1.price > d2.price) ? -1 : 0);
             $(".sort-by").html("Price: High to Low");
             break;
