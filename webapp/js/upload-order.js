@@ -25,10 +25,12 @@ function showOrder(orderData) {
         let data = orderData[i];
 
         showCartItem(data);
-
+            
         totalAmount += parseInt(data.price * data.quantity);
         itemsCount += parseInt(data.quantity);
     }
+
+    console.log(orderData);
 
     $("#uploaded-cart-item").remove();
     $(".card-title").html("Uploaded Items (" + itemsCount + ")");
@@ -65,14 +67,14 @@ function addToCart(orderData) {
     let uploadedCart = [];
     for(let i in orderData) {
         let data = orderData[i];
-        let item = {'barcode': data.barcode, 'quantity': parseInt(data.quantity)};
+        let item = {'barcode': data.barcode, 'quantity': data.quantity};
         uploadedCart.push(item);
     }
 
     let userCart = [];
     if(cart[userId] !== undefined || cart[userId] !== null) {
         userCart = cart[userId];
-        cart[userId] = mergerCarts(uploadedCart, userCart);
+        cart[userId] = mergeCarts(uploadedCart, userCart);
     } else {
         cart[userId] = uploadedCart;
     }
@@ -93,7 +95,7 @@ function replaceCart(orderData) {
    
     for(let i in orderData) {
         let data = orderData[i];
-        let item = {'barcode': data.barcode, 'quantity': parseInt(data.quantity)};
+        let item = {'barcode': data.barcode, 'quantity': data.quantity};
         userCart.push(item);
     }
 
@@ -133,11 +135,12 @@ function showFileError(message) {
 
 let fileData = [];
 let errorData = [];
-let orderData = [];
+let orderData = new Map();
 let processCount = 0;
 
 function validateFile() {
     processCount = 0;
+    orderData = new Map();
 	fileData = [];
 	errorData = [];
 
@@ -218,6 +221,10 @@ function uploadRows(productsData){
             row.rowNumber = processCount;
             row.error = "Quantity should be greater than 0";
             errorData.push(row);
+        } else if(parseInt(row.quantity) > 5000) {
+            row.rowNumber = processCount;
+            row.error = "Quantity should be less than 5000";
+            errorData.push(row);
         } else {
             row.image = product["searchImage"]
             row.name = product["name"];
@@ -226,24 +233,19 @@ function uploadRows(productsData){
             row.discount = product["discountDisplayLabel"];
             row.brand = product["brand"];
             row.color = product["color"];
-            orderData.push(row);
+            row.quantity = parseInt(row.quantity);
+
+            if(orderData[row.barcode] === undefined || orderData[row.barcode] === null) {
+                orderData[row.barcode] = row;
+            } else {
+                row.quantity = row.quantity + orderData[row.barcode]["quantity"];
+                orderData[row.barcode] = row;
+            }
         }
     } 
 
     uploadRows(productsData);  
 }
-
-// function checkLogin() {
-//     let currentUserId = getCurrentUserId();
-
-//     if(currentUserId === '0') {
-//         window.location.href = "login.html";
-//     } else {
-//         // TODO: Add more data 
-//         writeFileData(orderData);
-//         // TODO: success message
-//     }
-// }
 
 function init() {
     $("#browse-btn").click(clickInputFile);

@@ -42,7 +42,7 @@ function login(){
 					userCart = cart[userId];
 				}
 				
-				cart[userId] = mergerCarts(guestCart, userCart);
+				cart[userId] = mergeCarts(guestCart, userCart);
 				cart["0"] = [];
 
 				setCart(cart);

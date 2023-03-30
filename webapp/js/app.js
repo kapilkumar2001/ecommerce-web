@@ -108,7 +108,7 @@ function updateCartIcon() {
     $(".cart-icon span").html(cartItemsCount);
 }
 
-function mergerCarts(cart1, cart2) {
+function mergeCarts(cart1, cart2) {
 	let newCart = [];
 
 	for(let i in cart2) {
