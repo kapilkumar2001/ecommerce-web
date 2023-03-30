@@ -1,38 +1,25 @@
-function getCurrentUserId() {
-    let currentUserId = localStorage.getItem('current-user-id');
-
-    if(currentUserId === null) {
-        localStorage.setItem('current-user-id', 0);
-        currentUserId = 0;
-    }
-
-    return currentUserId;
-}
-
-function filterByBarcode(jsonObject, barcode) {
-    return jsonObject.filter(
-        function(jsonObject) {
-            return (jsonObject['barcode'] == barcode);
+function filterByBarcode(data, barcode) {
+    return data.filter(
+        function(data) {
+            return (data['barcode'] == barcode);
         })[0];
 }
 
-function setLoginLogoutIcon() { 
-    let currentUserId = getCurrentUserId(); 
+function containsOnlyNumbers(str) {
+    return /^[0-9]+$/.test(str);
+}
 
-    if(currentUserId === '0') {
-        $("#navbar-login-logout").html("<a class='nav-link' href='login.html'><i class='fa fa-sign-out fa-lg'></i></a>");
-    } else {
-        $("#navbar-login-logout").html("<a class='nav-link' href='login.html'><i class='fa fa-sign-in fa-lg'></i></a>");
-    } 
-} 
-
-function loginLogoutAction() {
-    let currentUserId = getCurrentUserId();
-
-    if(currentUserId !== '0') {
-        localStorage.setItem('current-user-id', 0);
-    } 
-} 
+function readFileData(file, callback){
+	let config = {
+		header: true,
+		delimiter: "\t",
+		skipEmptyLines: "greedy",
+		complete: function(results) {
+			callback(results);
+	  }	
+	}
+	Papa.parse(file, config);
+}
 
 function writeFileData(arr){
 	let config = {
@@ -58,10 +45,168 @@ function writeFileData(arr){
     tempLink.remove();
 }
 
+function setLoginLogoutIcon() { 
+    let userId = getCurrentUserId(); 
 
-function init() {
-    setLoginLogoutIcon();
-    $("#navbar-login-logout").click(loginLogoutAction);
+    if(userId === '0') {
+        $("#navbar-login-logout").html("<a class='nav-link'><i class='bi bi-box-arrow-in-right fa-lg' data-toggle='tooltip' data-placement='bottom' title='login'></i></a>");
+    } else {
+        $("#navbar-login-logout").html("<a class='nav-link'><i class='bi bi-box-arrow-right fa-lg' data-toggle='tooltip' data-placement='bottom' title='logout''></i></a>");
+    } 
 } 
 
-$(document).ready(init); 
+function openLogoutModal() {
+    $(".logout-modal").modal("toggle");
+    $(".btn-yes").click(logout);
+    $(".btn-no").click(() => {
+        $(".logout-modal").modal("hide");
+    });
+}
+
+function logout() {
+    localStorage.setItem("current-user-id", 0); 
+    window.location.href = "home.html";
+} 
+
+function updateNavbar() {
+    updateCartIcon();
+    if(window.location.pathname !== "/webapp/login.html") {
+        setLoginLogoutIcon();
+        $("#navbar-login-logout").click(function() {
+            if(localStorage.getItem("current-user-id") === "0"){
+                window.location.href = "login.html";
+            } else {
+                openLogoutModal();
+            }
+        });
+    }
+    $('[data-toggle="tooltip"]').tooltip();
+}
+
+function getCartItemsCount() {
+    let cart = getCart();
+    let userId = getCurrentUserId();
+    let userCart;
+
+    if(cart !== null) {
+        if(cart[userId] !== undefined) {
+            userCart = cart[userId];
+            let itemsCount = 0;
+    
+            for(let i in userCart) {
+                itemsCount += userCart[i]["quantity"];
+            }
+    
+            return itemsCount;
+        } 
+    }
+    return 0;
+}
+
+function updateCartIcon() {
+    let cartItemsCount = getCartItemsCount();
+    $(".cart-icon span").html(cartItemsCount);
+}
+
+function mergeCarts(cart1, cart2) {
+	let newCart = [];
+
+	for(let i in cart2) {
+		let flag = 0;
+		for(let j in cart1) {
+			if(cart2[i]["barcode"] === cart1[j]["barcode"]) {
+				newCart.push({
+					"barcode" : cart2[i]["barcode"], 
+					"quantity" : cart2[i]["quantity"] + cart1[j]["quantity"]
+				});
+				flag = 1;
+				break;
+			}
+		}
+		if(flag === 0) {
+			newCart.push({
+				"barcode" : cart2[i]["barcode"], 
+				"quantity" : cart2[i]["quantity"]
+			});
+		}
+	}
+
+	for(let i in cart1) {
+		let flag = 0;
+		for(let j in cart2) {
+			if(cart2[j]["barcode"] === cart1[i]["barcode"]) {
+				flag = 1;
+				break;
+			}
+		}
+		if(flag === 0) {
+			newCart.push({
+				"barcode" : cart1[i]["barcode"], 
+				"quantity" : cart1[i]["quantity"]
+			});
+		}
+	}
+
+	return newCart;
+}
+
+function getCurrentUserId() {
+    let currentUserId = localStorage.getItem('current-user-id');
+
+    if(currentUserId === null) {
+        localStorage.setItem('current-user-id', 0);
+        currentUserId = 0;
+    }
+
+    return currentUserId;
+}
+
+function setCurrentUserId(userId) {
+    localStorage.setItem("current-user-id", userId);
+}
+
+function getCart() {
+    return JSON.parse(localStorage.getItem("cart"));
+}
+
+function setCart(cart) {
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartIcon();
+}
+
+function getFilters() {
+    return sessionStorage.getItem("filters");
+}
+
+function setFilters(filters) {
+    sessionStorage.setItem("filters", JSON.stringify(filters));
+}
+
+function getSortBy() {
+    return sessionStorage.getItem("sort-by");
+}
+
+function setSortBy(sortBy) {
+    sessionStorage.setItem("sort-by", sortBy); 
+} 
+
+// function showTime() {
+//     var date = new Date();
+//     $(".footer").html("&copy; 2023 Increff  <br>" 
+//     + ("0" + date.getDay()) + "/"
+//     + ("0" + date.getMonth()) + "/"
+//     + ("0" + date.getFullYear()).substr(-2) + " "
+//     + ("0" + date.getHours()).substr(-2) + ":" 
+//     + ("0" + date.getMinutes()).substr(-2) + ":" 
+//     + ("0" + date.getSeconds()).substr(-2));
+// }
+
+function init() {
+    $("#navbar-placeholder").load("navbar.html", function() {
+        updateNavbar();
+    });
+    $("#footer-placeholder").load("footer.html");
+    // setInterval(showTime, 1000);
+}
+
+$(document).ready(init)

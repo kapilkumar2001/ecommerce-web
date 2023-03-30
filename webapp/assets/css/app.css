@@ -30,13 +30,29 @@ body {
 
 .toggle-password {
 	right: 2rem;
-	top: 0.75rem;
+	top: 0.55rem;
 }
 
-.btn-danger {
-	background-color: #fb5a69 !important;
+.cart-icon {
+	position: relative;
 }
 
-a { 
-	text-decoration: none !important; 
+.cart-icon span {
+	position: absolute;
+	top: 0px;
+	right: -6px;
+}
+
+.toast {
+	position: absolute; 
+	top: 4rem; 
+	right: 0.3rem;
+}
+
+#navbar-login-logout {
+	cursor: pointer;
+}
+
+.dropdown-item {
+	cursor: pointer;
 }

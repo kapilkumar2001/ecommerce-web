@@ -9,60 +9,134 @@
     <meta http-equiv="Expires" content="-1"/>
     <meta http-equiv="cache-control" content="no-cache"/>
     <script src="https://kit.fontawesome.com/c30beb553f.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="assets/css/app.css"/>
+    <link rel="stylesheet" href="assets/css/app.css">
+    <link rel="stylesheet" href="assets/css/cart.css">
     <link rel="icon" type="image/x-icon" href="images/increff-logo.png" />
     <link rel="icon" href="https://storage.googleapis.com/www.increff.com/img/favicon.png?v=2" type="image/x-icon"/>
     <link rel="stylesheet" href="https://storage.googleapis.com/static.increff.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
   </head>
   <body>
     <div id="navbar-placeholder"></div>
-    <div class="container">
-      <div class="row" id="cart">
-        <div id="empty-cart-img" class="col-12 d-none"><img class="img-fluid mx-auto d-block" src="https://shop.millenniumbooksource.com/static/images/cart1.png"></img></div>
-        <div id="cart-items" class="col-8 d-none p-4"> 
-          <div class="row">
-            <h4>Review Items</h4>
-            <button id="clear-cart-btn" class="btn btn-sm ml-auto btn-dark rounded-pill px-3"><i class="fa fa-close mr-2"></i>Clear</button>
-          </div>
-          <div id="cart-item" class="border rounded row align-items-center mt-4 py-2">
-            <div class="col-4"> 
-              <img class="product-img img-fluid rounded img-thumbnail p-2 border-0 shadow-sm" style="height:150px" width="200"> 
-            </div>
-            <div class="col-8 p-4">
-              <div class="row align-items-baseline"> 
-                <a class="product-name text-body">
-                  <b></b>
-                </a> 
-                <h6 class="product-mrp ml-auto"></h6> 
-              </div>
-              <div class="row mt-2">
-                <span class="product-color"></span> 
-                <span class="inc-dec-qty-span rounded-pill border px-2 ml-auto">
-                  <button class="dec-qty-btn border-0 bg-transparent">
-                    <i class="fa fa-minus border-right pr-2 py-2"></i>
-                  </button> 
-                  <span class="product-qty px-2"></span> 
-                  <button class="inc-qty-btn border-0 bg-transparent">
-                    <i class="fa fa-plus border-left pl-2 py-2"></i>
-                  </button>
-                </span> 
-              </div>
+    <div class="container-fluid">
+      <div class="row p-4" id="cart">
+        <div id="empty-cart" class="col-12 d-none">
+          <img class="img-fluid mx-auto my-auto d-block" src="https://img.freepik.com/free-vector/man-shopping-supermarket_74855-7612.jpg?w=740&t=st=1679464460~exp=1679465060~hmac=1e4ec278c18a29946fe80221529f27944249f60c7873ee497f5255ed9cd408e8" style="height: 50%;"></img>
+          <h5 class="text-center my-4">Oops! looks like your cart is empty.</h5>
+          <button id="start-shopping-btn" class="btn btn-success mx-auto d-block">Start Shopping</button>
+        </div>
+        <div id="cart-items" class="col-sm-12 col-md-7 col-lg-8 d-none">
+          <div class="card">
+            <div class="card-header">
               <div class="row">
-                <button class="remove-item-btn btn btn-sm btn-danger rounded-pill border-0 px-2"><i class="fa fa-trash mr-2"></i>Remove</button>
+                <h5 class="ml-4 my-auto">Your Cart</h5>
+                <button id="clear-cart-btn" class="btn btn-sm ml-auto rounded border-danger mr-2 my-auto"><i class="bi bi-x-lg text-danger" data-toggle="tooltip" data-placement="bottom" title="clear cart"></i></button>
+              </div>
+            </div> 
+            <div class="card-body">
+              <div id="cart-item" class="row align-items-center p-2 my-4">
+                <div class="col-sm-12 col-md-3"> 
+                  <img class="product-img img-fluid rounded img-thumbnail border-0 mx-auto d-block"> 
+                </div>
+                <div class="col-sm-12 col-md-9 mt-4 mt-md-0 pl-4">
+                  <h6 class="brand-name text-muted mb-2"></h6>
+                  <a class="product-name text-body"></a> 
+                  <h6 class="product-color text-body mt-2"></h6>
+                  <div class="row pl-3 mt-3">
+                    <h6 class="product-price font-weight-bold"></h6> 
+                    <h6 class="product-mrp ml-2"><s></s></h6>
+                    <h6 class="product-discount text-success ml-2"></h6>
+                  </div>
+                  <div class="row pl-3 mt-2">
+                    <span class="inc-dec-qty-span border rounded border-success align-self-end">
+                      <button class="dec-qty-btn border-0 bg-transparent text-success">
+                        <i class="bi bi-dash-lg pl-1 align-middle"></i>
+                      </button> 
+                      <span class="product-qty px-1 align-middle text-success"></span> 
+                      <button class="inc-qty-btn border-0 bg-transparent text-success">
+                        <i class="bi bi-plus-lg pr-1 align-middle"></i>
+                      </button>
+                    </span>
+                    <button class="remove-item-btn btn btn-sm rounded border px-2 ml-4 border-danger">
+                      <i class="bi bi-trash3 text-danger" data-toggle="tooltip" data-placement="bottom" title="remove item"></i>
+                    </button> 
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div id='order-summary' class='col-4 d-none'> 
-          <div class='border p-4 rounded'>
-            <h4>Order Summary</h4>
-            <div class='row p-4'> 
-              <span>Total Amount</span> 
-              <span class='total-amount ml-auto'></span> 
+        <div id='order-summary' class='col-sm-12 col-md-5 col-lg-4 mt-4 mt-md-0 d-none'> 
+          <div class="card">
+            <div class="card-header">
+              <h5 class="p-1 my-auto">Order Summary</h5>
             </div>
-            <div class='row'> 
-              <button class='place-order-btn border btn btn-sm btn-dark mx-2 my-1 px-4 py-2 rounded-pill ml-auto'>Place Order</button>
+            <div class="card-body">
+              <div class='row px-4 pt-4 pb-1'> 
+                <span>Order Value</span> 
+                <span class='order-value ml-auto'></span> 
+              </div>
+              <div class='row px-4 py-1'> 
+                <span>Discount</span> 
+                <span class='discount ml-auto text-success'></span> 
+              </div>
+              <div class='row px-4 py-1'> 
+                <span>Shipping Price</span> 
+                <span class='shipping-price ml-auto'></span> 
+              </div>
+              <div class='row px-4 py-1'> 
+                <span class="free-delivery text-success"></span>  
+              </div>
+              <hr>
+              <div class='row px-4 py-2'> 
+                <span class="font-weight-bold">Total Amount</span> 
+                <span class='total-amount font-weight-bold ml-auto'></span> 
+              </div>
+              <div class="row px-3"> 
+                <button id="place-order-btn" class="border btn btn-sm btn-block btn-success mx-2 mt-4 px-4 py-2 rounded ml-auto">Place Order</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade confirm-modal" tabindex="-1" role="dialog">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Confirm</h5>
+              </div>
+              <div class="modal-body"></div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm btn-no px-3">No</button>
+                <button type="button" class="btn btn-outline-dark btn-sm btn-yes px-3">Yes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade logout-modal" tabindex="-1" role="dialog">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Confirm</h5>
+              </div>
+              <div class="modal-body">Are you sure, you want to logout?</div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm btn-no px-2">Cancel</button>
+                <button type="button" class="btn btn-outline-dark btn-sm btn-yes px-2">Logout</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade place-order-modal" tabindex="-1" role="dialog">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Confirm Order</h5>
+              </div>
+              <div class="modal-body">You are about to place your order.</div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm btn-no px-2">Cancel</button>
+                <button type="button" class="btn btn-outline-dark btn-sm btn-yes px-2">Place Order</button>
+              </div>
             </div>
           </div>
         </div>
@@ -70,6 +144,9 @@
     </div>
     <div id="footer-placeholder"></div>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="js/app.js"></script>
     <script src="js/cart.js"></script>
   </body>
 </html>

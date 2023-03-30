@@ -1,0 +1,8 @@
+.browse-box {
+    border: 0.18rem dashed blue;
+    border-radius: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
