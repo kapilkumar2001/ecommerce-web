@@ -42,9 +42,7 @@ function login(){
 					userCart = cart[userId];
 				}
 				
-				let newCart = addGuestCartToUserCart(guestCart, userCart);
-				
-				cart[userId] = newCart;
+				cart[userId] = mergerCarts(guestCart, userCart);
 				cart["0"] = [];
 
 				setCart(cart);
@@ -75,49 +73,6 @@ function validateEmailandPassword(mail, password){
 	}
 	
 	return true;
-}
-  
-
-function addGuestCartToUserCart(guestCart, userCart) {
-	let cart = [];
-
-	for(let i in userCart) {
-		let flag = 0;
-		for(let j in guestCart) {
-			if(userCart[i]["barcode"] === guestCart[j]["barcode"]) {
-				cart.push({
-					"barcode" : userCart[i]["barcode"], 
-					"quantity" : userCart[i]["quantity"] + guestCart[j]["quantity"]
-				});
-				flag = 1;
-				break;
-			}
-		}
-		if(flag === 0) {
-			cart.push({
-				"barcode" : userCart[i]["barcode"], 
-				"quantity" : userCart[i]["quantity"]
-			});
-		}
-	}
-
-	for(let i in guestCart) {
-		let flag = 0;
-		for(let j in userCart) {
-			if(userCart[j]["barcode"] === guestCart[i]["barcode"]) {
-				flag = 1;
-				break;
-			}
-		}
-		if(flag === 0) {
-			cart.push({
-				"barcode" : guestCart[i]["barcode"], 
-				"quantity" : guestCart[i]["quantity"]
-			});
-		}
-	}
-
-	return cart;
 }
 
 function checkLogin() {

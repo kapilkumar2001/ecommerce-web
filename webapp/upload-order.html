@@ -31,7 +31,7 @@
       </div>
       <div class="row">
         <input type="file" name="file-input" id="file-input" accept="csv" class="custom-file-input d-none">
-        <button id="browse-btn" class="border-0 bg-transparent mx-auto">
+        <button id="browse-btn" class="border-0 bg-transparent mx-auto col-8">
           <div class="browse-box">
             <img class="mx-auto" src="https://img.freepik.com/free-vector/output_53876-25529.jpg?w=740&t=st=1678951169~exp=1678951769~hmac=68aaa212375880afccc956dfc4c6f757b1bbc8a4192896821aa132791ae25480" width="15%">
             <div class="row"><span class="mx-auto">Click to browse</span></div>
@@ -49,31 +49,42 @@
           <button id="upload-btn" class="btn btn-sm btn-primary">Upload</button>
         </div>
       </div>
-      <div id="uploaded-items-error" class="d-none mt-4">
-        <h6 class="mx-2 my-4 text-danger">The attached file contains some errors.</h6>
-        <div class="px-2 mt-4">
-          <table class="table table-striped" id="errors-table">
-            <thead>
-              <tr>
-                <th class="text-center">Row No</th>
-                <th class="text-right">Barcode</th>
-                <th class="text-right">Quantity</th>
-                <th></th>
-                <th class="text-left">Error</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+      <div id="file-error" class="d-none row mt-4">
+        <div class="mx-auto col-8">
+          <h6 class="text-danger error-text"></h6>
         </div>
       </div>
-      <div id="uploaded-cart-items" class="col-sm-12 col-md-7 col-lg-8 mx-auto mt-4 d-none">
+      <div id="uploaded-items-error" class="d-none mt-4">
+        <div class="row">
+          <div class="col-8 mx-auto">
+            <h6 class="mt-4 text-danger">The attached file contains some errors.</h6>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-8 mx-auto">
+            <table class="table table-striped border shadow-sm" id="errors-table">
+              <thead>
+                <tr>
+                  <th class="text-center">Row No</th>
+                  <th class="text-right">Barcode</th>
+                  <th class="text-right">Quantity</th>
+                  <th></th>
+                  <th class="text-left">Error</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div id="uploaded-cart-items" class="col-sm-12 col-md-7 col-lg-8 mx-auto mt-5 d-none">
         <div class="card">
           <div class="card-header">
             <div class="row">
               <h5 class="ml-4 my-auto card-title"></h5>
               <h6 class="ml-4 my-auto ml-auto mr-3 total-amount"></h6>
-              <button id="add-to-cart-btn" class="btn btn-sm btn-success rounded mr-2 my-auto">Add to Cart</i></button>
-              <button id="replace-cart-btn" class="btn btn-sm btn-success rounded mr-2 my-auto">Replace Cart</button>
+              <button class="add-to-cart-btn btn btn-sm btn-success rounded mr-2 my-auto">Add to Cart</i></button>
+              <button class="replace-cart-btn btn btn-sm btn-success rounded mr-2 my-auto">Replace Cart</button>
             </div>
           </div> 
           <div class="card-body">

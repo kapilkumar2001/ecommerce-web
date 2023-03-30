@@ -94,7 +94,7 @@ function getCartItemsCount() {
             let itemsCount = 0;
     
             for(let i in userCart) {
-                itemsCount += (userCart[i]["quantity"]);
+                itemsCount += userCart[i]["quantity"];
             }
     
             return itemsCount;
@@ -106,6 +106,48 @@ function getCartItemsCount() {
 function updateCartIcon() {
     let cartItemsCount = getCartItemsCount();
     $(".cart-icon span").html(cartItemsCount);
+}
+
+function mergerCarts(cart1, cart2) {
+	let newCart = [];
+
+	for(let i in cart2) {
+		let flag = 0;
+		for(let j in cart1) {
+			if(cart2[i]["barcode"] === cart1[j]["barcode"]) {
+				newCart.push({
+					"barcode" : cart2[i]["barcode"], 
+					"quantity" : cart2[i]["quantity"] + cart1[j]["quantity"]
+				});
+				flag = 1;
+				break;
+			}
+		}
+		if(flag === 0) {
+			newCart.push({
+				"barcode" : cart2[i]["barcode"], 
+				"quantity" : cart2[i]["quantity"]
+			});
+		}
+	}
+
+	for(let i in cart1) {
+		let flag = 0;
+		for(let j in cart2) {
+			if(cart2[j]["barcode"] === cart1[i]["barcode"]) {
+				flag = 1;
+				break;
+			}
+		}
+		if(flag === 0) {
+			newCart.push({
+				"barcode" : cart1[i]["barcode"], 
+				"quantity" : cart1[i]["quantity"]
+			});
+		}
+	}
+
+	return newCart;
 }
 
 function getCurrentUserId() {

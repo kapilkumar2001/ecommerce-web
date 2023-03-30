@@ -1,5 +1,8 @@
 function clickInputFile() {
     $("#file-input").click();
+    $("#uploaded-cart-items").addClass("d-none");
+    $("#uploaded-items-error").addClass("d-none");
+    $("#file-error").addClass("d-none");
 }
 
 function updateFileName() {
@@ -10,21 +13,29 @@ function updateFileName() {
 }
 
 function showOrder(orderData) {
+    $("#upload-btn-row").addClass("d-none");
     $("#uploaded-cart-items").removeClass("d-none");
     $("#uploaded-items-error").addClass("d-none");
+    $("#file-error").addClass("d-none");
 
     let totalAmount = 0;
     let itemsCount = 0;
 
     for(let i in orderData) {
         let data = orderData[i];
+
         showCartItem(data);
+
         totalAmount += parseInt(data.price * data.quantity);
         itemsCount += parseInt(data.quantity);
     }
+
     $("#uploaded-cart-item").remove();
     $(".card-title").html("Uploaded Items (" + itemsCount + ")");
     $(".total-amount").html("₹" + parseFloat(totalAmount).toFixed(2).toLocaleString());
+
+    $(".add-to-cart-btn").attr("onclick", "addToCart(" + JSON.stringify(orderData) + ")");
+    $(".replace-cart-btn").attr("onclick", "replaceCart(" + JSON.stringify(orderData) + ")");
 }
 
 function showCartItem(productData) {
@@ -43,9 +54,58 @@ function showCartItem(productData) {
     $("#uploaded-cart-item-" + productData.barcode + " .subtotal").html("Amount - ₹" + (productData.price * productData.quantity).toLocaleString());
 }
 
+function addToCart(orderData) {
+    let userId = getCurrentUserId();
+    let cart = getCart();
+
+    if(cart === undefined || cart === null) {
+        cart = {};
+    } 
+
+    let uploadedCart = [];
+    for(let i in orderData) {
+        let data = orderData[i];
+        let item = {'barcode': data.barcode, 'quantity': parseInt(data.quantity)};
+        uploadedCart.push(item);
+    }
+
+    let userCart = [];
+    if(cart[userId] !== undefined || cart[userId] !== null) {
+        userCart = cart[userId];
+        cart[userId] = mergerCarts(uploadedCart, userCart);
+    } else {
+        cart[userId] = uploadedCart;
+    }
+
+    setCart(cart);
+    window.location.href = "cart.html";
+}
+
+function replaceCart(orderData) {
+    let userId = getCurrentUserId();
+    let cart = getCart();
+
+    if(cart === undefined || cart === null) {
+        cart = {};
+    } 
+
+    let userCart = [];
+   
+    for(let i in orderData) {
+        let data = orderData[i];
+        let item = {'barcode': data.barcode, 'quantity': parseInt(data.quantity)};
+        userCart.push(item);
+    }
+
+    cart[userId] = userCart;
+    setCart(cart);
+
+    window.location.href = "cart.html";
+}
 
 function showError(errorData) {
     $("#uploaded-cart-items").addClass("d-none");
+    $("#file-error").addClass("d-none");
     $("#uploaded-items-error").removeClass("d-none");
 
     let tbody = $("#errors-table").find("tbody");
@@ -61,6 +121,14 @@ function showError(errorData) {
             + "<td class='text-left'>" + data.error + "</td>"
         tbody.append(row);
     }
+}
+
+function showFileError(message) {
+    $("#uploaded-cart-items").addClass("d-none");
+    $("#uploaded-items-error").addClass("d-none");
+    $("#file-error").removeClass("d-none");
+
+    $("#file-error .error-text").html(message);
 }
 
 let fileData = [];
@@ -81,20 +149,17 @@ function readFileDataCallback(results){
 	fileData = results.data;
 
     if((results.meta.fields.length !== 2) || (results.meta.fields[0] !== "barcode") || (results.meta.fields[1] !== "quantity")) {
-		// showError("Invalid File");
-        console.log("invalid file");
+        showFileError("The headers are invalid in attched file. The file must contain <b>barcode</b> as first column header and <b>quantity</b> as second column header.");
 		return;
 	}
 
 	if(fileData.length === 0) {
-		// showError("File is Empty");
-        console.log("file is empty");
+		showFileError("Attached file is empty.");
 		return;
 	}
 
 	if(fileData.length>5000){
-		// showError("Data limit exceeded. Max data limit - 5000 rows");
-        console.log("data limit exceed");
+        showFileError("Maximum limit of the rows in uploaded file can be 100.");
 		return;
 	}
 
