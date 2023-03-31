@@ -190,23 +190,23 @@ function setSortBy(sortBy) {
     sessionStorage.setItem("sort-by", sortBy); 
 } 
 
-// function showTime() {
-//     var date = new Date();
-//     $(".footer").html("&copy; 2023 Increff  <br>" 
-//     + ("0" + date.getDay()) + "/"
-//     + ("0" + date.getMonth()) + "/"
-//     + ("0" + date.getFullYear()).substr(-2) + " "
-//     + ("0" + date.getHours()).substr(-2) + ":" 
-//     + ("0" + date.getMinutes()).substr(-2) + ":" 
-//     + ("0" + date.getSeconds()).substr(-2));
-// }
+function showTime() {
+    var date = new Date();
+    $(".footer").html("&copy; 2023 Increff  <br>" 
+    + ("0" + date.getDate()).substr(-2) + "/"
+    + ("0" + date.getMonth()).substr(-2) + "/"
+    + ("0" + date.getFullYear()).substr(-4) + " "
+    + ("0" + date.getHours()).substr(-2) + ":" 
+    + ("0" + date.getMinutes()).substr(-2) + ":" 
+    + ("0" + date.getSeconds()).substr(-2));
+}
 
 function init() {
     $("#navbar-placeholder").load("navbar.html", function() {
         updateNavbar();
     });
     $("#footer-placeholder").load("footer.html");
-    // setInterval(showTime, 1000);
+    setInterval(showTime, 1000);
 }
 
 $(document).ready(init)
