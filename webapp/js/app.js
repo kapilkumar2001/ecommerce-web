@@ -309,8 +309,30 @@ function handleCart() {
     for(let i in cart) {
         isExistingUser(i, function(userExists) {
             if(userExists === false && i !== "0") {
-                delete cart[i];
+                delete cart[i]; 
                 setCart(cart);
+            } else {
+                let userCart = cart[i];
+
+                for(let j in userCart) {
+                    isExistingProduct(j, function(productExists) {
+                        if(productExists === false) {
+                            delete userCart[j];
+                            cart[i] = userCart;
+                            setCart(cart);
+                        } else {
+                            if(!Number.isInteger(userCart[j])) {
+                                delete userCart[j];
+                                cart[i] = userCart;
+                                setCart(cart);
+                            } else if(userCart[j] <= 0) {
+                                delete userCart[j];
+                                cart[i] = userCart;
+                                setCart(cart);
+                            }
+                        }
+                    });
+                }
             }
         });
     }
@@ -332,10 +354,81 @@ function isExistingUser(userId, callback) {
     });
 }
 
+function isExistingProduct(barcode, callback) {
+    $.ajax({
+        url: "data/products.json",
+        dataType: "json",
+        success: function(data) {
+            for (let i in data) {
+                if (data[i]["barcode"] == barcode) {
+                    callback(true);
+                    return;
+                }
+            }
+            callback(false);
+        }
+    });
+}
+
+// function handleFilters() {
+//     $.ajax({
+//         url: "data/products.json",
+//         dataType: "json",
+//         success: function(data) {
+//             let filters = getFilters();
+                        
+//             if(!filters) {
+//                 filters = JSON.parse(filters);
+
+//                 if(Object.keys(filters).length !== 0) {
+//                     for (let key in filters) {
+//                         let value = filters[key];
+//                         switch(key) {
+//                             case "brand" : 
+//                                 if(filterByBrand(data, value).length === 0) {
+//                                     const index = array.indexOf(value);
+//                                     if (index > -1) { 
+//                                         filters[key].splice(index, 1); 
+//                                     }
+//                                     setFilters(filters);
+//                                 }
+//                                 break;
+//                             case "category" :
+//                                 if(filterByCategory(data, value).length === 0) {
+//                                     const index = array.indexOf(value);
+//                                     if (index > -1) { 
+//                                         filters[key].splice(index, 1); 
+//                                     }
+//                                     setFilters(filters);
+//                                 }
+//                                 break;
+//                             case "gender" :
+//                                 if(filterByGender(data, value).length === 0) {
+//                                     const index = array.indexOf(value);
+//                                     if (index > -1) { 
+//                                         filters[key].splice(index, 1); 
+//                                     }
+//                                     setFilters(filters);
+//                                 }
+//                                 break;
+//                         }
+//                     }
+//                     showProductCard(data);
+//                 }
+//             }
+//         }
+//     });
+// }
+
 function handleLocalStorageChanges() {
     handleCurrentUser();
     handleCart();
-    // location.reload();
+    // handleFilters();
+    location.reload();
+
+    // Promise.all([handleCurrentUser(), handleCart()]).then(() => {
+    //     location.reload();
+    // });
 }
 
 function init() {

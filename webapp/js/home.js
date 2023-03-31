@@ -122,7 +122,7 @@ function sortProducts(data) {
 function displayProducts(data) {
     let filters = getFilters();
                 
-    if(filters === null) {
+    if(!filters) {
         showProductCard(data);
     } else {
         filters = JSON.parse(filters);
