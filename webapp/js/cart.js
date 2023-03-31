@@ -1,11 +1,8 @@
 function displayCart() {
-    const promises = [];
-    let cart = getCart();
-    let userId = getCurrentUserId();
-    let userCart = cart[userId];
-    let i = userCart.length;
+    let userCart = getUserCart();
+    let cartProductsLength = Object.keys(userCart).length;
 
-    if(getCartItemsCount() === 0) {
+    if(cartProductsLength === 0) {
         $("#empty-cart").removeClass("d-none");
         $("#cart-items").addClass("d-none");
         $("#order-summary").addClass("d-none");
@@ -15,42 +12,31 @@ function displayCart() {
         $("#cart-items").removeClass("d-none");
         $("#order-summary").removeClass("d-none");
 
-        while (i--) {
-            let barcode = userCart[i].barcode;
-            let quantity = userCart[i].quantity;
+        $.ajax({
+            url: 'data/products.json',
+            dataType: 'json',
+            success: function(data) {
+                for(let i in data) {
+                    if(!userCart[data[i]["barcode"]]) {
+                        continue;
+                    } else {
+                        let barcode = data[i]["barcode"];
+                        let quantity = userCart[barcode];
+                        let productData = data[i];
+                        showCartItem(quantity, productData);
+                    }
+                }
 
-            if(quantity !== 0 && quantity !== null) {
-                promises.push(    
-                    $.ajax({
-                        url: 'data/products.json',
-                        dataType: 'json',
-                        success: function(data) {
-                            let productData = null;
-                    
-                            for(let j in data) {
-                                if(data[j]['barcode'] == barcode) {
-                                    productData = data[j];
-                                    break;
-                                }
-                            }
-
-                            if((productData !== null)) { 
-                                showCartItem(barcode, quantity, productData);
-                            }
-                        }
-                }));
+                $("#cart-item").addClass("d-none");
+                $('[data-toggle="tooltip"]').tooltip();
+                updateOrderSummary();
             }
-        }
-    
-        Promise.all(promises).then(() => {
-            $("#cart-item").remove();
-            $('[data-toggle="tooltip"]').tooltip();
-            updateOrderSummary();
         });
     }
 }
 
-function showCartItem(barcode, quantity, productData) {
+function showCartItem(quantity, productData) {
+    let barcode = productData["barcode"];
     let node = $("#cart-item");
     let clone = node.clone().attr("id", "cart-item-" + barcode);
     $("#cart-items .card-body").append(clone);
@@ -159,55 +145,52 @@ function removeItem(barcode, productName) {
 }
 
 function updateOrderSummary() {
-    let cart = getCart();
-    let userId = getCurrentUserId();
-    let userCart = cart[userId];
+    let userCart = getUserCart();
     let totalPrice = 0;
     let totalDiscount = 0;
-    const promises = [];
 
-    for(let i in userCart) {
-        let barcode = userCart[i]["barcode"];
-        let quantity = userCart[i]["quantity"];
+    $.ajax({
+        url: 'data/products.json',
+        dataType: 'json',
+        success: function(data) {
+            for(let i in data) {
+                if(!userCart[data[i]["barcode"]]) {
+                    continue;
+                } else {
+                    let barcode = data[i]["barcode"];
+                    let quantity = userCart[barcode];
+                    let productData = data[i];
+                    
+                    totalPrice += (productData["mrp"] * quantity);
+                    totalDiscount += ((productData["mrp"] - productData["price"]) * quantity);
+                }
+            }
 
-        promises.push(
-            $.ajax({
-            url: 'data/products.json',
-            dataType: 'json',
-            success: function(data) {
-                productData = filterByBarcode(data, barcode);
-                
-                totalPrice += (productData["mrp"] * quantity);
-                totalDiscount += ((productData["mrp"] - productData["price"]) * quantity);
-            },
-        }));
-    }
-
-    Promise.all(promises).then(() => {
-        $(".order-value").html("₹" + totalPrice.toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-          }));
-        $(".discount").html("-₹" + totalDiscount.toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-          }));
-        if(totalPrice >= 4999) {
-            $(".shipping-price").html("<span class='text-body'><s>₹199</s></span> FREE");
-            $(".shipping-price").addClass("text-success");
-            $(".free-delivery").addClass("d-none");
-        } else {
-            $(".shipping-price").html("₹" + 199);
-            $(".free-delivery").html("Add items worth ₹" + (4999-totalPrice).toLocaleString(undefined, {
+            $(".order-value").html("₹" + totalPrice.toLocaleString(undefined, {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
-              }) + " more to get free delivery on this order.");
-            $(".free-delivery").removeClass("d-none");
+              }));
+            $(".discount").html("-₹" + totalDiscount.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              }));
+            if(totalPrice >= 4999) {
+                $(".shipping-price").html("<span class='text-body'><s>₹199</s></span> FREE");
+                $(".shipping-price").addClass("text-success");
+                $(".free-delivery").addClass("d-none");
+            } else {
+                $(".shipping-price").html("₹" + 199);
+                $(".free-delivery").html("Add items worth ₹" + (4999-totalPrice).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                  }) + " more to get free delivery on this order.");
+                $(".free-delivery").removeClass("d-none");
+            }
+            $(".total-amount").html("₹" + (totalPrice - totalDiscount).toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }));
         }
-        $(".total-amount").html("₹" + (totalPrice - totalDiscount).toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-          }));
     });
 }
 

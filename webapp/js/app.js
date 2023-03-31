@@ -1,9 +1,9 @@
-function filterByBarcode(data, barcode) {
-    return data.filter(
-        function(data) {
-            return (data['barcode'] == barcode);
-        })[0];
-}
+// function filterByBarcode(data, barcode) {
+//     return data.filter(
+//         function(data) {
+//             return (data['barcode'] == barcode);
+//         })[0];
+// }
 
 function containsOnlyNumbers(str) {
     return /^[0-9]+$/.test(str);
@@ -166,7 +166,11 @@ function setCurrentUserId(userId) {
 }
 
 function getCart() {
-    return JSON.parse(localStorage.getItem("cart"));
+    let cart = JSON.parse(localStorage.getItem("cart"));
+    if(!cart) {
+        cart= {};   
+    }   
+    return cart;
 }
 
 function setCart(cart) {
@@ -174,6 +178,62 @@ function setCart(cart) {
     updateCartIcon();
 }
 
+function getUserCart() {
+    let cart = getCart();
+    let userId = getCurrentUserId();
+    let userCart;
+
+    if(!cart[userId]) {
+        userCart = {};
+    } else {
+        userCart = cart[userId];
+    }
+
+    return userCart;
+}
+
+function increaseQuantityInCart(barcode) {
+    let cart =  getCart();
+    let userId = getCurrentUserId();
+
+    if(!cart[userId]) {
+        cart[userId] = {};
+    } 
+
+    if(!cart[userId][barcode] || cart[userId][barcode] < 0) {
+        cart[userId][barcode] = 0;
+    }
+    
+    cart[userId][barcode] = cart[userId][barcode] + 1; 
+
+    setCart(cart);
+
+    return cart[userId][barcode];
+}
+
+function decreaseQuantityInCart(barcode) {
+    let cart = getCart();
+    let userId = getCurrentUserId();
+   
+    if(!cart[userId]) {
+        cart[userId] = {};
+    }
+
+    if(!cart[userId][barcode] || cart[userId][barcode] < 0) {
+        cart[userId][barcode] = 0;
+    }
+
+    if(cart[userId][barcode] > 1) {
+        cart[userId][barcode] = cart[userId][barcode] - 1;
+        setCart(cart);
+        return cart[userId][barcode];
+    } else {
+        delete cart[userId][barcode];
+        setCart(cart);
+        return 0;
+    } 
+}
+ 
 function getFilters() {
     return sessionStorage.getItem("filters");
 }

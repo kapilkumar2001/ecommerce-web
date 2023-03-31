@@ -186,13 +186,9 @@ function showProductCard(data) {
             $("#product-card-" + e["barcode"] + " .product-discount").html(e["discountPercent"] + "%off");
             $("#product-card-" + e["barcode"] + " .product-discount").attr("href", "product-details.html?barcode=" + e['barcode']);
             
-            let cart = getCart();
-            let userId = getCurrentUserId();
+            let userCart = getUserCart();
 
-            if(cart === null || cart[userId] === undefined
-                || filterByBarcode(cart[userId], e['barcode']) === undefined
-                || filterByBarcode(cart[userId], e['barcode']).quantity === undefined 
-                || parseInt(filterByBarcode(cart[userId], e['barcode']).quantity) === 0) {
+            if(!userCart[e["barcode"]] || parseInt(userCart[e["barcode"]]) < 0) {
                     $("#product-card-" + e["barcode"] + " .add-to-cart-btn").attr("onclick", "changeToCountButton('" + e['barcode'] + "')")
                     $("#product-card-" + e["barcode"] + " .add-to-cart-span").removeClass("d-none");
                     $("#product-card-" + e["barcode"] + " .inc-dec-qty-span").addClass("d-none");
@@ -201,7 +197,7 @@ function showProductCard(data) {
                 $("#product-card-" + e["barcode"] + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + e['barcode'] + "')");
                 $("#product-card-" + e["barcode"] + " .inc-dec-qty-span").removeClass("d-none");
                 $("#product-card-" + e["barcode"] + " .add-to-cart-span").addClass("d-none");
-                $("#product-card-" + e["barcode"] + " .product-qty").html(parseInt(filterByBarcode(cart[userId], e['barcode']).quantity));
+                $("#product-card-" + e["barcode"] + " .product-qty").html(parseInt(userCart[e["barcode"]]));
             }
 
             $("#product-card-" + e["barcode"] + " .carousel").carousel({
@@ -220,106 +216,31 @@ function showProductCard(data) {
 }
 
 function changeToCountButton(barcode) {
-    let button = $("#product-card-" + barcode + " .add-to-cart-btn");
-    button.empty();
+    let quantity = increaseQuantityInCart(barcode);
 
-    let cart =  getCart();
-    let userId = getCurrentUserId();
-    let item = {'barcode': barcode, 'quantity': 1};
-
-    if(cart !== null) {
-        if(cart[userId] === undefined || cart[userId] === null) {
-            let userCart = [];
-            userCart.push(item);
-            cart[userId] = userCart;
-        }
-
-        let userCart = cart[userId];
-        let existsInUserCart = 0;
-
-        for(let i in userCart) {
-            if(userCart[i]['barcode'] === barcode) {
-                userCart[i]['quantity'] = 1;
-                existsInUserCart = 1;
-                break;
-            }
-        }
-
-        if(existsInUserCart === 0) {
-            userCart.push(item);
-        }
-
-        cart[userId] = userCart;  
-    } else {
-        let userCart = [];
-        userCart.push(item);
-        cart= {};
-        cart[userId] = userCart;  
-    }
-
-    setCart(cart);
     $("#product-card-" + barcode + " .inc-qty-btn").attr("onclick", "increaseQuantity('" + barcode + "')");
     $("#product-card-" + barcode + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "')");
     $("#product-card-" + barcode + " .inc-dec-qty-span").removeClass("d-none");
     $("#product-card-" + barcode + " .add-to-cart-span").addClass("d-none");
-    $("#product-card-" + barcode + " .product-qty").html(1);
+    $("#product-card-" + barcode + " .product-qty").html(quantity);
 }
 
 function increaseQuantity(barcode) {
-    let cart =  getCart();
-    let userId = getCurrentUserId();
-    let userCart = cart[userId];
-    let quantity = parseInt(filterByBarcode(userCart, barcode).quantity);
-    
-    for(let i in userCart) {
-        if(userCart[i]['barcode'] === barcode) {
-            userCart[i]['quantity'] = quantity + 1;
-            break;
-        }
-    }
-
-    cart[userId] = userCart;  
-    setCart(cart);
-    $("#product-card-" + barcode + " .product-qty").html(quantity + 1);
+    let quantity = increaseQuantityInCart(barcode);
+    $("#product-card-" + barcode + " .product-qty").html(quantity);
 }
 
 function decreaseQuantity(barcode) {
-    let cart = getCart();
-    let userId = getCurrentUserId();
-    let userCart = cart[userId];
-    let quantity = 0;
+    let quantity = decreaseQuantityInCart(barcode);
 
-    if(filterByBarcode(userCart, barcode) != null) {
-        quantity = parseInt(filterByBarcode(userCart, barcode).quantity);
-    }
-
-    if(quantity > 1) {
-        for(let i in userCart) {
-            if(userCart[i]['barcode'] === barcode) {
-                userCart[i]['quantity'] = quantity - 1;
-                break;
-            }
-        }
-
-        cart[userId] = userCart;  
-        setCart(cart);
-
-        $("#product-card-" + barcode + " .product-qty").html(quantity - 1);
-    } else if(quantity === 1) {
-        for(let i in userCart) {
-            if(userCart[i]['barcode'] === barcode) {
-                userCart[i]['quantity'] = 0;
-                break;
-            }
-        }
-
-        cart[userId] = userCart;  
-        setCart(cart);
+    if(quantity >= 1) {
+        $("#product-card-" + barcode + " .product-qty").html(quantity);
+    } else {
         $("#product-card-" + barcode + " .add-to-cart-btn").attr("onclick", "changeToCountButton('" + barcode + "')");
         $("#product-card-" + barcode + " .add-to-cart-btn").html("Add to cart");
         $("#product-card-" + barcode + " .inc-dec-qty-span").addClass("d-none");
         $("#product-card-" + barcode + " .add-to-cart-span").removeClass("d-none");
-    }
+    } 
 }
 
 function viewProduct(barcode) {
