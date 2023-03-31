@@ -111,8 +111,8 @@ function sortProducts(data) {
             $(".sort-by").html("Rating");
             break;
         default :
-            data = data.sort((d1, d2) => (d1.price < d2.price) ? 1 : (d1.price > d2.price) ? -1 : 0);
-            $(".sort-by").html("Price: High to Low");
+            data = data.sort((d1, d2) => (d1.rating < d2.rating) ? 1 : (d1.rating > d2.rating) ? -1 : 0);
+            $(".sort-by").html("Rating");
             break;
     }
 

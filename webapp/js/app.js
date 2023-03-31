@@ -281,17 +281,61 @@ function showTime() {
 }
 
 function handleCurrentUser() {
+    let userId = localStorage.getItem("current-user-id");
 
+    $.ajax({
+		url: "data/users.json",
+        dataType: "json",	  	   
+		success: function(data) {
+            let existingUser = false;
+
+			for(let i in data) {
+                if(data[i]["id"] === userId) { 
+                    existingUser = true;
+                }
+            }
+
+            if(existingUser === false) {
+                setCurrentUserId("0");
+            }
+        }
+    });
 }
 
 function handleCart() {
+    let cart = getCart();
+    setCart(cart);
+    
+    for(let i in cart) {
+        isExistingUser(i, function(userExists) {
+            if(userExists === false && i !== "0") {
+                delete cart[i];
+                setCart(cart);
+            }
+        });
+    }
+}
 
+function isExistingUser(userId, callback) {
+    $.ajax({
+        url: "data/users.json",
+        dataType: "json",
+        success: function(data) {
+            for (let i in data) {
+                if (data[i]["id"] === userId) {
+                    callback(true);
+                    return;
+                }
+            }
+            callback(false);
+        }
+    });
 }
 
 function handleLocalStorageChanges() {
     handleCurrentUser();
     handleCart();
-    location.reload();
+    // location.reload();
 }
 
 function init() {
