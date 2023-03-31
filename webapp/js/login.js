@@ -33,23 +33,21 @@ function login(){
                 $(".toast-error").toast("show");
 			} else {
 				setCurrentUserId(userId);
-
-				let cart = getCart();
-				let guestCart = cart["0"];
-				let userCart = [];
-
-				if(cart[userId] !== null) {
-					userCart = cart[userId];
-				}
-				
-				cart[userId] = mergeCarts(guestCart, userCart);
-				cart["0"] = [];
-
-				setCart(cart);
+				mergeGuestCartToUserCart(userId);
 				window.location.href = "home.html";
 			}
 		},
 	});
+}
+
+function mergeGuestCartToUserCart(userId) {
+	let cart = getCart();
+	let guestCart = getGuestCart();
+	let userCart = getUserCart();
+	
+	cart[userId] = mergeCarts(guestCart, userCart);
+	cart["0"] = {};
+	setCart(cart);
 }
 
 function validateEmailandPassword(mail, password){

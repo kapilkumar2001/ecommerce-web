@@ -1,10 +1,3 @@
-// function filterByBarcode(data, barcode) {
-//     return data.filter(
-//         function(data) {
-//             return (data['barcode'] == barcode);
-//         })[0];
-// }
-
 function containsOnlyNumbers(str) {
     return /^[0-9]+$/.test(str);
 }
@@ -45,10 +38,29 @@ function writeFileData(arr){
     tempLink.remove();
 }
 
-function setLoginLogoutIcon() { 
-    let userId = getCurrentUserId(); 
 
-    if(userId === '0') {
+// TODO: waiting for response ig
+function isUserLoggedIn() {
+    let userId = getCurrentUserId();
+
+    $.ajax({
+		url: "data/users.json",
+        dataType: "json",	  	   
+		success: function(data) {
+			for(let i in data) {
+                if(data[i]["id"] === userId) { 
+                    return true;
+                }
+            }
+
+            setCurrentUserId("0");
+            return false;
+        }
+    });
+}
+
+function setLoginLogoutIcon() {
+    if(getCurrentUserId() === "0") {
         $("#navbar-login-logout").html("<a class='nav-link'><i class='bi bi-box-arrow-in-right fa-lg' data-toggle='tooltip' data-placement='bottom' title='login'></i></a>");
     } else {
         $("#navbar-login-logout").html("<a class='nav-link'><i class='bi bi-box-arrow-right fa-lg' data-toggle='tooltip' data-placement='bottom' title='logout''></i></a>");
@@ -64,7 +76,7 @@ function openLogoutModal() {
 }
 
 function logout() {
-    localStorage.setItem("current-user-id", 0); 
+    localStorage.setItem("current-user-id", "0"); 
     window.location.href = "home.html";
 } 
 
@@ -84,23 +96,14 @@ function updateNavbar() {
 }
 
 function getCartItemsCount() {
-    let cart = getCart();
-    let userId = getCurrentUserId();
-    let userCart;
+    let userCart = getUserCart();
+    let itemsCount = 0;
 
-    if(cart !== null) {
-        if(cart[userId] !== undefined) {
-            userCart = cart[userId];
-            let itemsCount = 0;
-    
-            for(let i in userCart) {
-                itemsCount += userCart[i]["quantity"];
-            }
-    
-            return itemsCount;
-        } 
+    for(let i in userCart) {
+        itemsCount += userCart[i];
     }
-    return 0;
+
+    return itemsCount;
 }
 
 function updateCartIcon() {
@@ -109,52 +112,30 @@ function updateCartIcon() {
 }
 
 function mergeCarts(cart1, cart2) {
-	let newCart = [];
+	let newCart = {};
 
-	for(let i in cart2) {
-		let flag = 0;
-		for(let j in cart1) {
-			if(cart2[i]["barcode"] === cart1[j]["barcode"]) {
-				newCart.push({
-					"barcode" : cart2[i]["barcode"], 
-					"quantity" : cart2[i]["quantity"] + cart1[j]["quantity"]
-				});
-				flag = 1;
-				break;
-			}
-		}
-		if(flag === 0) {
-			newCart.push({
-				"barcode" : cart2[i]["barcode"], 
-				"quantity" : cart2[i]["quantity"]
-			});
-		}
-	}
+    for (let i in cart1){
+        if(!cart2[i]) {
+            newCart[i] = cart1[i];
+        } else {
+            newCart[i] =  cart1[i] + cart2[i];
+        }
+    } 
 
-	for(let i in cart1) {
-		let flag = 0;
-		for(let j in cart2) {
-			if(cart2[j]["barcode"] === cart1[i]["barcode"]) {
-				flag = 1;
-				break;
-			}
-		}
-		if(flag === 0) {
-			newCart.push({
-				"barcode" : cart1[i]["barcode"], 
-				"quantity" : cart1[i]["quantity"]
-			});
-		}
-	}
+    for (let i in cart2){
+        if(!cart1[i]) {
+            newCart[i] = cart2[i];
+        } 
+    } 
 
 	return newCart;
 }
 
 function getCurrentUserId() {
-    let currentUserId = localStorage.getItem('current-user-id');
+    let currentUserId = localStorage.getItem("current-user-id");
 
-    if(currentUserId === null) {
-        localStorage.setItem('current-user-id', 0);
+    if(!currentUserId) {
+        setCurrentUserId("0");
         currentUserId = 0;
     }
 
@@ -190,6 +171,19 @@ function getUserCart() {
     }
 
     return userCart;
+}
+
+function getGuestCart() {
+    let cart = getCart();
+    let guestCart;
+	
+    if(!cart["0"]) {
+        guestCart = {};
+    } else {
+        guestCart = cart["0"];
+    }
+
+    return guestCart;
 }
 
 function increaseQuantityInCart(barcode) {
@@ -233,6 +227,31 @@ function decreaseQuantityInCart(barcode) {
         return 0;
     } 
 }
+
+function removeItemFromCart(barcode) {
+    let cart = getCart();
+    let userId = getCurrentUserId();
+   
+    if(!cart[userId]) {
+        cart[userId] = {};
+    }
+
+    if(!cart[userId][barcode] || cart[userId][barcode] < 0) {
+        cart[userId][barcode] = 0;
+    }
+
+    delete cart[userId][barcode];
+    setCart(cart);
+    return 0;    
+}
+
+function removeAllItemsFromCart() {
+    let cart = getCart();
+    let userId = getCurrentUserId();
+    
+    cart[userId] = {};  
+    setCart(cart);
+}
  
 function getFilters() {
     return sessionStorage.getItem("filters");
@@ -261,12 +280,27 @@ function showTime() {
     + ("0" + date.getSeconds()).substr(-2));
 }
 
+function handleCurrentUser() {
+
+}
+
+function handleCart() {
+
+}
+
+function handleLocalStorageChanges() {
+    handleCurrentUser();
+    handleCart();
+    location.reload();
+}
+
 function init() {
     $("#navbar-placeholder").load("navbar.html", function() {
         updateNavbar();
     });
     $("#footer-placeholder").load("footer.html");
     setInterval(showTime, 1000);
+    window.addEventListener("storage", handleLocalStorageChanges);
 }
 
 $(document).ready(init)

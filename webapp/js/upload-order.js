@@ -64,15 +64,14 @@ function addToCart(orderData) {
         cart = {};
     } 
 
-    let uploadedCart = [];
+    let uploadedCart = {};
     for(let i in orderData) {
         let data = orderData[i];
-        let item = {'barcode': data.barcode, 'quantity': data.quantity};
-        uploadedCart.push(item);
+        uploadedCart[data.barcode] = data.quantity;
     }
 
-    let userCart = [];
-    if(cart[userId] !== undefined || cart[userId] !== null) {
+    let userCart = {};
+    if(cart[userId]) {
         userCart = cart[userId];
         cart[userId] = mergeCarts(uploadedCart, userCart);
     } else {
@@ -87,16 +86,11 @@ function replaceCart(orderData) {
     let userId = getCurrentUserId();
     let cart = getCart();
 
-    if(cart === undefined || cart === null) {
-        cart = {};
-    } 
-
-    let userCart = [];
+    let userCart = {};
    
     for(let i in orderData) {
         let data = orderData[i];
-        let item = {'barcode': data.barcode, 'quantity': data.quantity};
-        userCart.push(item);
+        userCart[data.barcode] = data.quantity;
     }
 
     cart[userId] = userCart;

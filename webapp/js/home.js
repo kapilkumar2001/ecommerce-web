@@ -252,7 +252,6 @@ function filterProducts() {
     let selectedFilters = {};
 
     $("input[type='checkbox']").filter(":checked").each(function() {
-
         if (!selectedFilters.hasOwnProperty(this.name)) {
           selectedFilters[this.name] = [];
         }
@@ -261,7 +260,6 @@ function filterProducts() {
     });
 
     setFilters(selectedFilters);
-
     window.location.href = "home.html";
 }
 
