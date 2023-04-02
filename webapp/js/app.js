@@ -38,7 +38,6 @@ function writeFileData(arr){
     tempLink.remove();
 }
 
-
 // TODO: waiting for response ig
 function isUserLoggedIn() {
     let userId = getCurrentUserId();
@@ -370,65 +369,10 @@ function isExistingProduct(barcode, callback) {
     });
 }
 
-// function handleFilters() {
-//     $.ajax({
-//         url: "data/products.json",
-//         dataType: "json",
-//         success: function(data) {
-//             let filters = getFilters();
-                        
-//             if(!filters) {
-//                 filters = JSON.parse(filters);
-
-//                 if(Object.keys(filters).length !== 0) {
-//                     for (let key in filters) {
-//                         let value = filters[key];
-//                         switch(key) {
-//                             case "brand" : 
-//                                 if(filterByBrand(data, value).length === 0) {
-//                                     const index = array.indexOf(value);
-//                                     if (index > -1) { 
-//                                         filters[key].splice(index, 1); 
-//                                     }
-//                                     setFilters(filters);
-//                                 }
-//                                 break;
-//                             case "category" :
-//                                 if(filterByCategory(data, value).length === 0) {
-//                                     const index = array.indexOf(value);
-//                                     if (index > -1) { 
-//                                         filters[key].splice(index, 1); 
-//                                     }
-//                                     setFilters(filters);
-//                                 }
-//                                 break;
-//                             case "gender" :
-//                                 if(filterByGender(data, value).length === 0) {
-//                                     const index = array.indexOf(value);
-//                                     if (index > -1) { 
-//                                         filters[key].splice(index, 1); 
-//                                     }
-//                                     setFilters(filters);
-//                                 }
-//                                 break;
-//                         }
-//                     }
-//                     showProductCard(data);
-//                 }
-//             }
-//         }
-//     });
-// }
-
 function handleLocalStorageChanges() {
     handleCurrentUser();
     handleCart();
-    // handleFilters();
     location.reload();
-
-    // Promise.all([handleCurrentUser(), handleCart()]).then(() => {
-    //     location.reload();
-    // });
 }
 
 function init() {

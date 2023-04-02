@@ -14,24 +14,34 @@ function displayPage(){
 function displayFilters(data) {
     displayBrands(data);
     displayCategories(data);
+    displayColors(data);
     displayGenders(data);
 
     let filters = getFilters();
     if(filters !== null) {
         let brands = JSON.parse(filters)["brand"];
         let categories = JSON.parse(filters)["category"];
+        let colors = JSON.parse(filters)["color"];
         let genders = JSON.parse(filters)["gender"];
     
         for(let i in brands) {
             $("#brand-collapse").addClass("show");
+            $(".reset-btn").removeClass("d-none");
             $("#input-brand-" + brands[i]).find("input").attr("checked" , true);
         }
         for(let i in categories) {
             $("#category-collapse").addClass("show");
+            $(".reset-btn").removeClass("d-none");
             $("#input-category-" + categories[i]).find("input").attr("checked" , true);
+        }
+        for(let i in colors) {
+            $("#color-collapse").addClass("show");
+            $(".reset-btn").removeClass("d-none");
+            $("#input-color-" + colors[i]).find("input").attr("checked" , true);
         }
         for(let i in genders) {
             $("#gender-collapse").addClass("show");
+            $(".reset-btn").removeClass("d-none");
             $("#input-gender-" + genders[i]).find("input").attr("checked" , true);
         }
     }
@@ -73,6 +83,25 @@ function displayCategories(data) {
     }
 
     $("#input-category").remove();
+}
+
+function displayColors(data) {
+    let colors = [];
+    for(let i in data) {
+        colors.push(data[i]["color"]);
+    }
+    colors = Array.from(new Set(colors));
+
+    for(let i in colors) {
+        let node = $("#input-color");
+        let clone = node.clone().attr("id", "input-color-" + colors[i]);
+        $("#color-collapse").append(clone);
+
+        $("#input-color-" + colors[i]).find("label").append(colors[i]);
+        $("#input-color-" + colors[i]).find("input").attr("value", colors[i]);
+    }
+
+    $("#input-color").remove();
 }
 
 function displayGenders(data) {
@@ -138,6 +167,9 @@ function displayProducts(data) {
                         break;
                     case "category" :
                         data = filterByCategory(data, value);
+                        break;
+                    case "color" :
+                        data = filterByColor(data, value);
                         break;
                     case "gender" :
                         data = filterByGender(data, value);
@@ -291,6 +323,20 @@ function filterByCategory(data, categories) {
     return Array.from(filteredData);
 }
 
+function filterByColor(data, colors) {
+    const filteredData = new Set();
+
+    for(let i in data) {
+        for(let j in colors) {
+            if(data[i]["color"] === colors[j]) {
+                filteredData.add(data[i]);
+            }
+        }
+    }
+
+    return Array.from(filteredData);
+}
+
 function filterByGender(data, genders) {
     const filteredData = new Set();
 
@@ -308,6 +354,7 @@ function filterByGender(data, genders) {
 function resetFilters() {
     let filters = {};
     setFilters(filters);
+    $(".reset-btn").addClass("d-none");
     window.location.href = "home.html";
 }
 
