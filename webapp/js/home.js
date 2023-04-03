@@ -375,8 +375,27 @@ function sortByRating() {
     window.location.href = "home.html";
 }
  
+function openFiltersSidebar() {
+    $(".filters-sidebar").removeClass("d-none");
+    $("#no-product").addClass("d-none");
+    $("#products-area").addClass("d-none");
+    $("#sort-by-btn").addClass("d-none");
+    $(".filters-btn").addClass("d-none");
+
+    // TODO: filters should be added here 
+}
+
+function closeFiltersSidebar() {
+    $(".filters-sidebar").addClass("d-none");
+    $("#products-area").removeClass("d-none");
+    $("#sort-by-btn").removeClass("d-none");
+    $(".filters-btn").removeClass("d-none");
+}
+
 function init() {
 	displayPage();
+    $(".filters-btn").click(openFiltersSidebar);
+    $(".close-filters-btn").click(closeFiltersSidebar);
 }
 
 $(document).ready(init);
