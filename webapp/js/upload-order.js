@@ -3,13 +3,21 @@ function clickInputFile() {
     $("#uploaded-cart-items").addClass("d-none");
     $("#uploaded-items-error").addClass("d-none");
     $("#file-error").addClass("d-none");
+    $("#upload-btn-row").addClass("d-none");
 }
 
 function updateFileName() {
-    $("#upload-btn-row").removeClass("d-none");
     let file = $("#file-input");
 	let fileName = file.val().split("\\")[2];
+
+    if(fileName.split('.').pop() !== "csv") {
+        $("#upload-btn-row").addClass("d-none");
+        showFileError("Error: Invalid file attached. The file must be a CSV file.");
+        return;
+    }
+
 	$("#file-name").html(fileName);
+    $("#upload-btn-row").removeClass("d-none");
 }
 
 function showOrder(orderData) {
@@ -241,10 +249,45 @@ function uploadRows(productsData){
     uploadRows(productsData);  
 }
 
+
+function dragenter(e) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    $(".browse-box").addClass("opacity-25 bg-success");
+}
+
+function dragover(e) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    $(".browse-box").addClass("opacity-25 bg-success");
+}
+
+function drop(e) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    $(".browse-box").removeClass("opacity-25 bg-success");
+    $("#file-error").addClass("d-none");
+    $("#uploaded-cart-items").addClass("d-none");
+    $("#uploaded-items-error").addClass("d-none");
+
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    
+    $("#file-input")[0].files = files;
+    updateFileName();
+}
+
 function init() {
     $("#browse-btn").click(clickInputFile);
     $("#file-input").on("change", updateFileName);
     $("#upload-btn").click(validateFile);
+
+    document.getElementById("browse-btn").addEventListener("dragenter", dragenter, false);
+    document.getElementById("browse-btn").addEventListener("dragover", dragover, false);
+    document.getElementById("browse-btn").addEventListener("drop", drop, false);
 }
 
 $(document).ready(init);

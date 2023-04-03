@@ -26,27 +26,29 @@
       </div>
       <div class="row">
         <div class="mx-auto">
-          <h6>Upload csv file to place an order</h6>
+          <h6>Upload CSV file to place an order</h6>
         </div>
       </div>
       <div class="row">
         <input type="file" name="file-input" id="file-input" accept="csv" class="custom-file-input d-none">
         <button id="browse-btn" class="border-0 bg-transparent mx-auto col-8">
           <div class="browse-box">
-            <i class="bi bi-cloud-arrow-up mx-auto fa-4x"></i>
-            <div class="row"><span class="mx-auto">Click to browse</span></div>
+            <i class="bi bi-upload text-muted mx-auto fa-4x"></i>
+            <div class="row"><span class="mx-auto px-5">Drag and Drop the CSV file here or Click to Browse</span></div>
           </div>
         </button>
       </div>
       <div id="sample-file" class="row mb-4">
-        <div class="mx-auto">  
-          <a href="resources/order-sample.csv" target="_blank">Download Sample File</a>
+        <div class="mx-auto col-8">  
+          <div class="row">
+            <a href="resources/order-sample.csv" target="_blank" class="text-dark ml-auto mr-md-4"> Click here to Download Sample File</a>
+          </div>
         </div>
       </div>
       <div id="upload-btn-row" class="row d-none">
         <div class="mx-auto">
-          <span id="file-name" class="pr-2"></span>
-          <button id="upload-btn" class="btn btn-sm btn-primary">Upload</button>
+          <span id="file-name" class="pr-2 text-success font-weight-bold"></span>
+          <button id="upload-btn" class="btn btn-sm btn-success">Upload</button>
         </div>
       </div>
       <div id="file-error" class="d-none row mt-4">
