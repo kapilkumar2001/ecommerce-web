@@ -1,7 +1,3 @@
-function containsOnlyNumbers(str) {
-    return /^[0-9]+$/.test(str);
-}
-
 function readFileData(file, callback){
 	let config = {
 		header: true,
@@ -146,11 +142,16 @@ function setCurrentUserId(userId) {
 }
 
 function getCart() {
-    let cart = JSON.parse(localStorage.getItem("cart"));
-    if(!cart) {
-        cart= {};   
-    }   
-    return cart;
+    try{
+        let cart = JSON.parse(localStorage.getItem("cart"));
+
+        if(!cart) {
+            cart= {};   
+        }   
+        return cart;
+    } catch (e){
+        localStorage.removeItem("cart");
+    }
 }
 
 function setCart(cart) {
@@ -268,15 +269,45 @@ function setSortBy(sortBy) {
     sessionStorage.setItem("sort-by", sortBy); 
 } 
 
+function setCartAndRefreshPage(cart) {
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartIcon();
+    window.location.reload();
+}
+
 function showTime() {
-    var date = new Date();
-    $(".footer").html("&copy; 2023 Increff  <br>" 
-    + ("0" + date.getDate()).substr(-2) + "/"
-    + ("0" + date.getMonth()).substr(-2) + "/"
-    + ("0" + date.getFullYear()).substr(-4) + " "
-    + ("0" + date.getHours()).substr(-2) + ":" 
-    + ("0" + date.getMinutes()).substr(-2) + ":" 
-    + ("0" + date.getSeconds()).substr(-2));
+    var dateObj = new Date();
+    
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    var day = days[dateObj.getDay()];
+    var hr = dateObj.getHours();
+    var min = dateObj.getMinutes();
+
+    if (min < 10) {
+        min = "0" + min;
+    }
+
+    var ampm = "AM";
+
+    if( hr > 12 ) {
+        hr -= 12;
+        ampm = "PM";
+    }
+
+    if(hr < 10) {
+        hr = "0" + hr;
+    }
+
+    var date = dateObj.getDate();
+    var month = months[dateObj.getMonth()];
+    var year = dateObj.getFullYear();
+
+    if(date < 10) {
+        date = "0" + date;
+    }
+    
+    $(".footer").html("&copy; 2023 Increff  <br>" + day + " " + date + " " + month + " " + year +  " " + hr + ":" + min + ampm);
 }
 
 function handleCurrentUser() {
@@ -303,31 +334,32 @@ function handleCurrentUser() {
 
 function handleCart() {
     let cart = getCart();
-    setCart(cart);
+    setCartAndRefreshPage(cart);
     
     for(let i in cart) {
         isExistingUser(i, function(userExists) {
             if(userExists === false && i !== "0") {
                 delete cart[i]; 
-                setCart(cart);
+                setCartAndRefreshPage(cart);
             } else {
                 let userCart = cart[i];
 
                 for(let j in userCart) {
                     isExistingProduct(j, function(productExists) {
+                        console.log("for loop");
                         if(productExists === false) {
                             delete userCart[j];
                             cart[i] = userCart;
-                            setCart(cart);
+                            setCartAndRefreshPage(cart);
                         } else {
                             if(!Number.isInteger(userCart[j])) {
                                 delete userCart[j];
                                 cart[i] = userCart;
-                                setCart(cart);
+                                setCartAndRefreshPage(cart);
                             } else if(userCart[j] <= 0) {
                                 delete userCart[j];
                                 cart[i] = userCart;
-                                setCart(cart);
+                                setCartAndRefreshPage(cart);
                             }
                         }
                     });
@@ -372,7 +404,6 @@ function isExistingProduct(barcode, callback) {
 function handleLocalStorageChanges() {
     handleCurrentUser();
     handleCart();
-    location.reload();
 }
 
 function init() {
@@ -381,7 +412,9 @@ function init() {
     });
     $("#footer-placeholder").load("footer.html");
     setInterval(showTime, 1000);
-    window.addEventListener("storage", handleLocalStorageChanges);
+    $(window).on('storage', function(e) {
+        handleLocalStorageChanges(); 
+    });
 }
 
 $(document).ready(init)

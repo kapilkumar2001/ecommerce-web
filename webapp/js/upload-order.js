@@ -146,17 +146,17 @@ function readFileDataCallback(results){
 	fileData = results.data;
 
     if((results.meta.fields.length !== 2) || (results.meta.fields[0] !== "barcode") || (results.meta.fields[1] !== "quantity")) {
-        showFileError("The headers are invalid in attched file. The file must contain <b>barcode</b> as first column header and <b>quantity</b> as second column header.");
+        showFileError("Error: The headers are invalid in the attched file. The file must contain <b>barcode</b> as first column header and <b>quantity</b> as second column header.");
 		return;
 	}
 
 	if(fileData.length === 0) {
-		showFileError("Attached file is empty.");
+		showFileError("Error: Attached file is empty.");
 		return;
 	}
 
 	if(fileData.length>5000){
-        showFileError("Maximum limit of the rows in uploaded file can be 100.");
+        showFileError("Error: Maximum limit of the rows in uploaded file can be 100.");
 		return;
 	}
 
@@ -207,7 +207,7 @@ function uploadRows(productsData){
             row.rowNumber = processCount; 
             row.error = "Product doesn't exist";
             errorData.push(row);
-        } else if(!containsOnlyNumbers(row.quantity)) {
+        } else if(!isInteger(row.quantity)) {
             row.rowNumber = processCount;
             row.error = "Quantity should be a integer";
             errorData.push(row);

@@ -21,7 +21,7 @@
     <div class="container-fluid d-none">
       <div class="row">
         <div class="col-2 shadow-sm pt-2 pb-2">
-          <div class="position-sticky">
+          <div class="sticky-top">
             <div class="row">
               <h5 class="ml-3 my-auto">Filters</h5>
               <button class="reset-btn ml-auto mr-2 my-auto btn btn-sm btn-outline-dark py-0 d-none" onclick="resetFilters()">Reset</button>
@@ -66,7 +66,11 @@
           </div>
         </div>
         <div class="col-10">
-          <div class="row">
+          <div id="no-product" class="d-none">
+            <div class="row"><i class="bi bi-search text-success fa-10x mx-auto"></i></div>
+            <h5 class="text-center mt-4">Sorry! No product found in this category.</h5>
+          </div>
+          <div id="sort-by-btn" class="row">
             <div class="ml-auto mr-4">
               <div class="dropdown">
                 <button class="btn btn-sm btn-outline-dark border-0 shadow-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -82,10 +86,6 @@
             </div>
           </div>
           <div id="products-area" class="row my-4 mx-1">
-            <div id="no-product" class="col-12 d-none">
-              <img class="img-fluid mx-auto d-block" src="https://img.freepik.com/free-vector/empty-concept-illustration_114360-1233.jpg?w=740&t=st=1679461891~exp=1679462491~hmac=3fe17290709f681240b89cc649606353220e0bf7437be1b2be6a5e0dc6d6dee5" style="height: 50%">
-              <h5 class="text-center mt-4">Sorry! No product found in this category.</h5>
-            </div>
             <div id="product-card" class="product-card d-none p-2 col-sm-12 col-md-6 col-lg-3">
               <div class="card-shadow">
                 <div class="product-images">

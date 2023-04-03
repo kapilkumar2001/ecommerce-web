@@ -188,8 +188,10 @@ function displayProducts(data) {
 function showProductCard(data) {
     if(data.length === 0) {
         $("#no-product").removeClass("d-none");
+        $("#sort-by-btn").addClass("d-none");
     } else {
         $("#no-product").addClass("d-none");
+        $("#sort-by-btn").removeClass("d-none");
 
         for(let i in data) {
             let e = data[i];

@@ -193,7 +193,7 @@ function placeOrder() {
             removeAllItemsFromCart();
 
             $(".place-order-modal").modal("hide");
-            // TODO: display order placed screen
+            window.location.href = "order-placed.html";
         },
     });
 }
