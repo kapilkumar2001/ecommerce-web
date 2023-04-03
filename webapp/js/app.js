@@ -1,3 +1,7 @@
+function containsOnlyNumbers(str) {
+    return /^[0-9]+$/.test(str);
+}
+
 function readFileData(file, callback){
 	let config = {
 		header: true,

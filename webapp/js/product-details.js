@@ -40,18 +40,15 @@ function displayProductDetails(barcode){
                         $(".add-to-cart-btn").attr("onclick", "changeToCountButton('" + barcode + "')");
                         $(".add-to-cart-span").removeClass("d-none");
                         $(".inc-dec-qty-span").addClass("d-none");
-                        $(".buy-now-btn").removeClass("d-none");
-                        $(".buy-now-btn").attr("onclick", "buyNow('" + barcode + "')"); 
-                        $(".go-to-cart-btn").addClass("d-none");    
+                        $(".remove-from-cart-btn").addClass("d-none");
                 } else {
                     $(".inc-qty-btn").attr("onclick", "increaseQuantity('" + barcode + "')");
                     $(".dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "')");
                     $(".inc-dec-qty-span").removeClass("d-none");
                     $(".add-to-cart-span").addClass("d-none");
                     $(".product-qty").html(userCart[barcode]);
-                    $(".go-to-cart-btn").removeClass("d-none"); 
-                    $(".go-to-cart-btn").attr("onclick", "viewCart()"); 
-                    $(".buy-now-btn").addClass("d-none");
+                    $(".remove-from-cart-btn").removeClass("d-none");
+                    $(".remove-from-cart-btn").attr("onclick", "openRemoveItemModal('" + barcode + "')");
                 }      
                 $(".product-details").removeClass("d-none");
                 $(".no-product-found").addClass("d-none");
@@ -86,9 +83,8 @@ function changeToCountButton(barcode) {
     $(".add-to-cart-span").addClass("d-none");
     $(".product-qty").html(quantity);
 
-    $(".go-to-cart-btn").removeClass("d-none"); 
-    $(".go-to-cart-btn").attr("onclick", "viewCart()"); 
-    $(".buy-now-btn").addClass("d-none");
+    $(".remove-from-cart-btn").removeClass("d-none");
+    $(".remove-from-cart-btn").attr("onclick", "openRemoveItemModal('" + barcode + "')");
 }
 
 function increaseQuantity(barcode) {
@@ -109,23 +105,21 @@ function decreaseQuantity(barcode) {
 
 function openRemoveItemModal(barcode) {
     $(".confirm-modal").modal("toggle");
-    $(".btn-yes").attr("onclick", "removeItemFromCart('" + barcode + "')");
+    $(".btn-yes").attr("onclick", "removeItem('" + barcode + "')");
     $(".btn-no").click(() => {
         $(".confirm-modal").modal("hide");
     });
 }
 
-function removeItemFromCart(barcode) {
-    decreaseQuantityInCart(barcode);
+function removeItem(barcode) {
+    removeItemFromCart(barcode);
     
     $(".add-to-cart-btn").attr("onclick", "changeToCountButton('" + barcode + "')");
     $(".add-to-cart-btn").html("Add to cart");
     $(".inc-dec-qty-span").addClass("d-none");
     $(".add-to-cart-span").removeClass("d-none");
 
-    $(".buy-now-btn").removeClass("d-none");
-    $(".buy-now-btn").attr("onclick", "buyNow('" + barcode + "')"); 
-    $(".go-to-cart-btn").addClass("d-none");
+    $(".remove-from-cart-btn").addClass("d-none");
 
     $(".confirm-modal").modal("hide");
     $(".toast-success").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>Product removed from the cart.</span></div>");
