@@ -77,7 +77,7 @@ function decreaseQuantity(barcode, productName) {
 
 function openRemoveItemModal(barcode, productName) {
     $(".confirm-modal").modal("toggle");
-    $(".modal-title").html("Confirm");
+    $(".modal-title").html("Confirm Remove Item");
     $(".modal-body").html("<span class='font-weight-bold'>" +  productName + "</span> will be removed from cart. Are you sure?");
     $(".btn-yes").attr("onclick", "removeItem('" + barcode + "','" + productName + "')");
     $(".btn-no").click(() => {
@@ -200,7 +200,7 @@ function placeOrder() {
 
 function openClearCartModal() {
     $(".confirm-modal").modal("toggle");
-    $(".modal-title").html("Confirm");
+    $(".modal-title").html("Confirm Clear Cart");
     $(".modal-body").html("The cart will be empty. Are you sure?");
     $(".btn-yes").attr("onclick", "clearCart()");
     $(".btn-no").click(() => {

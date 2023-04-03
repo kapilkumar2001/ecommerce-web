@@ -207,7 +207,7 @@ function uploadRows(productsData){
             row.rowNumber = processCount; 
             row.error = "Product doesn't exist";
             errorData.push(row);
-        } else if(!isInteger(row.quantity)) {
+        } else if(!containsOnlyNumbers(row.quantity)) {
             row.rowNumber = processCount;
             row.error = "Quantity should be a integer";
             errorData.push(row);
