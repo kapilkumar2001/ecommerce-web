@@ -2,7 +2,7 @@ function login(){
 	let email = $("#login-form input[name=email]").val();
 	let password = $("#login-form input[name=password]").val();
 
-	if(!validateEmailandPassword(email, password)) {
+	if(!validateEmail(email, password)) {
 		return;
     }
 
@@ -33,26 +33,24 @@ function login(){
                 $(".toast-error").toast("show");
 			} else {
 				setCurrentUserId(userId);
-
-				let cart = getCart();
-				let guestCart = cart["0"];
-				let userCart = [];
-
-				if(cart[userId] !== null) {
-					userCart = cart[userId];
-				}
-				
-				cart[userId] = mergeCarts(guestCart, userCart);
-				cart["0"] = [];
-
-				setCart(cart);
+				mergeGuestCartToUserCart(userId);
 				window.location.href = "home.html";
 			}
 		},
 	});
 }
 
-function validateEmailandPassword(mail, password){
+function mergeGuestCartToUserCart(userId) {
+	let cart = getCart();
+	let guestCart = getGuestCart();
+	let userCart = getUserCart();
+	
+	cart[userId] = mergeCarts(guestCart, userCart);
+	cart["0"] = {};
+	setCart(cart);
+}
+
+function validateEmail(mail, password){
 	if(mail === "" || password === ""){
 		$(".toast-error").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>Please fill all the fields.</span></div>");
 		$(".toast-error").toast("show");
@@ -66,11 +64,6 @@ function validateEmailandPassword(mail, password){
         $(".toast-error").toast("show");
 	    return false;
 	} 
-	else if(password.length<6) {
-		$(".toast-error").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>Password should contain more than 6 characters</span></div>");
-        $(".toast-error").toast("show");
-	    return false;
-	}
 	
 	return true;
 }
@@ -86,10 +79,10 @@ function showOrHidePassword() {
 	var input = $($(this).attr("toggle"));
 
 	if (input.attr("type") == "password") {
-		$(this).attr('data-original-title', 'Hide');
+		$(this).attr('data-original-title', 'Hide Password');
 	  	input.attr("type", "text");
 	} else {
-		$(this).attr('data-original-title', 'Show');
+		$(this).attr('data-original-title', 'Show Password');
 	  	input.attr("type", "password");
 	}
 }

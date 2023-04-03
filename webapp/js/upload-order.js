@@ -64,15 +64,14 @@ function addToCart(orderData) {
         cart = {};
     } 
 
-    let uploadedCart = [];
+    let uploadedCart = {};
     for(let i in orderData) {
         let data = orderData[i];
-        let item = {'barcode': data.barcode, 'quantity': data.quantity};
-        uploadedCart.push(item);
+        uploadedCart[data.barcode] = data.quantity;
     }
 
-    let userCart = [];
-    if(cart[userId] !== undefined || cart[userId] !== null) {
+    let userCart = {};
+    if(cart[userId]) {
         userCart = cart[userId];
         cart[userId] = mergeCarts(uploadedCart, userCart);
     } else {
@@ -87,16 +86,11 @@ function replaceCart(orderData) {
     let userId = getCurrentUserId();
     let cart = getCart();
 
-    if(cart === undefined || cart === null) {
-        cart = {};
-    } 
-
-    let userCart = [];
+    let userCart = {};
    
     for(let i in orderData) {
         let data = orderData[i];
-        let item = {'barcode': data.barcode, 'quantity': data.quantity};
-        userCart.push(item);
+        userCart[data.barcode] = data.quantity;
     }
 
     cart[userId] = userCart;
@@ -152,17 +146,17 @@ function readFileDataCallback(results){
 	fileData = results.data;
 
     if((results.meta.fields.length !== 2) || (results.meta.fields[0] !== "barcode") || (results.meta.fields[1] !== "quantity")) {
-        showFileError("The headers are invalid in attched file. The file must contain <b>barcode</b> as first column header and <b>quantity</b> as second column header.");
+        showFileError("Error: The headers are invalid in the attched file. The file must contain <b>barcode</b> as first column header and <b>quantity</b> as second column header.");
 		return;
 	}
 
 	if(fileData.length === 0) {
-		showFileError("Attached file is empty.");
+		showFileError("Error: Attached file is empty.");
 		return;
 	}
 
 	if(fileData.length>5000){
-        showFileError("Maximum limit of the rows in uploaded file can be 100.");
+        showFileError("Error: Maximum limit of the rows in uploaded file can be 100.");
 		return;
 	}
 
@@ -213,7 +207,7 @@ function uploadRows(productsData){
             row.rowNumber = processCount; 
             row.error = "Product doesn't exist";
             errorData.push(row);
-        } else if(!containsOnlyNumbers(row.quantity)) {
+        } else if(!isInteger(row.quantity)) {
             row.rowNumber = processCount;
             row.error = "Quantity should be a integer";
             errorData.push(row);

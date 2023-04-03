@@ -23,3 +23,9 @@ a {
 img {
     cursor: pointer;
 }
+
+.sticky {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+}

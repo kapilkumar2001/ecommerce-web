@@ -14,24 +14,34 @@ function displayPage(){
 function displayFilters(data) {
     displayBrands(data);
     displayCategories(data);
+    displayColors(data);
     displayGenders(data);
 
     let filters = getFilters();
     if(filters !== null) {
         let brands = JSON.parse(filters)["brand"];
         let categories = JSON.parse(filters)["category"];
+        let colors = JSON.parse(filters)["color"];
         let genders = JSON.parse(filters)["gender"];
     
         for(let i in brands) {
             $("#brand-collapse").addClass("show");
+            $(".reset-btn").removeClass("d-none");
             $("#input-brand-" + brands[i]).find("input").attr("checked" , true);
         }
         for(let i in categories) {
             $("#category-collapse").addClass("show");
+            $(".reset-btn").removeClass("d-none");
             $("#input-category-" + categories[i]).find("input").attr("checked" , true);
+        }
+        for(let i in colors) {
+            $("#color-collapse").addClass("show");
+            $(".reset-btn").removeClass("d-none");
+            $("#input-color-" + colors[i]).find("input").attr("checked" , true);
         }
         for(let i in genders) {
             $("#gender-collapse").addClass("show");
+            $(".reset-btn").removeClass("d-none");
             $("#input-gender-" + genders[i]).find("input").attr("checked" , true);
         }
     }
@@ -75,6 +85,25 @@ function displayCategories(data) {
     $("#input-category").remove();
 }
 
+function displayColors(data) {
+    let colors = [];
+    for(let i in data) {
+        colors.push(data[i]["color"]);
+    }
+    colors = Array.from(new Set(colors));
+
+    for(let i in colors) {
+        let node = $("#input-color");
+        let clone = node.clone().attr("id", "input-color-" + colors[i]);
+        $("#color-collapse").append(clone);
+
+        $("#input-color-" + colors[i]).find("label").append(colors[i]);
+        $("#input-color-" + colors[i]).find("input").attr("value", colors[i]);
+    }
+
+    $("#input-color").remove();
+}
+
 function displayGenders(data) {
     let genders = [];
     for(let i in data) {
@@ -111,8 +140,8 @@ function sortProducts(data) {
             $(".sort-by").html("Rating");
             break;
         default :
-            data = data.sort((d1, d2) => (d1.price < d2.price) ? 1 : (d1.price > d2.price) ? -1 : 0);
-            $(".sort-by").html("Price: High to Low");
+            data = data.sort((d1, d2) => (d1.rating < d2.rating) ? 1 : (d1.rating > d2.rating) ? -1 : 0);
+            $(".sort-by").html("Rating");
             break;
     }
 
@@ -122,7 +151,7 @@ function sortProducts(data) {
 function displayProducts(data) {
     let filters = getFilters();
                 
-    if(filters === null) {
+    if(!filters) {
         showProductCard(data);
     } else {
         filters = JSON.parse(filters);
@@ -138,6 +167,9 @@ function displayProducts(data) {
                         break;
                     case "category" :
                         data = filterByCategory(data, value);
+                        break;
+                    case "color" :
+                        data = filterByColor(data, value);
                         break;
                     case "gender" :
                         data = filterByGender(data, value);
@@ -156,8 +188,10 @@ function displayProducts(data) {
 function showProductCard(data) {
     if(data.length === 0) {
         $("#no-product").removeClass("d-none");
+        $("#sort-by-btn").addClass("d-none");
     } else {
         $("#no-product").addClass("d-none");
+        $("#sort-by-btn").removeClass("d-none");
 
         for(let i in data) {
             let e = data[i];
@@ -186,13 +220,9 @@ function showProductCard(data) {
             $("#product-card-" + e["barcode"] + " .product-discount").html(e["discountPercent"] + "%off");
             $("#product-card-" + e["barcode"] + " .product-discount").attr("href", "product-details.html?barcode=" + e['barcode']);
             
-            let cart = getCart();
-            let userId = getCurrentUserId();
+            let userCart = getUserCart();
 
-            if(cart === null || cart[userId] === undefined
-                || filterByBarcode(cart[userId], e['barcode']) === undefined
-                || filterByBarcode(cart[userId], e['barcode']).quantity === undefined 
-                || parseInt(filterByBarcode(cart[userId], e['barcode']).quantity) === 0) {
+            if(!userCart[e["barcode"]] || parseInt(userCart[e["barcode"]]) < 0) {
                     $("#product-card-" + e["barcode"] + " .add-to-cart-btn").attr("onclick", "changeToCountButton('" + e['barcode'] + "')")
                     $("#product-card-" + e["barcode"] + " .add-to-cart-span").removeClass("d-none");
                     $("#product-card-" + e["barcode"] + " .inc-dec-qty-span").addClass("d-none");
@@ -201,7 +231,7 @@ function showProductCard(data) {
                 $("#product-card-" + e["barcode"] + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + e['barcode'] + "')");
                 $("#product-card-" + e["barcode"] + " .inc-dec-qty-span").removeClass("d-none");
                 $("#product-card-" + e["barcode"] + " .add-to-cart-span").addClass("d-none");
-                $("#product-card-" + e["barcode"] + " .product-qty").html(parseInt(filterByBarcode(cart[userId], e['barcode']).quantity));
+                $("#product-card-" + e["barcode"] + " .product-qty").html(parseInt(userCart[e["barcode"]]));
             }
 
             $("#product-card-" + e["barcode"] + " .carousel").carousel({
@@ -220,106 +250,31 @@ function showProductCard(data) {
 }
 
 function changeToCountButton(barcode) {
-    let button = $("#product-card-" + barcode + " .add-to-cart-btn");
-    button.empty();
+    let quantity = increaseQuantityInCart(barcode);
 
-    let cart =  getCart();
-    let userId = getCurrentUserId();
-    let item = {'barcode': barcode, 'quantity': 1};
-
-    if(cart !== null) {
-        if(cart[userId] === undefined || cart[userId] === null) {
-            let userCart = [];
-            userCart.push(item);
-            cart[userId] = userCart;
-        }
-
-        let userCart = cart[userId];
-        let existsInUserCart = 0;
-
-        for(let i in userCart) {
-            if(userCart[i]['barcode'] === barcode) {
-                userCart[i]['quantity'] = 1;
-                existsInUserCart = 1;
-                break;
-            }
-        }
-
-        if(existsInUserCart === 0) {
-            userCart.push(item);
-        }
-
-        cart[userId] = userCart;  
-    } else {
-        let userCart = [];
-        userCart.push(item);
-        cart= {};
-        cart[userId] = userCart;  
-    }
-
-    setCart(cart);
     $("#product-card-" + barcode + " .inc-qty-btn").attr("onclick", "increaseQuantity('" + barcode + "')");
     $("#product-card-" + barcode + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "')");
     $("#product-card-" + barcode + " .inc-dec-qty-span").removeClass("d-none");
     $("#product-card-" + barcode + " .add-to-cart-span").addClass("d-none");
-    $("#product-card-" + barcode + " .product-qty").html(1);
+    $("#product-card-" + barcode + " .product-qty").html(quantity);
 }
 
 function increaseQuantity(barcode) {
-    let cart =  getCart();
-    let userId = getCurrentUserId();
-    let userCart = cart[userId];
-    let quantity = parseInt(filterByBarcode(userCart, barcode).quantity);
-    
-    for(let i in userCart) {
-        if(userCart[i]['barcode'] === barcode) {
-            userCart[i]['quantity'] = quantity + 1;
-            break;
-        }
-    }
-
-    cart[userId] = userCart;  
-    setCart(cart);
-    $("#product-card-" + barcode + " .product-qty").html(quantity + 1);
+    let quantity = increaseQuantityInCart(barcode);
+    $("#product-card-" + barcode + " .product-qty").html(quantity);
 }
 
 function decreaseQuantity(barcode) {
-    let cart = getCart();
-    let userId = getCurrentUserId();
-    let userCart = cart[userId];
-    let quantity = 0;
+    let quantity = decreaseQuantityInCart(barcode);
 
-    if(filterByBarcode(userCart, barcode) != null) {
-        quantity = parseInt(filterByBarcode(userCart, barcode).quantity);
-    }
-
-    if(quantity > 1) {
-        for(let i in userCart) {
-            if(userCart[i]['barcode'] === barcode) {
-                userCart[i]['quantity'] = quantity - 1;
-                break;
-            }
-        }
-
-        cart[userId] = userCart;  
-        setCart(cart);
-
-        $("#product-card-" + barcode + " .product-qty").html(quantity - 1);
-    } else if(quantity === 1) {
-        for(let i in userCart) {
-            if(userCart[i]['barcode'] === barcode) {
-                userCart[i]['quantity'] = 0;
-                break;
-            }
-        }
-
-        cart[userId] = userCart;  
-        setCart(cart);
+    if(quantity >= 1) {
+        $("#product-card-" + barcode + " .product-qty").html(quantity);
+    } else {
         $("#product-card-" + barcode + " .add-to-cart-btn").attr("onclick", "changeToCountButton('" + barcode + "')");
         $("#product-card-" + barcode + " .add-to-cart-btn").html("Add to cart");
         $("#product-card-" + barcode + " .inc-dec-qty-span").addClass("d-none");
         $("#product-card-" + barcode + " .add-to-cart-span").removeClass("d-none");
-    }
+    } 
 }
 
 function viewProduct(barcode) {
@@ -331,7 +286,6 @@ function filterProducts() {
     let selectedFilters = {};
 
     $("input[type='checkbox']").filter(":checked").each(function() {
-
         if (!selectedFilters.hasOwnProperty(this.name)) {
           selectedFilters[this.name] = [];
         }
@@ -340,7 +294,6 @@ function filterProducts() {
     });
 
     setFilters(selectedFilters);
-
     window.location.href = "home.html";
 }
 
@@ -372,6 +325,20 @@ function filterByCategory(data, categories) {
     return Array.from(filteredData);
 }
 
+function filterByColor(data, colors) {
+    const filteredData = new Set();
+
+    for(let i in data) {
+        for(let j in colors) {
+            if(data[i]["color"] === colors[j]) {
+                filteredData.add(data[i]);
+            }
+        }
+    }
+
+    return Array.from(filteredData);
+}
+
 function filterByGender(data, genders) {
     const filteredData = new Set();
 
@@ -389,6 +356,7 @@ function filterByGender(data, genders) {
 function resetFilters() {
     let filters = {};
     setFilters(filters);
+    $(".reset-btn").addClass("d-none");
     window.location.href = "home.html";
 }
 

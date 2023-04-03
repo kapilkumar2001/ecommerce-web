@@ -1,14 +1,3 @@
-function filterByBarcode(data, barcode) {
-    return data.filter(
-        function(data) {
-            return (data['barcode'] == barcode);
-        })[0];
-}
-
-function containsOnlyNumbers(str) {
-    return /^[0-9]+$/.test(str);
-}
-
 function readFileData(file, callback){
 	let config = {
 		header: true,
@@ -45,10 +34,28 @@ function writeFileData(arr){
     tempLink.remove();
 }
 
-function setLoginLogoutIcon() { 
-    let userId = getCurrentUserId(); 
+// TODO: waiting for response ig
+function isUserLoggedIn() {
+    let userId = getCurrentUserId();
 
-    if(userId === '0') {
+    $.ajax({
+		url: "data/users.json",
+        dataType: "json",	  	   
+		success: function(data) {
+			for(let i in data) {
+                if(data[i]["id"] === userId) { 
+                    return true;
+                }
+            }
+
+            setCurrentUserId("0");
+            return false;
+        }
+    });
+}
+
+function setLoginLogoutIcon() {
+    if(getCurrentUserId() === "0") {
         $("#navbar-login-logout").html("<a class='nav-link'><i class='bi bi-box-arrow-in-right fa-lg' data-toggle='tooltip' data-placement='bottom' title='login'></i></a>");
     } else {
         $("#navbar-login-logout").html("<a class='nav-link'><i class='bi bi-box-arrow-right fa-lg' data-toggle='tooltip' data-placement='bottom' title='logout''></i></a>");
@@ -64,7 +71,7 @@ function openLogoutModal() {
 }
 
 function logout() {
-    localStorage.setItem("current-user-id", 0); 
+    localStorage.setItem("current-user-id", "0"); 
     window.location.href = "home.html";
 } 
 
@@ -84,23 +91,14 @@ function updateNavbar() {
 }
 
 function getCartItemsCount() {
-    let cart = getCart();
-    let userId = getCurrentUserId();
-    let userCart;
+    let userCart = getUserCart();
+    let itemsCount = 0;
 
-    if(cart !== null) {
-        if(cart[userId] !== undefined) {
-            userCart = cart[userId];
-            let itemsCount = 0;
-    
-            for(let i in userCart) {
-                itemsCount += userCart[i]["quantity"];
-            }
-    
-            return itemsCount;
-        } 
+    for(let i in userCart) {
+        itemsCount += userCart[i];
     }
-    return 0;
+
+    return itemsCount;
 }
 
 function updateCartIcon() {
@@ -109,52 +107,30 @@ function updateCartIcon() {
 }
 
 function mergeCarts(cart1, cart2) {
-	let newCart = [];
+	let newCart = {};
 
-	for(let i in cart2) {
-		let flag = 0;
-		for(let j in cart1) {
-			if(cart2[i]["barcode"] === cart1[j]["barcode"]) {
-				newCart.push({
-					"barcode" : cart2[i]["barcode"], 
-					"quantity" : cart2[i]["quantity"] + cart1[j]["quantity"]
-				});
-				flag = 1;
-				break;
-			}
-		}
-		if(flag === 0) {
-			newCart.push({
-				"barcode" : cart2[i]["barcode"], 
-				"quantity" : cart2[i]["quantity"]
-			});
-		}
-	}
+    for (let i in cart1){
+        if(!cart2[i]) {
+            newCart[i] = cart1[i];
+        } else {
+            newCart[i] =  cart1[i] + cart2[i];
+        }
+    } 
 
-	for(let i in cart1) {
-		let flag = 0;
-		for(let j in cart2) {
-			if(cart2[j]["barcode"] === cart1[i]["barcode"]) {
-				flag = 1;
-				break;
-			}
-		}
-		if(flag === 0) {
-			newCart.push({
-				"barcode" : cart1[i]["barcode"], 
-				"quantity" : cart1[i]["quantity"]
-			});
-		}
-	}
+    for (let i in cart2){
+        if(!cart1[i]) {
+            newCart[i] = cart2[i];
+        } 
+    } 
 
 	return newCart;
 }
 
 function getCurrentUserId() {
-    let currentUserId = localStorage.getItem('current-user-id');
+    let currentUserId = localStorage.getItem("current-user-id");
 
-    if(currentUserId === null) {
-        localStorage.setItem('current-user-id', 0);
+    if(!currentUserId) {
+        setCurrentUserId("0");
         currentUserId = 0;
     }
 
@@ -166,7 +142,16 @@ function setCurrentUserId(userId) {
 }
 
 function getCart() {
-    return JSON.parse(localStorage.getItem("cart"));
+    try{
+        let cart = JSON.parse(localStorage.getItem("cart"));
+
+        if(!cart) {
+            cart= {};   
+        }   
+        return cart;
+    } catch (e){
+        localStorage.removeItem("cart");
+    }
 }
 
 function setCart(cart) {
@@ -174,6 +159,100 @@ function setCart(cart) {
     updateCartIcon();
 }
 
+function getUserCart() {
+    let cart = getCart();
+    let userId = getCurrentUserId();
+    let userCart;
+
+    if(!cart[userId]) {
+        userCart = {};
+    } else {
+        userCart = cart[userId];
+    }
+
+    return userCart;
+}
+
+function getGuestCart() {
+    let cart = getCart();
+    let guestCart;
+	
+    if(!cart["0"]) {
+        guestCart = {};
+    } else {
+        guestCart = cart["0"];
+    }
+
+    return guestCart;
+}
+
+function increaseQuantityInCart(barcode) {
+    let cart =  getCart();
+    let userId = getCurrentUserId();
+
+    if(!cart[userId]) {
+        cart[userId] = {};
+    } 
+
+    if(!cart[userId][barcode] || cart[userId][barcode] < 0) {
+        cart[userId][barcode] = 0;
+    }
+    
+    cart[userId][barcode] = cart[userId][barcode] + 1; 
+
+    setCart(cart);
+
+    return cart[userId][barcode];
+}
+
+function decreaseQuantityInCart(barcode) {
+    let cart = getCart();
+    let userId = getCurrentUserId();
+   
+    if(!cart[userId]) {
+        cart[userId] = {};
+    }
+
+    if(!cart[userId][barcode] || cart[userId][barcode] < 0) {
+        cart[userId][barcode] = 0;
+    }
+
+    if(cart[userId][barcode] > 1) {
+        cart[userId][barcode] = cart[userId][barcode] - 1;
+        setCart(cart);
+        return cart[userId][barcode];
+    } else {
+        delete cart[userId][barcode];
+        setCart(cart);
+        return 0;
+    } 
+}
+
+function removeItemFromCart(barcode) {
+    let cart = getCart();
+    let userId = getCurrentUserId();
+   
+    if(!cart[userId]) {
+        cart[userId] = {};
+    }
+
+    if(!cart[userId][barcode] || cart[userId][barcode] < 0) {
+        cart[userId][barcode] = 0;
+    }
+
+    delete cart[userId][barcode];
+    setCart(cart);
+    return 0;    
+}
+
+function removeAllItemsFromCart() {
+    let cart = getCart();
+    let userId = getCurrentUserId();
+    
+    cart[userId] = {};  
+    setCart(cart);
+}
+ 
 function getFilters() {
     return sessionStorage.getItem("filters");
 }
@@ -190,15 +269,141 @@ function setSortBy(sortBy) {
     sessionStorage.setItem("sort-by", sortBy); 
 } 
 
+function setCartAndRefreshPage(cart) {
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartIcon();
+    window.location.reload();
+}
+
 function showTime() {
-    var date = new Date();
-    $(".footer").html("&copy; 2023 Increff  <br>" 
-    + ("0" + date.getDate()).substr(-2) + "/"
-    + ("0" + date.getMonth()).substr(-2) + "/"
-    + ("0" + date.getFullYear()).substr(-4) + " "
-    + ("0" + date.getHours()).substr(-2) + ":" 
-    + ("0" + date.getMinutes()).substr(-2) + ":" 
-    + ("0" + date.getSeconds()).substr(-2));
+    var dateObj = new Date();
+    
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    var day = days[dateObj.getDay()];
+    var hr = dateObj.getHours();
+    var min = dateObj.getMinutes();
+
+    if (min < 10) {
+        min = "0" + min;
+    }
+
+    var ampm = "AM";
+
+    if( hr > 12 ) {
+        hr -= 12;
+        ampm = "PM";
+    }
+
+    if(hr < 10) {
+        hr = "0" + hr;
+    }
+
+    var date = dateObj.getDate();
+    var month = months[dateObj.getMonth()];
+    var year = dateObj.getFullYear();
+
+    if(date < 10) {
+        date = "0" + date;
+    }
+    
+    $(".footer").html("&copy; 2023 Increff  <br>" + day + " " + date + " " + month + " " + year +  " " + hr + ":" + min + ampm);
+}
+
+function handleCurrentUser() {
+    let userId = localStorage.getItem("current-user-id");
+
+    $.ajax({
+		url: "data/users.json",
+        dataType: "json",	  	   
+		success: function(data) {
+            let existingUser = false;
+
+			for(let i in data) {
+                if(data[i]["id"] === userId) { 
+                    existingUser = true;
+                }
+            }
+
+            if(existingUser === false) {
+                setCurrentUserId("0");
+            }
+        }
+    });
+}
+
+function handleCart() {
+    let cart = getCart();
+    setCartAndRefreshPage(cart);
+    
+    for(let i in cart) {
+        isExistingUser(i, function(userExists) {
+            if(userExists === false && i !== "0") {
+                delete cart[i]; 
+                setCartAndRefreshPage(cart);
+            } else {
+                let userCart = cart[i];
+
+                for(let j in userCart) {
+                    isExistingProduct(j, function(productExists) {
+                        console.log("for loop");
+                        if(productExists === false) {
+                            delete userCart[j];
+                            cart[i] = userCart;
+                            setCartAndRefreshPage(cart);
+                        } else {
+                            if(!Number.isInteger(userCart[j])) {
+                                delete userCart[j];
+                                cart[i] = userCart;
+                                setCartAndRefreshPage(cart);
+                            } else if(userCart[j] <= 0) {
+                                delete userCart[j];
+                                cart[i] = userCart;
+                                setCartAndRefreshPage(cart);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+}
+
+function isExistingUser(userId, callback) {
+    $.ajax({
+        url: "data/users.json",
+        dataType: "json",
+        success: function(data) {
+            for (let i in data) {
+                if (data[i]["id"] === userId) {
+                    callback(true);
+                    return;
+                }
+            }
+            callback(false);
+        }
+    });
+}
+
+function isExistingProduct(barcode, callback) {
+    $.ajax({
+        url: "data/products.json",
+        dataType: "json",
+        success: function(data) {
+            for (let i in data) {
+                if (data[i]["barcode"] == barcode) {
+                    callback(true);
+                    return;
+                }
+            }
+            callback(false);
+        }
+    });
+}
+
+function handleLocalStorageChanges() {
+    handleCurrentUser();
+    handleCart();
 }
 
 function init() {
@@ -207,6 +412,9 @@ function init() {
     });
     $("#footer-placeholder").load("footer.html");
     setInterval(showTime, 1000);
+    $(window).on('storage', function(e) {
+        handleLocalStorageChanges(); 
+    });
 }
 
 $(document).ready(init)

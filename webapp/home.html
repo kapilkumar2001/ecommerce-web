@@ -21,41 +21,56 @@
     <div class="container-fluid d-none">
       <div class="row">
         <div class="col-2 shadow-sm pt-2 pb-2">
-          <div class="row">
-            <h5 class="ml-3 my-auto">Filters</h5>
-            <button class="ml-auto mr-2 my-auto btn btn-sm btn-outline-dark py-0" onclick="resetFilters()">Reset</button>
-          </div>
-          <hr>
-          <div class="category-filter">
-            <button class="btn bg-transparent border-0 p-0" type="button" data-toggle="collapse" data-target="#category-collapse" aria-expanded="false" aria-controls="category-collapse">
-              Category <i class="bi bi-caret-down-fill ml-auto"></i>
-            </button>
-            <div class="collapse pt-2 px-2" id="category-collapse">
-              <div id="input-category"><label><input type="checkbox" name="category" class="mr-2"></label><br></div>
+          <div class="sticky-top">
+            <div class="row">
+              <h5 class="ml-3 my-auto">Filters</h5>
+              <button class="reset-btn ml-auto mr-2 my-auto btn btn-sm btn-outline-dark py-0 d-none" onclick="resetFilters()">Reset</button>
             </div>
-          </div>
-          <hr>
-          <div class="brand-filter">
-            <button class="btn bg-transparent border-0 p-0" type="button" data-toggle="collapse" data-target="#brand-collapse" aria-expanded="false" aria-controls="brand-collapse">
-              Brand <i class="bi bi-caret-down-fill ml-auto"></i>
-            </button>
-            <div class="collapse pt-2 px-2" id="brand-collapse">
-              <div id="input-brand"><label><input type="checkbox" name="brand" class="mr-2"></label><br></div>
+            <hr>
+            <div class="category-filter">
+              <button class="btn bg-transparent border-0 p-0" type="button" data-toggle="collapse" data-target="#category-collapse" aria-expanded="false" aria-controls="category-collapse">
+                Category <i class="bi bi-caret-down-fill ml-auto"></i>
+              </button>
+              <div class="collapse pt-2 px-2" id="category-collapse">
+                <div id="input-category"><label><input type="checkbox" name="category" class="mr-2"></label><br></div>
+              </div>
             </div>
-          </div>
-          <hr>
-          <div class="gender-filter">
-            <button class="btn bg-transparent border-0 p-0" type="button" data-toggle="collapse" data-target="#gender-collapse" aria-expanded="false" aria-controls="gender-collapse">
-              Gender <i class="bi bi-caret-down-fill ml-auto"></i>
-            </button>
-            <div class="collapse pt-2 px-2" id="gender-collapse">
-              <div id="input-gender"><label><input type="checkbox" name="gender" class="mr-2"></label><br></div>
+            <hr>
+            <div class="brand-filter">
+              <button class="btn bg-transparent border-0 p-0" type="button" data-toggle="collapse" data-target="#brand-collapse" aria-expanded="false" aria-controls="brand-collapse">
+                Brand <i class="bi bi-caret-down-fill ml-auto"></i>
+              </button>
+              <div class="collapse pt-2 px-2" id="brand-collapse">
+                <div id="input-brand"><label><input type="checkbox" name="brand" class="mr-2"></label><br></div>
+              </div>
             </div>
+            <hr>
+            <div class="color-filter">
+              <button class="btn bg-transparent border-0 p-0" type="button" data-toggle="collapse" data-target="#color-collapse" aria-expanded="false" aria-controls="color-collapse">
+                Color <i class="bi bi-caret-down-fill ml-auto"></i>
+              </button>
+              <div class="collapse pt-2 px-2" id="color-collapse">
+                <div id="input-color"><label><input type="checkbox" name="color" class="mr-2"></label><br></div>
+              </div>
+            </div>
+            <hr>
+            <div class="gender-filter">
+              <button class="btn bg-transparent border-0 p-0" type="button" data-toggle="collapse" data-target="#gender-collapse" aria-expanded="false" aria-controls="gender-collapse">
+                Gender <i class="bi bi-caret-down-fill ml-auto"></i>
+              </button>
+              <div class="collapse pt-2 px-2" id="gender-collapse">
+                <div id="input-gender"><label><input type="checkbox" name="gender" class="mr-2"></label><br></div>
+              </div>
+            </div>
+            <hr>
           </div>
-          <hr>
         </div>
         <div class="col-10">
-          <div class="row">
+          <div id="no-product" class="d-none">
+            <div class="row"><i class="bi bi-search text-success fa-10x mx-auto"></i></div>
+            <h5 class="text-center mt-4">Sorry! No product found in this category.</h5>
+          </div>
+          <div id="sort-by-btn" class="row">
             <div class="ml-auto mr-4">
               <div class="dropdown">
                 <button class="btn btn-sm btn-outline-dark border-0 shadow-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -71,10 +86,6 @@
             </div>
           </div>
           <div id="products-area" class="row my-4 mx-1">
-            <div id="no-product" class="col-12 d-none">
-              <img class="img-fluid mx-auto d-block" src="https://img.freepik.com/free-vector/empty-concept-illustration_114360-1233.jpg?w=740&t=st=1679461891~exp=1679462491~hmac=3fe17290709f681240b89cc649606353220e0bf7437be1b2be6a5e0dc6d6dee5" style="height: 50%">
-              <h5 class="text-center mt-4">Sorry! No product found in this category.</h5>
-            </div>
             <div id="product-card" class="product-card d-none p-2 col-sm-12 col-md-6 col-lg-3">
               <div class="card-shadow">
                 <div class="product-images">
@@ -112,10 +123,10 @@
                       <a class="product-price text-body"><b></b></a><br>
                       <a class="product-mrp text-secondary"><s></s></a>
                     </div>
-                    <span class='add-to-cart-span ml-auto d-none mr-4'>
+                    <span class='add-to-cart-span ml-auto d-none mr-3'>
                       <button class='add-to-cart-btn border border-success btn btn-outline-success btn-sm mx-2 px-2 py-1 rounded'>Add to cart</button>
                     </span>
-                    <span class='inc-dec-qty-span border border-success ml-auto d-none mr-3 rounded mr-4'>
+                    <span class='inc-dec-qty-span border border-success ml-auto d-none mr-4 rounded'>
                       <button class='dec-qty-btn btn-sm border-0 bg-transparent text-success'><i class='bi bi-dash-lg py-1 pl-1 align-middle'></i></button> 
                       <span class='product-qty align-middle text-success'></span> 
                       <button class='inc-qty-btn btn-sm border-0 bg-transparent text-success'><i class='bi bi-plus-lg py-1 pr-1 align-middle'></i></button>
