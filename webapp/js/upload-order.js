@@ -1,3 +1,15 @@
+function displayPage() {
+    let userId = getCurrentUserId();
+
+    if (userId === "0") {
+        $(".logged-in").addClass("d-none");
+        $(".not-logged-in").removeClass("d-none");
+    } else {
+        $(".logged-in").removeClass("d-none");
+        $(".not-logged-in").addClass("d-none");
+    }
+}
+
 function clickInputFile() {
     $("#file-input").click();
     $("#uploaded-cart-items").addClass("d-none");
@@ -8,15 +20,15 @@ function clickInputFile() {
 
 function updateFileName() {
     let file = $("#file-input");
-	let fileName = file.val().split("\\")[2];
+    let fileName = file.val().split("\\")[2];
 
-    if(fileName.split('.').pop() !== "csv") {
+    if (fileName.split('.').pop() !== "csv") {
         $("#upload-btn-row").addClass("d-none");
         showFileError("Error: Invalid file attached. The file must be a CSV file.");
         return;
     }
 
-	$("#file-name").html(fileName);
+    $("#file-name").html(fileName);
     $("#upload-btn-row").removeClass("d-none");
 }
 
@@ -29,23 +41,26 @@ function showOrder(orderData) {
     let totalAmount = 0;
     let itemsCount = 0;
 
-    for(let i in orderData) {
+    for (let i in orderData) {
         let data = orderData[i];
 
         showCartItem(data);
-            
+
         totalAmount += parseInt(data.price * data.quantity);
         itemsCount += parseInt(data.quantity);
     }
-
-    console.log(orderData);
 
     $("#uploaded-cart-item").remove();
     $(".card-title").html("Uploaded Items (" + itemsCount + ")");
     $(".total-amount").html("₹" + parseFloat(totalAmount).toFixed(2).toLocaleString());
 
+    orderDataArray = convertMapToArray(orderData);
+
+    console.log(orderDataArray);
     $(".add-to-cart-btn").attr("onclick", "addToCart(" + JSON.stringify(orderData) + ")");
-    $(".replace-cart-btn").attr("onclick", "replaceCart(" + JSON.stringify(orderData) + ")");
+    $(".place-order-btn").click(function () {
+        placeOrderConfirmation(orderDataArray);
+    })
 }
 
 function showCartItem(productData) {
@@ -68,18 +83,18 @@ function addToCart(orderData) {
     let userId = getCurrentUserId();
     let cart = getCart();
 
-    if(cart === undefined || cart === null) {
+    if (cart === undefined || cart === null) {
         cart = {};
-    } 
+    }
 
     let uploadedCart = {};
-    for(let i in orderData) {
+    for (let i in orderData) {
         let data = orderData[i];
         uploadedCart[data.barcode] = data.quantity;
     }
 
     let userCart = {};
-    if(cart[userId]) {
+    if (cart[userId]) {
         userCart = cart[userId];
         cart[userId] = mergeCarts(uploadedCart, userCart);
     } else {
@@ -90,21 +105,21 @@ function addToCart(orderData) {
     window.location.href = "cart.html";
 }
 
-function replaceCart(orderData) {
-    let userId = getCurrentUserId();
-    let cart = getCart();
+function placeOrderConfirmation(orderDataArray) {
+    $(".place-order-modal").modal("toggle");
+    $(".place-order-modal .btn-yes").click(function () {
+        placeOrder(orderDataArray)
+    });
+    $(".place-order-modal .btn-no").click(() => {
+        $(".place-order-modal").modal("hide");
+    });
+}
 
-    let userCart = {};
-   
-    for(let i in orderData) {
-        let data = orderData[i];
-        userCart[data.barcode] = data.quantity;
-    }
-
-    cart[userId] = userCart;
-    setCart(cart);
-
-    window.location.href = "cart.html";
+function placeOrder(orderDataArray) {
+    console.log(orderDataArray);
+    writeFileData(orderDataArray);
+    $(".place-order-modal").modal("hide");
+    window.location.href = "order-placed.html";
 }
 
 function showError(errorData) {
@@ -115,7 +130,7 @@ function showError(errorData) {
     let tbody = $("#errors-table").find("tbody");
     tbody.empty();
 
-    for(let i in errorData) {
+    for (let i in errorData) {
         let data = errorData[i];
         let row = "<tr>"
             + "<td class='text-center'>" + data.rowNumber + "</td>"
@@ -143,87 +158,87 @@ let processCount = 0;
 function validateFile() {
     processCount = 0;
     orderData = new Map();
-	fileData = [];
-	errorData = [];
+    fileData = [];
+    errorData = [];
 
     let file = $("#file-input")[0].files[0];
     readFileData(file, readFileDataCallback);
 }
 
-function readFileDataCallback(results){
-	fileData = results.data;
+function readFileDataCallback(results) {
+    fileData = results.data;
 
-    if((results.meta.fields.length !== 2) || (results.meta.fields[0] !== "barcode") || (results.meta.fields[1] !== "quantity")) {
+    if ((results.meta.fields.length !== 2) || (results.meta.fields[0] !== "barcode") || (results.meta.fields[1] !== "quantity")) {
         showFileError("Error: The headers are invalid in the attched file. The file must contain <b>barcode</b> as first column header and <b>quantity</b> as second column header.");
-		return;
-	}
+        return;
+    }
 
-	if(fileData.length === 0) {
-		showFileError("Error: Attached file is empty.");
-		return;
-	}
+    if (fileData.length === 0) {
+        showFileError("Error: Attached file is empty.");
+        return;
+    }
 
-	if(fileData.length>5000){
+    if (fileData.length > 5000) {
         showFileError("Error: Maximum limit of the rows in uploaded file can be 100.");
-		return;
-	}
+        return;
+    }
 
     $.ajax({
         url: 'data/products.json',
         dataType: 'json',
-        success: function(data) {
+        success: function (data) {
             uploadRows(data);
         },
     });
 }
 
-function uploadRows(productsData){
-	
-	if(processCount===fileData.length && errorData.length===0){
-		showOrder(orderData);
-		return;
-	}
-	else if(processCount===fileData.length){
-		showError(errorData);
-		return;
-	}
+function uploadRows(productsData) {
 
-	let row = fileData[processCount];
-	processCount++;
+    if (processCount === fileData.length && errorData.length === 0) {
+        showOrder(orderData);
+        return;
+    }
+    else if (processCount === fileData.length) {
+        showError(errorData);
+        return;
+    }
 
-    if(row.barcode == "") {
+    let row = fileData[processCount];
+    processCount++;
+
+    if (row.barcode == "") {
         row.rowNumber = processCount;
         row.error = "Barcode should not be empty";
         errorData.push(row);
     }
-    else if(row.quantity == "") {
+    else if (row.quantity == "") {
         row.rowNumber = processCount;
         row.error = "Quantity should not be empty";
         errorData.push(row);
-    } 
-    else{
+    }
+    else {
         let product = null;
 
-        for(let i in productsData) {
-            if(productsData[i]["barcode"] == row.barcode) {
+        for (let i in productsData) {
+            if (productsData[i]["barcode"] == row.barcode) {
                 product = productsData[i];
                 break;
             }
         }
-        
-        if(product === null) {
-            row.rowNumber = processCount; 
+
+        if (product === null) {
+            row.rowNumber = processCount;
             row.error = "Product doesn't exist";
             errorData.push(row);
-        } else if(!containsOnlyNumbers(row.quantity)) {
+        } else if (!containsOnlyNumbers(row.quantity)) {
             row.rowNumber = processCount;
             row.error = "Quantity should be a integer";
             errorData.push(row);
-        } else if(parseInt(row.quantity) <= 0) {
+        } else if (parseInt(row.quantity) <= 0) {
             row.rowNumber = processCount;
             row.error = "Quantity should be greater than 0";
             errorData.push(row);
-        } else if(parseInt(row.quantity) > 5000) {
+        } else if (parseInt(row.quantity) > 5000) {
             row.rowNumber = processCount;
             row.error = "Quantity should be less than 5000";
             errorData.push(row);
@@ -237,16 +252,16 @@ function uploadRows(productsData){
             row.color = product["color"];
             row.quantity = parseInt(row.quantity);
 
-            if(orderData[row.barcode] === undefined || orderData[row.barcode] === null) {
+            if (!orderData[row.barcode]) {
                 orderData[row.barcode] = row;
             } else {
                 row.quantity = row.quantity + orderData[row.barcode]["quantity"];
                 orderData[row.barcode] = row;
             }
         }
-    } 
+    }
 
-    uploadRows(productsData);  
+    uploadRows(productsData);
 }
 
 
@@ -275,12 +290,24 @@ function drop(e) {
 
     const dt = e.dataTransfer;
     const files = dt.files;
-    
+
     $("#file-input")[0].files = files;
     updateFileName();
 }
 
+function convertMapToArray(orderData) {
+    return Object.values(orderData).map(({ barcode, quantity, name, mrp, price }) => ({
+        Barcode: barcode,
+        Name: name,
+        Quantity: quantity,
+        Mrp: mrp,
+        SellingPrice: price,
+        Amount: quantity * price
+    }));
+}
+
 function init() {
+    displayPage();
     $("#browse-btn").click(clickInputFile);
     $("#file-input").on("change", updateFileName);
     $("#upload-btn").click(validateFile);

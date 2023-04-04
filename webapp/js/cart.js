@@ -2,7 +2,7 @@ function displayCart() {
     let userCart = getUserCart();
     let cartProductsLength = Object.keys(userCart).length;
 
-    if(cartProductsLength === 0) {
+    if (cartProductsLength === 0) {
         $("#empty-cart").removeClass("d-none");
         $("#cart-items").addClass("d-none");
         $("#order-summary").addClass("d-none");
@@ -15,12 +15,12 @@ function displayCart() {
         $.ajax({
             url: 'data/products.json',
             dataType: 'json',
-            success: function(data) {
-                for(let i in data) {
-                    if(!userCart[data[i]["barcode"]]) {
+            success: function (data) {
+                for (let i in data) {
+                    let barcode = data[i]["barcode"];
+                    if (!userCart[barcode]) {
                         continue;
-                    } else {
-                        let barcode = data[i]["barcode"];
+                    } else if (userCart[barcode] > 0) {
                         let quantity = userCart[barcode];
                         let productData = data[i];
                         showCartItem(quantity, productData);
@@ -50,7 +50,7 @@ function showCartItem(quantity, productData) {
     $("#cart-item-" + barcode + " .product-price").html("₹" + productData["price"].toLocaleString());
     $("#cart-item-" + barcode + " .product-mrp").find("s").html("₹" + productData["mrp"].toLocaleString());
     $("#cart-item-" + barcode + " .product-discount").html(productData["discountDisplayLabel"]);
-    
+
     $("#cart-item-" + barcode + " .inc-qty-btn").attr("onclick", "increaseQuantity('" + barcode + "')");
     $("#cart-item-" + barcode + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "', '" + productData["name"] + "')");
     $("#cart-item-" + barcode + " .remove-item-btn").attr("onclick", "openRemoveItemModal('" + barcode + "', '" + productData["name"] + "')");
@@ -64,9 +64,9 @@ function increaseQuantity(barcode) {
 }
 
 function decreaseQuantity(barcode, productName) {
-    let userCart =  getUserCart();
+    let userCart = getUserCart();
 
-    if(userCart[barcode] > 1) {
+    if (userCart[barcode] > 1) {
         let quantity = decreaseQuantityInCart(barcode);
         $("#cart-item-" + barcode + " .product-qty").html(quantity);
         updateOrderSummary();
@@ -77,10 +77,10 @@ function decreaseQuantity(barcode, productName) {
 
 function openRemoveItemModal(barcode, productName) {
     $(".confirm-modal").modal("toggle");
-    $(".modal-title").html("Confirm Remove Item");
-    $(".modal-body").html("<span class='font-weight-bold'>" +  productName + "</span> will be removed from cart. Are you sure?");
-    $(".btn-yes").attr("onclick", "removeItem('" + barcode + "','" + productName + "')");
-    $(".btn-no").click(() => {
+    $(".confirm-modal .modal-title").html("Confirm Remove Item");
+    $(".confirm-modal .modal-body").html("<span class='font-weight-bold'>" + productName + "</span> will be removed from cart. Are you sure?");
+    $(".confirm-modal .btn-yes").attr("onclick", "removeItem('" + barcode + "','" + productName + "')");
+    $(".confirm-modal .btn-no").click(() => {
         $(".confirm-modal").modal("hide");
     });
 }
@@ -96,7 +96,7 @@ function removeItem(barcode, productName) {
     $("#cart-item-" + barcode).remove();
 
     let userCart = getUserCart();
-    if(Object.keys(userCart).length === 0) {
+    if (Object.keys(userCart).length === 0) {
         displayCart();
     }
 }
@@ -109,15 +109,15 @@ function updateOrderSummary() {
     $.ajax({
         url: 'data/products.json',
         dataType: 'json',
-        success: function(data) {
-            for(let i in data) {
-                if(!userCart[data[i]["barcode"]]) {
+        success: function (data) {
+            for (let i in data) {
+                if (!userCart[data[i]["barcode"]]) {
                     continue;
                 } else {
                     let barcode = data[i]["barcode"];
                     let quantity = userCart[barcode];
                     let productData = data[i];
-                    
+
                     totalPrice += (productData["mrp"] * quantity);
                     totalDiscount += ((productData["mrp"] - productData["price"]) * quantity);
                 }
@@ -126,21 +126,21 @@ function updateOrderSummary() {
             $(".order-value").html("₹" + totalPrice.toLocaleString(undefined, {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
-              }));
+            }));
             $(".discount").html("-₹" + totalDiscount.toLocaleString(undefined, {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
-              }));
-            if(totalPrice >= 4999) {
+            }));
+            if (totalPrice >= 4999) {
                 $(".shipping-price").html("<span class='text-body'><s>₹199</s></span> FREE");
                 $(".shipping-price").addClass("text-success");
                 $(".free-delivery").addClass("d-none");
             } else {
                 $(".shipping-price").html("₹" + 199);
-                $(".free-delivery").html("Add items worth ₹" + (4999-totalPrice).toLocaleString(undefined, {
+                $(".free-delivery").html("Add items worth ₹" + (4999 - totalPrice).toLocaleString(undefined, {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
-                  }) + " more to get free delivery on this order.");
+                }) + " more to get free delivery on this order.");
                 $(".free-delivery").removeClass("d-none");
             }
             $(".total-amount").html("₹" + (totalPrice - totalDiscount).toLocaleString(undefined, {
@@ -153,14 +153,14 @@ function updateOrderSummary() {
 
 function checkLogin() {
     // TODO: check with isUserLogged in
-    if(getCurrentUserId() === "0") {
+    if (getCurrentUserId() === "0") {
         window.location.href = "login.html";
     } else {
         $(".place-order-modal").modal("toggle");
-        $(".btn-yes").click(placeOrder);
-        $(".btn-no").click(() => {
+        $(".place-order-modal .btn-yes").click(placeOrder);
+        $(".place-order-modal .btn-no").click(() => {
             $(".place-order-modal").modal("hide");
-        });   
+        });
     }
 }
 
@@ -171,11 +171,11 @@ function placeOrder() {
     $.ajax({
         url: 'data/products.json',
         dataType: 'json',
-        success: function(response) {
+        success: function (response) {
             let products = response;
-    
-            for(let i in products) {
-                if(!userCart[products[i]["barcode"]]) {
+
+            for (let i in products) {
+                if (!userCart[products[i]["barcode"]]) {
                     continue;
                 } else {
                     let row = {};
@@ -188,7 +188,7 @@ function placeOrder() {
                     orderData.push(row);
                 }
             }
-         
+
             writeFileData(orderData);
             removeAllItemsFromCart();
 
@@ -200,10 +200,10 @@ function placeOrder() {
 
 function openClearCartModal() {
     $(".confirm-modal").modal("toggle");
-    $(".modal-title").html("Confirm Clear Cart");
-    $(".modal-body").html("The cart will be empty. Are you sure?");
-    $(".btn-yes").attr("onclick", "clearCart()");
-    $(".btn-no").click(() => {
+    $(".confirm-modal .modal-title").html("Confirm Clear Cart");
+    $(".confirm-modal .modal-body").html("The cart will be empty. Are you sure?");
+    $(".confirm-modal .btn-yes").attr("onclick", "clearCart()");
+    $(".confirm-modal .btn-no").click(() => {
         $(".confirm-modal").modal("hide");
     });
 }
@@ -215,7 +215,7 @@ function clearCart() {
     $(".toast-success").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>All the products are removed from the cart.</span></div>");
     $(".toast-success").toast("show");
 
-    displayCart();  
+    displayCart();
 }
 
 function viewProduct(barcode) {
@@ -227,8 +227,8 @@ function viewHomePage() {
     window.location.href = "home.html";
 }
 
-function init(){
-	displayCart();
+function init() {
+    displayCart();
     $("#clear-cart-btn").click(openClearCartModal);
     $("#place-order-btn").click(checkLogin);
 }

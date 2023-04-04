@@ -4,21 +4,21 @@ function getProductDetails() {
     displayProductDetails(barcode);
 }
 
-function displayProductDetails(barcode){
+function displayProductDetails(barcode) {
     $.ajax({
         url: 'data/products.json',
         dataType: 'json',
-        success: function(data) {
+        success: function (data) {
             let productData = null;
 
-            for(let i in data) {
-                if(data[i]['barcode'] == barcode) {
+            for (let i in data) {
+                if (data[i]['barcode'] == barcode) {
                     productData = data[i];
                     break;
                 }
             }
 
-            if(productData) {
+            if (productData) {
                 $(".product-name").html(productData['name']);
                 $(".product-img-1").attr("src", productData["images"][0]["src"]);
                 $(".product-img-2").attr("src", productData["images"][1]["src"]);
@@ -36,11 +36,11 @@ function displayProductDetails(barcode){
 
                 let userCart = getUserCart();
 
-                if(!userCart[barcode] || parseInt(userCart[barcode]) < 0) {
-                        $(".add-to-cart-btn").attr("onclick", "changeToCountButton('" + barcode + "')");
-                        $(".add-to-cart-span").removeClass("d-none");
-                        $(".inc-dec-qty-span").addClass("d-none");
-                        $(".remove-from-cart-btn").addClass("d-none");
+                if (!userCart[barcode] || parseInt(userCart[barcode]) < 0) {
+                    $(".add-to-cart-btn").attr("onclick", "changeToCountButton('" + barcode + "')");
+                    $(".add-to-cart-span").removeClass("d-none");
+                    $(".inc-dec-qty-span").addClass("d-none");
+                    $(".remove-from-cart-btn").addClass("d-none");
                 } else {
                     $(".inc-qty-btn").attr("onclick", "increaseQuantity('" + barcode + "')");
                     $(".dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "')");
@@ -49,7 +49,7 @@ function displayProductDetails(barcode){
                     $(".product-qty").html(userCart[barcode]);
                     $(".remove-from-cart-btn").removeClass("d-none");
                     $(".remove-from-cart-btn").attr("onclick", "openRemoveItemModal('" + barcode + "')");
-                }      
+                }
                 $(".product-details").removeClass("d-none");
                 $(".no-product-found").addClass("d-none");
             } else {
@@ -93,9 +93,9 @@ function increaseQuantity(barcode) {
 }
 
 function decreaseQuantity(barcode) {
-    let userCart =  getUserCart();
+    let userCart = getUserCart();
 
-    if(userCart[barcode] > 1) {
+    if (userCart[barcode] > 1) {
         let quantity = decreaseQuantityInCart(barcode);
         $(".product-qty").html(quantity);
     } else {
@@ -105,15 +105,15 @@ function decreaseQuantity(barcode) {
 
 function openRemoveItemModal(barcode) {
     $(".confirm-modal").modal("toggle");
-    $(".btn-yes").attr("onclick", "removeItem('" + barcode + "')");
-    $(".btn-no").click(() => {
+    $(".confirm-modal .btn-yes").attr("onclick", "removeItem('" + barcode + "')");
+    $(".confirm-modal .btn-no").click(() => {
         $(".confirm-modal").modal("hide");
     });
 }
 
 function removeItem(barcode) {
     removeItemFromCart(barcode);
-    
+
     $(".add-to-cart-btn").attr("onclick", "changeToCountButton('" + barcode + "')");
     $(".add-to-cart-btn").html("Add to cart");
     $(".inc-dec-qty-span").addClass("d-none");
@@ -126,7 +126,7 @@ function removeItem(barcode) {
     $(".toast-success").toast("show");
 }
 
-function init(){
+function init() {
     getProductDetails();
 }
 
