@@ -105,8 +105,8 @@ function decreaseQuantity(barcode) {
 
 function openRemoveItemModal(barcode) {
     $(".confirm-modal").modal("toggle");
-    $(".btn-yes").attr("onclick", "removeItem('" + barcode + "')");
-    $(".btn-no").click(() => {
+    $(".confirm-modal .btn-yes").attr("onclick", "removeItem('" + barcode + "')");
+    $(".confirm-modal .btn-no").click(() => {
         $(".confirm-modal").modal("hide");
     });
 }

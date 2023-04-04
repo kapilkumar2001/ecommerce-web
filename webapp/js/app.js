@@ -68,8 +68,8 @@ function setLoginLogoutIcon() {
 
 function openLogoutModal() {
     $(".logout-modal").modal("toggle");
-    $(".btn-yes").click(logout);
-    $(".btn-no").click(() => {
+    $(".logout-modal .btn-yes").click(logout);
+    $(".logout-modal .btn-no").click(() => {
         $(".logout-modal").modal("hide");
     });
 }

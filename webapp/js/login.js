@@ -13,7 +13,7 @@ function login(){
 			let userId;
 			let flag = -1;
 			for(let i in data) {
-                if(data[i]["email"] === email) { 
+                if(data[i]["email"].toLowerCase() === email.toLowerCase()) { 
 					if(data[i]["password"] === password) {
 						userId =  data[i]["id"]; 
 						flag = 1;

@@ -77,10 +77,10 @@ function decreaseQuantity(barcode, productName) {
 
 function openRemoveItemModal(barcode, productName) {
     $(".confirm-modal").modal("toggle");
-    $(".modal-title").html("Confirm Remove Item");
-    $(".modal-body").html("<span class='font-weight-bold'>" +  productName + "</span> will be removed from cart. Are you sure?");
-    $(".btn-yes").attr("onclick", "removeItem('" + barcode + "','" + productName + "')");
-    $(".btn-no").click(() => {
+    $(".confirm-modal .modal-title").html("Confirm Remove Item");
+    $(".confirm-modal .modal-body").html("<span class='font-weight-bold'>" +  productName + "</span> will be removed from cart. Are you sure?");
+    $(".confirm-modal .btn-yes").attr("onclick", "removeItem('" + barcode + "','" + productName + "')");
+    $(".confirm-modal .btn-no").click(() => {
         $(".confirm-modal").modal("hide");
     });
 }
@@ -157,8 +157,8 @@ function checkLogin() {
         window.location.href = "login.html";
     } else {
         $(".place-order-modal").modal("toggle");
-        $(".btn-yes").click(placeOrder);
-        $(".btn-no").click(() => {
+        $(".place-order-modal .btn-yes").click(placeOrder);
+        $(".place-order-modal .btn-no").click(() => {
             $(".place-order-modal").modal("hide");
         });   
     }
@@ -200,10 +200,10 @@ function placeOrder() {
 
 function openClearCartModal() {
     $(".confirm-modal").modal("toggle");
-    $(".modal-title").html("Confirm Clear Cart");
-    $(".modal-body").html("The cart will be empty. Are you sure?");
-    $(".btn-yes").attr("onclick", "clearCart()");
-    $(".btn-no").click(() => {
+    $(".confirm-modal .modal-title").html("Confirm Clear Cart");
+    $(".confirm-modal .modal-body").html("The cart will be empty. Are you sure?");
+    $(".confirm-modal .btn-yes").attr("onclick", "clearCart()");
+    $(".confirm-modal .btn-no").click(() => {
         $(".confirm-modal").modal("hide");
     });
 }

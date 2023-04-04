@@ -107,10 +107,10 @@ function addToCart(orderData) {
 
 function placeOrderConfirmation(orderDataArray) {
     $(".place-order-modal").modal("toggle");
-    $(".btn-yes").click(function() {
+    $(".place-order-modal .btn-yes").click(function() {
         placeOrder(orderDataArray)
     });
-    $(".btn-no").click(() => {
+    $(".place-order-modal .btn-no").click(() => {
         $(".place-order-modal").modal("hide");
     });   
 }
