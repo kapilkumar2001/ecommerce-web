@@ -99,7 +99,9 @@ function getCartItemsCount() {
     let itemsCount = 0;
 
     for(let i in userCart) {
-        itemsCount += userCart[i];
+        if(userCart[i] > 0) {
+            itemsCount += userCart[i];
+        }
     }
 
     return itemsCount;
@@ -276,7 +278,7 @@ function setSortBy(sortBy) {
 function setCartAndRefreshPage(cart) {
     localStorage.setItem("cart", JSON.stringify(cart));
     updateCartIcon();
-    window.location.reload();
+    // window.location.reload();
 }
 
 function showTime() {
@@ -406,8 +408,12 @@ function isExistingProduct(barcode, callback) {
 }
 
 function handleLocalStorageChanges() {
-    handleCurrentUser();
-    handleCart();
+    Promise.all([handleCurrentUser(), handleCart()])
+        .then(() => {
+            window.location.reload();
+    }).catch((error) => {
+        console.error(error);
+    });
 }
 
 function redirectToLoginScreen() {

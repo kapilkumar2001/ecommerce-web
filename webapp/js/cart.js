@@ -17,10 +17,10 @@ function displayCart() {
             dataType: 'json',
             success: function(data) {
                 for(let i in data) {
-                    if(!userCart[data[i]["barcode"]]) {
+                    let barcode = data[i]["barcode"];
+                    if(!userCart[barcode]) {
                         continue;
-                    } else {
-                        let barcode = data[i]["barcode"];
+                    } else if(userCart[barcode] > 0){
                         let quantity = userCart[barcode];
                         let productData = data[i];
                         showCartItem(quantity, productData);

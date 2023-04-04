@@ -54,9 +54,13 @@ function showOrder(orderData) {
     $(".card-title").html("Uploaded Items (" + itemsCount + ")");
     $(".total-amount").html("₹" + parseFloat(totalAmount).toFixed(2).toLocaleString());
 
-    $(".add-to-cart-btn").attr("onclick", "addToCart(" + JSON.stringify(orderData) + ")");
-    $(".place-order-btn").attr("onclick", "placeOrderConfirmation(" + JSON.stringify(orderData) + ")");
-    // $(".replace-cart-btn").attr("onclick", "replaceCart(" + JSON.stringify(orderData) + ")");
+    orderDataArray = convertMapToArray(orderData);
+
+    console.log(orderDataArray);
+    $(".add-to-cart-btn").attr("onclick", "addToCart(" + JSON.stringify(orderData) + ")"); 
+    $(".place-order-btn").click(function() {
+        placeOrderConfirmation(orderDataArray);
+    })  
 }
 
 function showCartItem(productData) {
@@ -101,40 +105,22 @@ function addToCart(orderData) {
     window.location.href = "cart.html";
 }
 
-function placeOrderConfirmation(orderData) {
+function placeOrderConfirmation(orderDataArray) {
     $(".place-order-modal").modal("toggle");
     $(".btn-yes").click(function() {
-        placeOrder(orderData)
+        placeOrder(orderDataArray)
     });
     $(".btn-no").click(() => {
         $(".place-order-modal").modal("hide");
     });   
 }
 
-function placeOrder(orderData) {
-    // TODO: not showing any data 
-    writeFileData(orderData);
+function placeOrder(orderDataArray) {
+    console.log(orderDataArray);
+    writeFileData(orderDataArray);
     $(".place-order-modal").modal("hide");
-
     window.location.href = "order-placed.html";
 }
-
-// function replaceCart(orderData) {
-//     let userId = getCurrentUserId();
-//     let cart = getCart();
-
-//     let userCart = {};
-   
-//     for(let i in orderData) {
-//         let data = orderData[i];
-//         userCart[data.barcode] = data.quantity;
-//     }
-
-//     cart[userId] = userCart;
-//     setCart(cart);
-
-//     window.location.href = "cart.html";
-// }
 
 function showError(errorData) {
     $("#uploaded-cart-items").addClass("d-none");
@@ -266,7 +252,7 @@ function uploadRows(productsData){
             row.color = product["color"];
             row.quantity = parseInt(row.quantity);
 
-            if(orderData[row.barcode] === undefined || orderData[row.barcode] === null) {
+            if(!orderData[row.barcode]) {
                 orderData[row.barcode] = row;
             } else {
                 row.quantity = row.quantity + orderData[row.barcode]["quantity"];
@@ -308,6 +294,17 @@ function drop(e) {
     $("#file-input")[0].files = files;
     updateFileName();
 }
+
+function convertMapToArray(orderData) {
+    return Object.values(orderData).map(({ barcode, quantity, name, mrp, price}) => ({             
+        Barcode: barcode,
+        Name: name,
+        Quantity: quantity,
+        Mrp: mrp,
+        SellingPrice : price,
+        Amount : quantity * price
+    }));
+} 
 
 function init() {
     displayPage();

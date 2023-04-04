@@ -28,7 +28,7 @@ function login(){
 			if(flag === -1) {
 				$(".toast-error").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>User not registered.</span></div>");
                 $(".toast-error").toast("show");
-			} else if(flag == 0) {
+			} else if(flag === 0) {
 				$(".toast-error").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>Invalid email id or password.</span></div>");
                 $(".toast-error").toast("show");
 			} else {
