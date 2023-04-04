@@ -3,7 +3,7 @@ function displayPage(){
         url: 'data/products.json',
         dataType: 'json',
         success: function(data) {
-            displayFilters(data);
+            displayFilters(data, );
             data = sortProducts(data);
             displayProducts(data);
             $(".container-fluid").removeClass("d-none");
@@ -16,6 +16,7 @@ function displayFilters(data) {
     displayCategories(data);
     displayColors(data);
     displayGenders(data);
+    $("#filter").remove();
 
     let filters = getFilters();
     if(filters !== null) {
@@ -48,6 +49,17 @@ function displayFilters(data) {
 }
 
 function displayBrands(data) {
+    let node = $("#filter");
+    let clone = node.clone().attr("id", "brand-filter");
+    $("#filters-col").find("div").append(clone);
+
+    $("#brand-filter").find("button").attr("data-target", "#brand-collapse");
+    $("#brand-filter").find("button").attr("aria-controls", "brand-collapse");
+    $("#brand-filter").find("button").html("Brand <i class='bi bi-caret-down-fill ml-auto'></i>");
+    $("#brand-filter").find("div").attr("id", "brand-collapse");
+    $("#brand-collapse").find("div").attr("id" ,"input-brand");
+    $("#input-brand").find("input").attr("name", "brand");
+
     let brands = [];
     for(let i in data) {
         brands.push(data[i]["brand"]);
@@ -67,6 +79,17 @@ function displayBrands(data) {
 }
 
 function displayCategories(data) {
+    let node = $("#filter");
+    let clone = node.clone().attr("id", "category-filter");
+    $("#filters-col").find("div").append(clone);
+
+    $("#category-filter").find("button").attr("data-target", "#category-collapse");
+    $("#category-filter").find("button").attr("aria-controls", "category-collapse");
+    $("#category-filter").find("button").html("Category <i class='bi bi-caret-down-fill ml-auto'></i>");
+    $("#category-filter").find("div").attr("id", "category-collapse");
+    $("#category-collapse").find("div").attr("id" ,"input-category");
+    $("#input-category").find("input").attr("name", "category");
+
     let categories = [];
     for(let i in data) {
         categories.push(data[i]["category"]);
@@ -86,6 +109,17 @@ function displayCategories(data) {
 }
 
 function displayColors(data) {
+    let node = $("#filter");
+    let clone = node.clone().attr("id", "color-filter");
+    $("#filters-col").find("div").append(clone);
+
+    $("#color-filter").find("button").attr("data-target", "#color-collapse");
+    $("#color-filter").find("button").attr("aria-controls", "color-collapse");
+    $("#color-filter").find("button").html("Color <i class='bi bi-caret-down-fill ml-auto'></i>");
+    $("#color-filter").find("div").attr("id", "color-collapse");
+    $("#color-collapse").find("div").attr("id" ,"input-color");
+    $("#input-color").find("input").attr("name", "color");
+
     let colors = [];
     for(let i in data) {
         colors.push(data[i]["color"]);
@@ -105,6 +139,17 @@ function displayColors(data) {
 }
 
 function displayGenders(data) {
+    let node = $("#filter");
+    let clone = node.clone().attr("id", "gender-filter");
+    $("#filters-col").find("div").append(clone);
+
+    $("#gender-filter").find("button").attr("data-target", "#gender-collapse");
+    $("#gender-filter").find("button").attr("aria-controls", "gender-collapse");
+    $("#gender-filter").find("button").html("Gender <i class='bi bi-caret-down-fill ml-auto'></i>");
+    $("#gender-filter").find("div").attr("id", "gender-collapse");
+    $("#gender-collapse").find("div").attr("id" ,"input-gender");
+    $("#input-gender").find("input").attr("name", "gender");
+
     let genders = [];
     for(let i in data) {
         genders.push(data[i]["gender"]);
@@ -376,17 +421,15 @@ function sortByRating() {
 }
  
 function openFiltersSidebar() {
-    $(".filters-sidebar").removeClass("d-none");
+    $("#filters-col").removeClass("d-none");
     $("#no-product").addClass("d-none");
     $("#products-area").addClass("d-none");
     $("#sort-by-btn").addClass("d-none");
     $(".filters-btn").addClass("d-none");
-
-    // TODO: filters should be added here 
 }
 
 function closeFiltersSidebar() {
-    $(".filters-sidebar").addClass("d-none");
+    $("#filters-col").addClass("d-none");
     $("#products-area").removeClass("d-none");
     $("#sort-by-btn").removeClass("d-none");
     $(".filters-btn").removeClass("d-none");
