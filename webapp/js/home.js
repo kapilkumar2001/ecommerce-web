@@ -1,8 +1,8 @@
-function displayPage(){
+function displayPage() {
     $.ajax({
         url: 'data/products.json',
         dataType: 'json',
-        success: function(data) {
+        success: function (data) {
             displayFilters(data);
             data = sortProducts(data);
             displayProducts(data);
@@ -19,31 +19,31 @@ function displayFilters(data) {
     $("#filter").remove();
 
     let filters = getFilters();
-    if(filters !== null) {
+    if (filters !== null) {
         let brands = JSON.parse(filters)["brand"];
         let categories = JSON.parse(filters)["category"];
         let colors = JSON.parse(filters)["color"];
         let genders = JSON.parse(filters)["gender"];
-    
-        for(let i in brands) {
+
+        for (let i in brands) {
             $("#brand-collapse").addClass("show");
             $(".reset-btn").removeClass("d-none");
-            $("#input-brand-" + brands[i]).find("input").attr("checked" , true);
+            $("#input-brand-" + brands[i]).find("input").attr("checked", true);
         }
-        for(let i in categories) {
+        for (let i in categories) {
             $("#category-collapse").addClass("show");
             $(".reset-btn").removeClass("d-none");
-            $("#input-category-" + categories[i]).find("input").attr("checked" , true);
+            $("#input-category-" + categories[i]).find("input").attr("checked", true);
         }
-        for(let i in colors) {
+        for (let i in colors) {
             $("#color-collapse").addClass("show");
             $(".reset-btn").removeClass("d-none");
-            $("#input-color-" + colors[i]).find("input").attr("checked" , true);
+            $("#input-color-" + colors[i]).find("input").attr("checked", true);
         }
-        for(let i in genders) {
+        for (let i in genders) {
             $("#gender-collapse").addClass("show");
             $(".reset-btn").removeClass("d-none");
-            $("#input-gender-" + genders[i]).find("input").attr("checked" , true);
+            $("#input-gender-" + genders[i]).find("input").attr("checked", true);
         }
     }
 }
@@ -57,16 +57,16 @@ function displayBrands(data) {
     $("#brand-filter").find("button").attr("aria-controls", "brand-collapse");
     $("#brand-filter").find("button").html("Brand <i class='bi bi-caret-down-fill ml-auto'></i>");
     $("#brand-filter").find("div").attr("id", "brand-collapse");
-    $("#brand-collapse").find("div").attr("id" ,"input-brand");
+    $("#brand-collapse").find("div").attr("id", "input-brand");
     $("#input-brand").find("input").attr("name", "brand");
 
     let brands = [];
-    for(let i in data) {
+    for (let i in data) {
         brands.push(data[i]["brand"]);
     }
     brands = Array.from(new Set(brands));
 
-    for(let i in brands) {
+    for (let i in brands) {
         let node = $("#input-brand");
         let clone = node.clone().attr("id", "input-brand-" + brands[i]);
         $("#brand-collapse").append(clone);
@@ -87,16 +87,16 @@ function displayCategories(data) {
     $("#category-filter").find("button").attr("aria-controls", "category-collapse");
     $("#category-filter").find("button").html("Category <i class='bi bi-caret-down-fill ml-auto'></i>");
     $("#category-filter").find("div").attr("id", "category-collapse");
-    $("#category-collapse").find("div").attr("id" ,"input-category");
+    $("#category-collapse").find("div").attr("id", "input-category");
     $("#input-category").find("input").attr("name", "category");
 
     let categories = [];
-    for(let i in data) {
+    for (let i in data) {
         categories.push(data[i]["category"]);
     }
     categories = Array.from(new Set(categories));
 
-    for(let i in categories) {
+    for (let i in categories) {
         let node = $("#input-category");
         let clone = node.clone().attr("id", "input-category-" + categories[i]);
         $("#category-collapse").append(clone);
@@ -117,16 +117,16 @@ function displayColors(data) {
     $("#color-filter").find("button").attr("aria-controls", "color-collapse");
     $("#color-filter").find("button").html("Color <i class='bi bi-caret-down-fill ml-auto'></i>");
     $("#color-filter").find("div").attr("id", "color-collapse");
-    $("#color-collapse").find("div").attr("id" ,"input-color");
+    $("#color-collapse").find("div").attr("id", "input-color");
     $("#input-color").find("input").attr("name", "color");
 
     let colors = [];
-    for(let i in data) {
+    for (let i in data) {
         colors.push(data[i]["color"]);
     }
     colors = Array.from(new Set(colors));
 
-    for(let i in colors) {
+    for (let i in colors) {
         let node = $("#input-color");
         let clone = node.clone().attr("id", "input-color-" + colors[i]);
         $("#color-collapse").append(clone);
@@ -147,16 +147,16 @@ function displayGenders(data) {
     $("#gender-filter").find("button").attr("aria-controls", "gender-collapse");
     $("#gender-filter").find("button").html("Gender <i class='bi bi-caret-down-fill ml-auto'></i>");
     $("#gender-filter").find("div").attr("id", "gender-collapse");
-    $("#gender-collapse").find("div").attr("id" ,"input-gender");
+    $("#gender-collapse").find("div").attr("id", "input-gender");
     $("#input-gender").find("input").attr("name", "gender");
 
     let genders = [];
-    for(let i in data) {
+    for (let i in data) {
         genders.push(data[i]["gender"]);
     }
     genders = Array.from(new Set(genders));
 
-    for(let i in genders) {
+    for (let i in genders) {
         let node = $("#input-gender");
         let clone = node.clone().attr("id", "input-gender-" + genders[i]);
         $("#gender-collapse").append(clone);
@@ -170,21 +170,21 @@ function displayGenders(data) {
 
 function sortProducts(data) {
     let sortBy = getSortBy();
-            
-    switch(sortBy) {
-        case "price-hl" :
+
+    switch (sortBy) {
+        case "price-hl":
             data = data.sort((d1, d2) => (d1.price < d2.price) ? 1 : (d1.price > d2.price) ? -1 : 0);
             $(".sort-by").html("Price: High to Low");
             break;
-        case "price-lh" :
+        case "price-lh":
             data = data.sort((d1, d2) => (d1.price > d2.price) ? 1 : (d1.price < d2.price) ? -1 : 0);
             $(".sort-by").html("Price: Low to High");
             break;
-        case "rating" :
+        case "rating":
             data = data.sort((d1, d2) => (d1.rating < d2.rating) ? 1 : (d1.rating > d2.rating) ? -1 : 0);
             $(".sort-by").html("Rating");
             break;
-        default :
+        default:
             data = data.sort((d1, d2) => (d1.rating < d2.rating) ? 1 : (d1.rating > d2.rating) ? -1 : 0);
             $(".sort-by").html("Rating");
             break;
@@ -195,28 +195,28 @@ function sortProducts(data) {
 
 function displayProducts(data) {
     let filters = getFilters();
-                
-    if(!filters) {
+
+    if (!filters) {
         showProductCard(data);
     } else {
         filters = JSON.parse(filters);
 
-        if(Object.keys(filters).length === 0) {
+        if (Object.keys(filters).length === 0) {
             showProductCard(data);
         } else {
             for (let key in filters) {
                 let value = filters[key];
-                switch(key) {
-                    case "brand" : 
+                switch (key) {
+                    case "brand":
                         data = filterByBrand(data, value);
                         break;
-                    case "category" :
+                    case "category":
                         data = filterByCategory(data, value);
                         break;
-                    case "color" :
+                    case "color":
                         data = filterByColor(data, value);
                         break;
-                    case "gender" :
+                    case "gender":
                         data = filterByGender(data, value);
                         break;
                 }
@@ -225,20 +225,20 @@ function displayProducts(data) {
         }
     }
 
-    $("input[type='checkbox']").on("change", function(e){
+    $("input[type='checkbox']").on("change", function (e) {
         filterProducts();
     });
 }
 
 function showProductCard(data) {
-    if(data.length === 0) {
+    if (data.length === 0) {
         $("#no-product").removeClass("d-none");
         $("#sort-by-btn").addClass("d-none");
     } else {
         $("#no-product").addClass("d-none");
         $("#sort-by-btn").removeClass("d-none");
 
-        for(let i in data) {
+        for (let i in data) {
             let e = data[i];
             let node = $("#product-card");
             let clone = node.clone().attr("id", "product-card-" + e["barcode"]);
@@ -264,13 +264,13 @@ function showProductCard(data) {
             $("#product-card-" + e["barcode"] + " .product-mrp").attr("href", "product-details.html?barcode=" + e['barcode']);
             $("#product-card-" + e["barcode"] + " .product-discount").html(e["discountPercent"] + "%off");
             $("#product-card-" + e["barcode"] + " .product-discount").attr("href", "product-details.html?barcode=" + e['barcode']);
-            
+
             let userCart = getUserCart();
 
-            if(!userCart[e["barcode"]] || parseInt(userCart[e["barcode"]]) < 0) {
-                    $("#product-card-" + e["barcode"] + " .add-to-cart-btn").attr("onclick", "changeToCountButton('" + e['barcode'] + "')")
-                    $("#product-card-" + e["barcode"] + " .add-to-cart-span").removeClass("d-none");
-                    $("#product-card-" + e["barcode"] + " .inc-dec-qty-span").addClass("d-none");
+            if (!userCart[e["barcode"]] || parseInt(userCart[e["barcode"]]) < 0) {
+                $("#product-card-" + e["barcode"] + " .add-to-cart-btn").attr("onclick", "changeToCountButton('" + e['barcode'] + "')")
+                $("#product-card-" + e["barcode"] + " .add-to-cart-span").removeClass("d-none");
+                $("#product-card-" + e["barcode"] + " .inc-dec-qty-span").addClass("d-none");
             } else {
                 $("#product-card-" + e["barcode"] + " .inc-qty-btn").attr("onclick", "increaseQuantity('" + e['barcode'] + "')");
                 $("#product-card-" + e["barcode"] + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + e['barcode'] + "')");
@@ -280,14 +280,14 @@ function showProductCard(data) {
             }
 
             $("#product-card-" + e["barcode"] + " .carousel").carousel({
-                interval: false 
+                interval: false
             });
-        
-            $("#product-card-" + e["barcode"] + " .carousel-item").hover(function(){
-                setTimeout(function(){
-                    $("#product-card-" + e["barcode"] + " .carousel").carousel('next', {interval: 2000}); 
+
+            $("#product-card-" + e["barcode"] + " .carousel-item").hover(function () {
+                setTimeout(function () {
+                    $("#product-card-" + e["barcode"] + " .carousel").carousel('next', { interval: 2000 });
                 }, 2000);
-            }, function(){
+            }, function () {
                 $("#product-card-" + e["barcode"] + " .carousel").carousel('pause');
             });
         }
@@ -312,14 +312,14 @@ function increaseQuantity(barcode) {
 function decreaseQuantity(barcode) {
     let quantity = decreaseQuantityInCart(barcode);
 
-    if(quantity >= 1) {
+    if (quantity >= 1) {
         $("#product-card-" + barcode + " .product-qty").html(quantity);
     } else {
         $("#product-card-" + barcode + " .add-to-cart-btn").attr("onclick", "changeToCountButton('" + barcode + "')");
         $("#product-card-" + barcode + " .add-to-cart-btn").html("Add to cart");
         $("#product-card-" + barcode + " .inc-dec-qty-span").addClass("d-none");
         $("#product-card-" + barcode + " .add-to-cart-span").removeClass("d-none");
-    } 
+    }
 }
 
 function viewProduct(barcode) {
@@ -330,9 +330,9 @@ function viewProduct(barcode) {
 function filterProducts() {
     let selectedFilters = {};
 
-    $("input[type='checkbox']").filter(":checked").each(function() {
+    $("input[type='checkbox']").filter(":checked").each(function () {
         if (!selectedFilters.hasOwnProperty(this.name)) {
-          selectedFilters[this.name] = [];
+            selectedFilters[this.name] = [];
         }
 
         selectedFilters[this.name].push(this.value);
@@ -345,9 +345,9 @@ function filterProducts() {
 function filterByBrand(data, brands) {
     const filteredData = new Set();
 
-    for(let i in data) {
-        for(let j in brands) {
-            if(data[i]["brand"] === brands[j]) {
+    for (let i in data) {
+        for (let j in brands) {
+            if (data[i]["brand"] === brands[j]) {
                 filteredData.add(data[i]);
             }
         }
@@ -359,9 +359,9 @@ function filterByBrand(data, brands) {
 function filterByCategory(data, categories) {
     const filteredData = new Set();
 
-    for(let i in data) {
-        for(let j in categories) {
-            if(data[i]["category"] === categories[j]) {
+    for (let i in data) {
+        for (let j in categories) {
+            if (data[i]["category"] === categories[j]) {
                 filteredData.add(data[i]);
             }
         }
@@ -373,9 +373,9 @@ function filterByCategory(data, categories) {
 function filterByColor(data, colors) {
     const filteredData = new Set();
 
-    for(let i in data) {
-        for(let j in colors) {
-            if(data[i]["color"] === colors[j]) {
+    for (let i in data) {
+        for (let j in colors) {
+            if (data[i]["color"] === colors[j]) {
                 filteredData.add(data[i]);
             }
         }
@@ -387,9 +387,9 @@ function filterByColor(data, colors) {
 function filterByGender(data, genders) {
     const filteredData = new Set();
 
-    for(let i in data) {
-        for(let j in genders) {
-            if(data[i]["gender"] === genders[j]) {
+    for (let i in data) {
+        for (let j in genders) {
+            if (data[i]["gender"] === genders[j]) {
                 filteredData.add(data[i]);
             }
         }
@@ -419,7 +419,7 @@ function sortByRating() {
     setSortBy("rating"); // sort by rating
     window.location.href = "home.html";
 }
- 
+
 function openFiltersInMobileScreen() {
     $(".filters-section").removeClass("d-none");
     $("#no-product").addClass("d-none");
@@ -436,7 +436,7 @@ function closeFiltersInMobileScreen() {
 }
 
 function init() {
-	displayPage();
+    displayPage();
     $(".filters-btn").click(openFiltersInMobileScreen);
     $(".close-filters-btn").click(closeFiltersInMobileScreen);
 }

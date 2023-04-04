@@ -2,28 +2,28 @@ function containsOnlyNumbers(str) {
     return /^[0-9]+$/.test(str);
 }
 
-function readFileData(file, callback){
-	let config = {
-		header: true,
-		delimiter: "\t",
-		skipEmptyLines: "greedy",
-		complete: function(results) {
-			callback(results);
-	  }	
-	}
-	Papa.parse(file, config);
+function readFileData(file, callback) {
+    let config = {
+        header: true,
+        delimiter: "\t",
+        skipEmptyLines: "greedy",
+        complete: function (results) {
+            callback(results);
+        }
+    }
+    Papa.parse(file, config);
 }
 
-function writeFileData(arr){
-	let config = {
-		quoteChar: "",
-		escapeChar: "",
-		delimiter: "\t"
-	};
-  
-	let data = Papa.unparse(arr, config);
-    let blob = new Blob([data], {type: "text/tsv;charset=utf-8;"});
-    let fileUrl =  null;
+function writeFileData(arr) {
+    let config = {
+        quoteChar: "",
+        escapeChar: "",
+        delimiter: "\t"
+    };
+
+    let data = Papa.unparse(arr, config);
+    let blob = new Blob([data], { type: "text/tsv;charset=utf-8;" });
+    let fileUrl = null;
 
     if (navigator.msSaveBlob) {
         fileUrl = navigator.msSaveBlob(blob, "order.csv");
@@ -34,7 +34,7 @@ function writeFileData(arr){
     let tempLink = document.createElement("a");
     tempLink.href = fileUrl;
     tempLink.setAttribute("download", "order.csv");
-    tempLink.click(); 
+    tempLink.click();
     tempLink.remove();
 }
 
@@ -43,11 +43,11 @@ function isUserLoggedIn() {
     let userId = getCurrentUserId();
 
     $.ajax({
-		url: "data/users.json",
-        dataType: "json",	  	   
-		success: function(data) {
-			for(let i in data) {
-                if(data[i]["id"] === userId) { 
+        url: "data/users.json",
+        dataType: "json",
+        success: function (data) {
+            for (let i in data) {
+                if (data[i]["id"] === userId) {
                     return true;
                 }
             }
@@ -59,12 +59,12 @@ function isUserLoggedIn() {
 }
 
 function setLoginLogoutIcon() {
-    if(getCurrentUserId() === "0") {
+    if (getCurrentUserId() === "0") {
         $("#navbar-login-logout").html("<a class='nav-link'><i class='bi bi-box-arrow-in-right fa-lg' data-toggle='tooltip' data-placement='bottom' title='login'></i></a>");
     } else {
         $("#navbar-login-logout").html("<a class='nav-link'><i class='bi bi-box-arrow-right fa-lg' data-toggle='tooltip' data-placement='bottom' title='logout''></i></a>");
-    } 
-} 
+    }
+}
 
 function openLogoutModal() {
     $(".logout-modal").modal("toggle");
@@ -75,16 +75,16 @@ function openLogoutModal() {
 }
 
 function logout() {
-    localStorage.setItem("current-user-id", "0"); 
+    localStorage.setItem("current-user-id", "0");
     window.location.href = "home.html";
-} 
+}
 
 function updateNavbar() {
     updateCartIcon();
-    if(window.location.pathname !== "/webapp/login.html") {
+    if (window.location.pathname !== "/webapp/login.html") {
         setLoginLogoutIcon();
-        $("#navbar-login-logout").click(function() {
-            if(localStorage.getItem("current-user-id") === "0"){
+        $("#navbar-login-logout").click(function () {
+            if (localStorage.getItem("current-user-id") === "0") {
                 window.location.href = "login.html";
             } else {
                 openLogoutModal();
@@ -98,8 +98,8 @@ function getCartItemsCount() {
     let userCart = getUserCart();
     let itemsCount = 0;
 
-    for(let i in userCart) {
-        if(userCart[i] > 0) {
+    for (let i in userCart) {
+        if (userCart[i] > 0) {
             itemsCount += userCart[i];
         }
     }
@@ -113,29 +113,29 @@ function updateCartIcon() {
 }
 
 function mergeCarts(cart1, cart2) {
-	let newCart = {};
+    let newCart = {};
 
-    for (let i in cart1){
-        if(!cart2[i]) {
+    for (let i in cart1) {
+        if (!cart2[i]) {
             newCart[i] = cart1[i];
         } else {
-            newCart[i] =  cart1[i] + cart2[i];
+            newCart[i] = cart1[i] + cart2[i];
         }
-    } 
+    }
 
-    for (let i in cart2){
-        if(!cart1[i]) {
+    for (let i in cart2) {
+        if (!cart1[i]) {
             newCart[i] = cart2[i];
-        } 
-    } 
+        }
+    }
 
-	return newCart;
+    return newCart;
 }
 
 function getCurrentUserId() {
     let currentUserId = localStorage.getItem("current-user-id");
 
-    if(!currentUserId) {
+    if (!currentUserId) {
         setCurrentUserId("0");
         currentUserId = 0;
     }
@@ -148,15 +148,16 @@ function setCurrentUserId(userId) {
 }
 
 function getCart() {
-    try{
+    try {
         let cart = JSON.parse(localStorage.getItem("cart"));
 
-        if(!cart) {
-            cart= {};   
-        }   
+        if (!cart) {
+            cart = {};
+        }
         return cart;
-    } catch (e){
+    } catch (e) {
         localStorage.removeItem("cart");
+        window.location.reload();
     }
 }
 
@@ -170,7 +171,7 @@ function getUserCart() {
     let userId = getCurrentUserId();
     let userCart;
 
-    if(!cart[userId]) {
+    if (!cart[userId]) {
         userCart = {};
     } else {
         userCart = cart[userId];
@@ -182,8 +183,8 @@ function getUserCart() {
 function getGuestCart() {
     let cart = getCart();
     let guestCart;
-	
-    if(!cart["0"]) {
+
+    if (!cart["0"]) {
         guestCart = {};
     } else {
         guestCart = cart["0"];
@@ -193,18 +194,18 @@ function getGuestCart() {
 }
 
 function increaseQuantityInCart(barcode) {
-    let cart =  getCart();
+    let cart = getCart();
     let userId = getCurrentUserId();
 
-    if(!cart[userId]) {
+    if (!cart[userId]) {
         cart[userId] = {};
-    } 
+    }
 
-    if(!cart[userId][barcode] || cart[userId][barcode] < 0) {
+    if (!cart[userId][barcode] || cart[userId][barcode] < 0) {
         cart[userId][barcode] = 0;
     }
-    
-    cart[userId][barcode] = cart[userId][barcode] + 1; 
+
+    cart[userId][barcode] = cart[userId][barcode] + 1;
 
     setCart(cart);
 
@@ -214,16 +215,16 @@ function increaseQuantityInCart(barcode) {
 function decreaseQuantityInCart(barcode) {
     let cart = getCart();
     let userId = getCurrentUserId();
-   
-    if(!cart[userId]) {
+
+    if (!cart[userId]) {
         cart[userId] = {};
     }
 
-    if(!cart[userId][barcode] || cart[userId][barcode] < 0) {
+    if (!cart[userId][barcode] || cart[userId][barcode] < 0) {
         cart[userId][barcode] = 0;
     }
 
-    if(cart[userId][barcode] > 1) {
+    if (cart[userId][barcode] > 1) {
         cart[userId][barcode] = cart[userId][barcode] - 1;
         setCart(cart);
         return cart[userId][barcode];
@@ -231,34 +232,34 @@ function decreaseQuantityInCart(barcode) {
         delete cart[userId][barcode];
         setCart(cart);
         return 0;
-    } 
+    }
 }
 
 function removeItemFromCart(barcode) {
     let cart = getCart();
     let userId = getCurrentUserId();
-   
-    if(!cart[userId]) {
+
+    if (!cart[userId]) {
         cart[userId] = {};
     }
 
-    if(!cart[userId][barcode] || cart[userId][barcode] < 0) {
+    if (!cart[userId][barcode] || cart[userId][barcode] < 0) {
         cart[userId][barcode] = 0;
     }
 
     delete cart[userId][barcode];
     setCart(cart);
-    return 0;    
+    return 0;
 }
 
 function removeAllItemsFromCart() {
     let cart = getCart();
     let userId = getCurrentUserId();
-    
-    cart[userId] = {};  
+
+    cart[userId] = {};
     setCart(cart);
 }
- 
+
 function getFilters() {
     return sessionStorage.getItem("filters");
 }
@@ -272,18 +273,12 @@ function getSortBy() {
 }
 
 function setSortBy(sortBy) {
-    sessionStorage.setItem("sort-by", sortBy); 
-} 
-
-function setCartAndRefreshPage(cart) {
-    localStorage.setItem("cart", JSON.stringify(cart));
-    updateCartIcon();
-    // window.location.reload();
+    sessionStorage.setItem("sort-by", sortBy);
 }
 
 function showTime() {
     var dateObj = new Date();
-    
+
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     var day = days[dateObj.getDay()];
@@ -296,12 +291,12 @@ function showTime() {
 
     var ampm = "AM";
 
-    if( hr > 12 ) {
+    if (hr > 12) {
         hr -= 12;
         ampm = "PM";
     }
 
-    if(hr < 10) {
+    if (hr < 10) {
         hr = "0" + hr;
     }
 
@@ -309,110 +304,117 @@ function showTime() {
     var month = months[dateObj.getMonth()];
     var year = dateObj.getFullYear();
 
-    if(date < 10) {
+    if (date < 10) {
         date = "0" + date;
     }
-    
-    $(".footer").html("&copy; 2023 Increff  <br>" + day + " " + date + " " + month + " " + year +  " " + hr + ":" + min + ampm);
+
+    $(".footer").html("&copy; 2023 Increff  <br>" + day + " " + date + " " + month + " " + year + " " + hr + ":" + min + ampm);
 }
 
 function handleCurrentUser() {
-    let userId = localStorage.getItem("current-user-id");
+    return new Promise((resolve) => {
+        let userId = localStorage.getItem("current-user-id");
 
-    $.ajax({
-		url: "data/users.json",
-        dataType: "json",	  	   
-		success: function(data) {
-            let existingUser = false;
+        $.ajax({
+            url: "data/users.json",
+            dataType: "json",
+            success: function (data) {
+                let existingUser = false;
 
-			for(let i in data) {
-                if(data[i]["id"] === userId) { 
-                    existingUser = true;
+                for (let i in data) {
+                    if (data[i]["id"] === userId) {
+                        existingUser = true;
+                    }
                 }
-            }
 
-            if(existingUser === false) {
-                setCurrentUserId("0");
-            }
-        }
+                if (existingUser === false) {
+                    setCurrentUserId("0");
+                }
+
+                resolve();
+            },
+        });
     });
 }
 
 function handleCart() {
-    let cart = getCart();
-    setCartAndRefreshPage(cart);
-    
-    for(let i in cart) {
-        isExistingUser(i, function(userExists) {
-            if(userExists === false && i !== "0") {
-                delete cart[i]; 
-                setCartAndRefreshPage(cart);
-            } else {
-                let userCart = cart[i];
+    return new Promise(async (resolve) => {
+        let cart = getCart();
+        setCart(cart);
 
-                for(let j in userCart) {
-                    isExistingProduct(j, function(productExists) {
-                        console.log("for loop");
-                        if(productExists === false) {
-                            delete userCart[j];
-                            cart[i] = userCart;
-                            setCartAndRefreshPage(cart);
-                        } else {
-                            if(!Number.isInteger(userCart[j])) {
-                                delete userCart[j];
-                                cart[i] = userCart;
-                                setCartAndRefreshPage(cart);
-                            } else if(userCart[j] <= 0) {
-                                delete userCart[j];
-                                cart[i] = userCart;
-                                setCartAndRefreshPage(cart);
+        let usersData;
+        let productsData;
+
+        await $.ajax({
+            url: "data/users.json",
+            dataType: "json",
+            success: async function (data) {
+                usersData = data;
+
+                await $.ajax({
+                    url: "data/products.json",
+                    dataType: "json",
+                    success: function (data) {
+                        productsData = data;
+
+                        for (let i in cart) {
+                            if (isExistingUser(i, usersData)) {
+                                let userCart = cart[i];
+
+                                for (let j in userCart) {
+
+                                    if (isExistingProduct(j, productsData)) {
+                                        if (!Number.isInteger(userCart[j])) {
+                                            delete userCart[j];
+                                            cart[i] = userCart;
+                                            setCart(cart);
+                                        } else if (userCart[j] <= 0) {
+                                            delete userCart[j];
+                                            cart[i] = userCart;
+                                            setCart(cart);
+                                        }
+                                    } else {
+                                        delete userCart[j];
+                                        cart[i] = userCart;
+                                        setCart(cart);
+                                    }
+                                }
+                            } else {
+                                delete cart[i];
+                                setCart(cart);
                             }
                         }
-                    });
-                }
+
+                        resolve();
+                    }
+                });
             }
         });
+    });
+}
+
+function isExistingUser(userId, usersData) {
+    for (let i in usersData) {
+        if (usersData[i]["id"] === userId) {
+            return true;
+        }
     }
+    return false;
 }
 
-function isExistingUser(userId, callback) {
-    $.ajax({
-        url: "data/users.json",
-        dataType: "json",
-        success: function(data) {
-            for (let i in data) {
-                if (data[i]["id"] === userId) {
-                    callback(true);
-                    return;
-                }
-            }
-            callback(false);
+function isExistingProduct(barcode, productsData) {
+    for (let i in productsData) {
+        if (productsData[i]["barcode"] == barcode) {
+            return true;
         }
-    });
+    }
+    return false;
 }
 
-function isExistingProduct(barcode, callback) {
-    $.ajax({
-        url: "data/products.json",
-        dataType: "json",
-        success: function(data) {
-            for (let i in data) {
-                if (data[i]["barcode"] == barcode) {
-                    callback(true);
-                    return;
-                }
-            }
-            callback(false);
-        }
-    });
-}
-
-function handleLocalStorageChanges() {
-    Promise.all([handleCurrentUser(), handleCart()])
-        .then(() => {
-            window.location.reload();
-    }).catch((error) => {
-        console.error(error);
+async function handleLocalStorageChanges() {
+    Promise.all([handleCurrentUser(), handleCart()]).then(() => {
+        console.log("reload");
+        window.location.reload();
     });
 }
 
@@ -425,13 +427,13 @@ function redirectToHomeScreen() {
 }
 
 function init() {
-    $("#navbar-placeholder").load("navbar.html", function() {
+    $("#navbar-placeholder").load("navbar.html", function () {
         updateNavbar();
     });
     $("#footer-placeholder").load("footer.html");
     setInterval(showTime, 1000);
-    $(window).on('storage', function(e) {
-        handleLocalStorageChanges(); 
+    $(window).on('storage', function (e) {
+        handleLocalStorageChanges();
     });
 }
 
