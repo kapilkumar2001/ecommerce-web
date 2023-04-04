@@ -1,3 +1,15 @@
+function displayPage() {
+    let userId = getCurrentUserId();
+
+    if(userId === "0") {
+        $(".logged-in").addClass("d-none");
+        $(".not-logged-in").removeClass("d-none");
+    } else {
+        $(".logged-in").removeClass("d-none");
+        $(".not-logged-in").addClass("d-none");
+    }
+}
+
 function clickInputFile() {
     $("#file-input").click();
     $("#uploaded-cart-items").addClass("d-none");
@@ -38,14 +50,13 @@ function showOrder(orderData) {
         itemsCount += parseInt(data.quantity);
     }
 
-    console.log(orderData);
-
     $("#uploaded-cart-item").remove();
     $(".card-title").html("Uploaded Items (" + itemsCount + ")");
     $(".total-amount").html("₹" + parseFloat(totalAmount).toFixed(2).toLocaleString());
 
     $(".add-to-cart-btn").attr("onclick", "addToCart(" + JSON.stringify(orderData) + ")");
-    $(".replace-cart-btn").attr("onclick", "replaceCart(" + JSON.stringify(orderData) + ")");
+    $(".place-order-btn").attr("onclick", "placeOrderConfirmation(" + JSON.stringify(orderData) + ")");
+    // $(".replace-cart-btn").attr("onclick", "replaceCart(" + JSON.stringify(orderData) + ")");
 }
 
 function showCartItem(productData) {
@@ -90,22 +101,40 @@ function addToCart(orderData) {
     window.location.href = "cart.html";
 }
 
-function replaceCart(orderData) {
-    let userId = getCurrentUserId();
-    let cart = getCart();
-
-    let userCart = {};
-   
-    for(let i in orderData) {
-        let data = orderData[i];
-        userCart[data.barcode] = data.quantity;
-    }
-
-    cart[userId] = userCart;
-    setCart(cart);
-
-    window.location.href = "cart.html";
+function placeOrderConfirmation(orderData) {
+    $(".place-order-modal").modal("toggle");
+    $(".btn-yes").click(function() {
+        placeOrder(orderData)
+    });
+    $(".btn-no").click(() => {
+        $(".place-order-modal").modal("hide");
+    });   
 }
+
+function placeOrder(orderData) {
+    // TODO: not showing any data 
+    writeFileData(orderData);
+    $(".place-order-modal").modal("hide");
+
+    window.location.href = "order-placed.html";
+}
+
+// function replaceCart(orderData) {
+//     let userId = getCurrentUserId();
+//     let cart = getCart();
+
+//     let userCart = {};
+   
+//     for(let i in orderData) {
+//         let data = orderData[i];
+//         userCart[data.barcode] = data.quantity;
+//     }
+
+//     cart[userId] = userCart;
+//     setCart(cart);
+
+//     window.location.href = "cart.html";
+// }
 
 function showError(errorData) {
     $("#uploaded-cart-items").addClass("d-none");
@@ -281,6 +310,7 @@ function drop(e) {
 }
 
 function init() {
+    displayPage();
     $("#browse-btn").click(clickInputFile);
     $("#file-input").on("change", updateFileName);
     $("#upload-btn").click(validateFile);

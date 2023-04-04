@@ -410,6 +410,14 @@ function handleLocalStorageChanges() {
     handleCart();
 }
 
+function redirectToLoginScreen() {
+    window.location.href = "login.html";
+}
+
+function redirectToHomeScreen() {
+    window.location.href = "home.html";
+}
+
 function init() {
     $("#navbar-placeholder").load("navbar.html", function() {
         updateNavbar();

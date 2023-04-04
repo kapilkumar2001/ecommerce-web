@@ -420,7 +420,7 @@ function sortByRating() {
     window.location.href = "home.html";
 }
  
-function openFiltersSidebar() {
+function openFiltersInMobileScreen() {
     $(".filters-section").removeClass("d-none");
     $("#no-product").addClass("d-none");
     $("#products-area").addClass("d-none");
@@ -428,7 +428,7 @@ function openFiltersSidebar() {
     $(".filters-btn").addClass("d-none");
 }
 
-function closeFiltersSidebar() {
+function closeFiltersInMobileScreen() {
     $(".filters-section").addClass("d-none");
     $("#products-area").removeClass("d-none");
     $("#sort-by-btn").removeClass("d-none");
@@ -437,8 +437,8 @@ function closeFiltersSidebar() {
 
 function init() {
 	displayPage();
-    $(".filters-btn").click(openFiltersSidebar);
-    $(".close-filters-btn").click(closeFiltersSidebar);
+    $(".filters-btn").click(openFiltersInMobileScreen);
+    $(".close-filters-btn").click(closeFiltersInMobileScreen);
 }
 
 $(document).ready(init);

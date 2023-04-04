@@ -188,7 +188,7 @@ function placeOrder() {
                     orderData.push(row);
                 }
             }
-         
+            
             writeFileData(orderData);
             removeAllItemsFromCart();
 
