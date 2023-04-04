@@ -20,25 +20,25 @@
     <div id="navbar-placeholder"></div>
     <div class="container-fluid d-none">
       <div class="row">
-        <div id="filters-col" class="col-12 col-md-2 shadow-sm pt-2 pb-2 d-none d-md-block">
-          <div class="sticky-top">
+        <div class="filters-section col-12 col-md-3 col-lg-2 shadow-sm pt-2 pb-2 d-none d-md-block">
+          <div id="filters-col" class="sticky-top">
             <div class="row">
               <h5 class="ml-3 my-auto">Filters</h5>
-              <button class="reset-btn ml-auto mr-2 my-auto btn btn-sm btn-outline-dark py-0 d-none" onclick="resetFilters()">Reset</button>
+              <button class="close-filters-btn mr-2 ml-auto my-auto btn btn-sm btn-dark py-0 d-block d-md-none">Close</button>
+              <button class="reset-btn mr-2 my-auto ml-0 ml-md-auto btn btn-sm btn-outline-dark py-0 d-none" onclick="resetFilters()">Reset</button>
             </div>
-            <hr>
             <div id="filter">
+              <hr>
               <button class="btn bg-transparent border-0 p-0" type="button" data-toggle="collapse" data-target="#filter-collapse" aria-expanded="false" aria-controls="filter-collapse">
                 Filter Name <i class="bi bi-caret-down-fill ml-auto"></i>
               </button>
               <div class="collapse pt-2 px-2">
                 <div><label><input type="checkbox" name="filtername" class="mr-2"></label><br></div>
               </div>
-              <hr>
             </div>
           </div>
         </div>
-        <div class="col-12 col-md-10">
+        <div class="col-12 col-md-9 col-lg-10">
           <div class="row">
             <div class="d-block d-md-none ml-4">
               <button class="filters-btn btn btn-sm btn-outline-dark">Apply Filters</button>

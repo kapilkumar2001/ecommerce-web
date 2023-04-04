@@ -3,7 +3,7 @@ function displayPage(){
         url: 'data/products.json',
         dataType: 'json',
         success: function(data) {
-            displayFilters(data, );
+            displayFilters(data);
             data = sortProducts(data);
             displayProducts(data);
             $(".container-fluid").removeClass("d-none");
@@ -51,7 +51,7 @@ function displayFilters(data) {
 function displayBrands(data) {
     let node = $("#filter");
     let clone = node.clone().attr("id", "brand-filter");
-    $("#filters-col").find("div").append(clone);
+    $("#filters-col").append(clone);
 
     $("#brand-filter").find("button").attr("data-target", "#brand-collapse");
     $("#brand-filter").find("button").attr("aria-controls", "brand-collapse");
@@ -81,7 +81,7 @@ function displayBrands(data) {
 function displayCategories(data) {
     let node = $("#filter");
     let clone = node.clone().attr("id", "category-filter");
-    $("#filters-col").find("div").append(clone);
+    $("#filters-col").append(clone);
 
     $("#category-filter").find("button").attr("data-target", "#category-collapse");
     $("#category-filter").find("button").attr("aria-controls", "category-collapse");
@@ -111,7 +111,7 @@ function displayCategories(data) {
 function displayColors(data) {
     let node = $("#filter");
     let clone = node.clone().attr("id", "color-filter");
-    $("#filters-col").find("div").append(clone);
+    $("#filters-col").append(clone);
 
     $("#color-filter").find("button").attr("data-target", "#color-collapse");
     $("#color-filter").find("button").attr("aria-controls", "color-collapse");
@@ -141,7 +141,7 @@ function displayColors(data) {
 function displayGenders(data) {
     let node = $("#filter");
     let clone = node.clone().attr("id", "gender-filter");
-    $("#filters-col").find("div").append(clone);
+    $("#filters-col").append(clone);
 
     $("#gender-filter").find("button").attr("data-target", "#gender-collapse");
     $("#gender-filter").find("button").attr("aria-controls", "gender-collapse");
@@ -421,7 +421,7 @@ function sortByRating() {
 }
  
 function openFiltersSidebar() {
-    $("#filters-col").removeClass("d-none");
+    $(".filters-section").removeClass("d-none");
     $("#no-product").addClass("d-none");
     $("#products-area").addClass("d-none");
     $("#sort-by-btn").addClass("d-none");
@@ -429,7 +429,7 @@ function openFiltersSidebar() {
 }
 
 function closeFiltersSidebar() {
-    $("#filters-col").addClass("d-none");
+    $(".filters-section").addClass("d-none");
     $("#products-area").removeClass("d-none");
     $("#sort-by-btn").removeClass("d-none");
     $(".filters-btn").removeClass("d-none");
