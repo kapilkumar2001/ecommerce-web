@@ -109,7 +109,11 @@ function getCartItemsCount() {
 
 function updateCartIcon() {
     let cartItemsCount = getCartItemsCount();
-    $(".cart-icon span").html(cartItemsCount);
+    if(cartItemsCount > 0) {
+        $(".cart-icon span").html(cartItemsCount);
+    } else {
+        $(".cart-icon span").html("");
+    }
 }
 
 function mergeCarts(cart1, cart2) {
