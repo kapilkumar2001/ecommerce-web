@@ -152,7 +152,6 @@ function updateOrderSummary() {
 }
 
 function checkLogin() {
-    // TODO: check with isUserLogged in
     if (getCurrentUserId() === "0") {
         window.location.href = "login.html";
     } else {

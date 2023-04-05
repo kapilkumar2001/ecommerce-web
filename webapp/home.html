@@ -24,16 +24,16 @@
           <div id="filters-col" class="sticky-top">
             <div class="row">
               <h5 class="ml-3 my-auto">Filters</h5>
-              <button class="close-filters-btn mr-2 ml-auto my-auto btn btn-sm btn-dark py-0 d-block d-md-none">Close</button>
+              <button class="close-filters-btn mr-2 ml-auto my-auto btn btn-sm btn-dark py-0 d-block d-md-none">Apply & Close</button>
               <button class="reset-btn mr-2 my-auto ml-0 ml-md-auto btn btn-sm btn-outline-dark py-0 d-none" onclick="resetFilters()">Reset</button>
             </div>
             <div id="filter">
               <hr>
-              <button class="btn bg-transparent border-0 p-0" type="button" data-toggle="collapse" data-target="#filter-collapse" aria-expanded="false" aria-controls="filter-collapse">
-                Filter Name <i class="bi bi-caret-down-fill ml-auto"></i>
+              <button class="btn bg-transparent border-0 p-0 small" type="button" data-toggle="collapse" data-target="#filter-collapse" aria-expanded="false" aria-controls="filter-collapse">
+                Filter Name <i class="bi bi-caret-down-fill ml-auto small"></i>
               </button>
               <div class="collapse pt-2 px-2">
-                <div><label><input type="checkbox" name="filtername" class="mr-2"></label><br></div>
+                <div><label class="small"><input type="checkbox" name="filtername" class="mr-2"></label><br></div>
               </div>
             </div>
           </div>
@@ -49,7 +49,7 @@
                   <span class="font-weight-bold">Sort By - </span>
                   <span class="sort-by"></span>
                 </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <div class="dropdown-menu py-1" aria-labelledby="dropdownMenuButton">
                   <a class="dropdown-item" onclick="sortByPriceHighToLow()">Price: High to Low</a>
                   <a class="dropdown-item" onclick="sortByPriceLowToHigh()">Price: Low to High</a>
                   <a class="dropdown-item" onclick="sortByRating()">Rating</a>

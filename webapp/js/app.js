@@ -22,40 +22,20 @@ function writeFileData(arr) {
     };
 
     let data = Papa.unparse(arr, config);
-    let blob = new Blob([data], { type: "text/tsv;charset=utf-8;" });
+    let blob = new Blob([data], { type: "text/csv;charset=utf-8;" });
     let fileUrl = null;
 
     if (navigator.msSaveBlob) {
-        fileUrl = navigator.msSaveBlob(blob, "order.csv");
+        fileUrl = navigator.msSaveBlob(blob, "order");
     } else {
         fileUrl = window.URL.createObjectURL(blob);
     }
 
     let tempLink = document.createElement("a");
     tempLink.href = fileUrl;
-    tempLink.setAttribute("download", "order.csv");
+    tempLink.setAttribute("download", "order");
     tempLink.click();
     tempLink.remove();
-}
-
-// TODO: waiting for response ig
-function isUserLoggedIn() {
-    let userId = getCurrentUserId();
-
-    $.ajax({
-        url: "data/users.json",
-        dataType: "json",
-        success: function (data) {
-            for (let i in data) {
-                if (data[i]["id"] === userId) {
-                    return true;
-                }
-            }
-
-            setCurrentUserId("0");
-            return false;
-        }
-    });
 }
 
 function setLoginLogoutIcon() {
@@ -75,7 +55,7 @@ function openLogoutModal() {
 }
 
 function logout() {
-    localStorage.setItem("current-user-id", "0");
+    localStorage.setItem("currentUserId", "0");
     window.location.href = "home.html";
 }
 
@@ -84,7 +64,7 @@ function updateNavbar() {
     if (window.location.pathname !== "/webapp/login.html") {
         setLoginLogoutIcon();
         $("#navbar-login-logout").click(function () {
-            if (localStorage.getItem("current-user-id") === "0") {
+            if (localStorage.getItem("currentUserId") === "0") {
                 window.location.href = "login.html";
             } else {
                 openLogoutModal();
@@ -131,8 +111,12 @@ function mergeCarts(cart1, cart2) {
 }
 
 function getCurrentUserId() {
-    let currentUserId = localStorage.getItem("current-user-id");
+    let currentUserId =  localStorage.getItem("currentUserId");
+    currentUserId = checkCurrentUserId(currentUserId);
+    return currentUserId;
+}
 
+function checkCurrentUserId(currentUserId) {
     if (!currentUserId) {
         setCurrentUserId("0");
         currentUserId = 0;
@@ -142,7 +126,7 @@ function getCurrentUserId() {
 }
 
 function setCurrentUserId(userId) {
-    localStorage.setItem("current-user-id", userId);
+    localStorage.setItem("currentUserId", userId);
 }
 
 function getCart() {
@@ -167,26 +151,18 @@ function setCart(cart) {
 function getUserCart() {
     let cart = getCart();
     let userId = getCurrentUserId();
-    let userCart;
-//todo
-    if (!cart[userId]) {
-        userCart = {};
-    } else {
-        userCart = cart[userId];
-    }
+    let userCart = {};
+
+    if (cart[userId]) userCart = cart[userId];
 
     return userCart;
 }
 
 function getGuestCart() {
     let cart = getCart();
-    let guestCart;
+    let guestCart = {};
 
-    if (!cart["0"]) {
-        guestCart = {};
-    } else {
-        guestCart = cart["0"];
-    }
+    if (cart["0"]) guestCart = cart["0"];
 
     return guestCart;
 }
@@ -197,16 +173,14 @@ function increaseQuantityInCart(barcode) {
 
     if (!cart[userId]) {
         cart[userId] = {};
-    }
+    } 
 
     if (!cart[userId][barcode] || cart[userId][barcode] < 0) {
         cart[userId][barcode] = 0;
     }
 
     cart[userId][barcode] = cart[userId][barcode] + 1;
-
     setCart(cart);
-
     return cart[userId][barcode];
 }
 
@@ -277,18 +251,18 @@ function setFilters(filters) {
 }
 
 function getSortBy() {
-    return sessionStorage.getItem("sort-by");
+    return sessionStorage.getItem("sortBy");
 }
 
 function setSortBy(sortBy) {
-    sessionStorage.setItem("sort-by", sortBy);
+    sessionStorage.setItem("sortBy", sortBy);
 }
 
 function showTime() {
     var dateObj = new Date();
-  //todo
+
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    var days = ["Sun", "Mon", "Tues", "Wed", "Thu", "Fri", "Sat"];
     var day = days[dateObj.getDay()];
     var hr = dateObj.getHours();
     var min = dateObj.getMinutes();
@@ -316,92 +290,87 @@ function showTime() {
         date = "0" + date;
     }
 
-    $(".footer").html("&copy; 2023 Increff  <br>" + day + " " + date + " " + month + " " + year + " " + hr + ":" + min + ampm);
+    $(".footer").html("&copy; 2023 Increff  <br>" + day + " " + date + " " + month + " " + year + " " + hr + ":" + min + " " + ampm);
 }
 
-function handleCurrentUser() {
-    return new Promise((resolve) => {
-        let userId = localStorage.getItem("current-user-id");
+async function handleCurrentUser() {
+    let userId = localStorage.getItem("currentUserId");
 
-        $.ajax({
-            url: "data/users.json",
-            dataType: "json",
-            success: function (data) {
-                let existingUser = false;
+    await $.ajax({
+        url: "data/users.json",
+        dataType: "json",
+        success: function (data) {
+            let existingUser = false;
 
-                for (let i in data) {
-                    if (data[i]["id"] === userId) {
-                        existingUser = true;
-                    }
+            for (let i in data) {
+                if (data[i]["id"] === userId) {
+                    existingUser = true;
                 }
+            }
 
-                if (existingUser === false) {
-                    setCurrentUserId("0");
-                }
-
-                resolve();
-            },
-        });
+            if (existingUser === false) {
+                setCurrentUserId("0");
+            }
+        },
     });
 }
 
-function handleCart() {
-    return new Promise(async (resolve) => {
-        let cart = getCart();
-        setCart(cart);
+async function handleCart() {
+    let cart = getCart();
+    setCart(cart);
 
-        let usersData;
-        let productsData;
+    console.log("tjos");
+    let usersData;
+    let productsData;
 
-        await $.ajax({
-            url: "data/users.json",
-            dataType: "json",
-            success: async function (data) {
-                usersData = data;
+    await $.ajax({
+        url: "data/users.json",
+        dataType: "json",
+        success: async function (data) {
+            usersData = data;
 
-                await $.ajax({
-                    url: "data/products.json",
-                    dataType: "json",
-                    success: function (data) {
-                        productsData = data;
+            await $.ajax({
+                url: "data/products.json",
+                dataType: "json",
+                success: function (data) {
+                    productsData = data;
 
-                        for (let i in cart) {
-                            if (isExistingUser(i, usersData)) {
-                                let userCart = cart[i];
+                    for (let i in cart) {
+                        if (isExistingUser(i, usersData)) {
+                            let userCart = cart[i];
 
-                                for (let j in userCart) {
-
-                                    if (isExistingProduct(j, productsData)) {
-                                        if (!Number.isInteger(userCart[j])) {
-                                            delete userCart[j];
-                                            cart[i] = userCart;
-                                            setCart(cart);
-                                        } else if (userCart[j] <= 0) {
-                                            delete userCart[j];
-                                            cart[i] = userCart;
-                                            setCart(cart);
-                                        }
-                                    } else {
+                            for (let j in userCart) {
+                                if (isExistingProduct(j, productsData)) {
+                                    if (!Number.isInteger(userCart[j])) {
                                         delete userCart[j];
                                         cart[i] = userCart;
-                                        setCart(cart);
+                                    } else if (userCart[j] <= 0) {
+                                        delete userCart[j];
+                                        cart[i] = userCart;
                                     }
+                                } else {
+                                    console.log("product not exist");
+                                    delete userCart[j];
+                                    cart[i] = userCart;
                                 }
-                            } else {
-                                delete cart[i];
-                                setCart(cart);
                             }
-                        }//todo
-
-                        resolve();
+                        } else {
+                            console.log("user not exist");
+                            delete cart[i]; 
+                        }
                     }
-                });
-            }
-        });
+                    setCart(cart);
+                }
+            });
+        }
     });
 }
 
 function isExistingUser(userId, usersData) {
+    if(userId === "0") {
+        return true;
+    }
+
     for (let i in usersData) {
         if (usersData[i]["id"] === userId) {
             return true;
@@ -437,9 +406,7 @@ function init() {
     $("#navbar-placeholder").load("navbar.html", updateNavbar);
     $("#footer-placeholder").load("footer.html");
     setInterval(showTime, 1000);
-    $(window).on('storage', function (e) {
-        handleLocalStorageChanges();
-    }); //todo
+    $(window).on('storage', handleLocalStorageChanges); 
 }
 
 $(document).ready(init)

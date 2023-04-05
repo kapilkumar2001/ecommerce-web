@@ -271,7 +271,7 @@ function showProductCard(data) {
     } else {
         $("#no-product").addClass("d-none");
         $("#sort-by-btn").removeClass("d-none");
-
+        
         for (let i in data) {
             let e = data[i];
             let node = $("#product-card");
