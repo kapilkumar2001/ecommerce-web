@@ -99,9 +99,7 @@ function getCartItemsCount() {
     let itemsCount = 0;
 
     for (let i in userCart) {
-        if (userCart[i] > 0) {
-            itemsCount += userCart[i];
-        }
+        if (userCart[i] > 0) itemsCount += userCart[i];
     }
 
     return itemsCount;
@@ -109,11 +107,7 @@ function getCartItemsCount() {
 
 function updateCartIcon() {
     let cartItemsCount = getCartItemsCount();
-    if(cartItemsCount > 0) {
-        $(".cart-icon span").html(cartItemsCount);
-    } else {
-        $(".cart-icon span").html("");
-    }
+    $(".cart-icon span").html(cartItemsCount);
 }
 
 function mergeCarts(cart1, cart2) {
@@ -174,7 +168,7 @@ function getUserCart() {
     let cart = getCart();
     let userId = getCurrentUserId();
     let userCart;
-
+//todo
     if (!cart[userId]) {
         userCart = {};
     } else {
@@ -265,7 +259,17 @@ function removeAllItemsFromCart() {
 }
 
 function getFilters() {
-    return sessionStorage.getItem("filters");
+    try {
+        let filters = JSON.parse(sessionStorage.getItem("filters"));
+
+        if (!filters) {
+            filters = {};
+        }
+        return filters;
+    } catch (e) {
+        sessionStorage.removeItem("filters");
+        window.location.reload();
+    }
 }
 
 function setFilters(filters) {
@@ -282,7 +286,7 @@ function setSortBy(sortBy) {
 
 function showTime() {
     var dateObj = new Date();
-
+  //todo
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     var day = days[dateObj.getDay()];
@@ -387,7 +391,7 @@ function handleCart() {
                                 delete cart[i];
                                 setCart(cart);
                             }
-                        }
+                        }//todo
 
                         resolve();
                     }
@@ -417,7 +421,6 @@ function isExistingProduct(barcode, productsData) {
 
 async function handleLocalStorageChanges() {
     Promise.all([handleCurrentUser(), handleCart()]).then(() => {
-        console.log("reload");
         window.location.reload();
     });
 }
@@ -431,14 +434,12 @@ function redirectToHomeScreen() {
 }
 
 function init() {
-    $("#navbar-placeholder").load("navbar.html", function () {
-        updateNavbar();
-    });
+    $("#navbar-placeholder").load("navbar.html", updateNavbar);
     $("#footer-placeholder").load("footer.html");
     setInterval(showTime, 1000);
     $(window).on('storage', function (e) {
         handleLocalStorageChanges();
-    });
+    }); //todo
 }
 
 $(document).ready(init)

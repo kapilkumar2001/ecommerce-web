@@ -19,14 +19,19 @@ function displayFilters(data) {
     displayCategories(data);
     displayColors(data);
     displayGenders(data);
-    $("#filter").remove();
+    $("#filter").addClass("d-none");
 
+    setInputCheckBox();
+}
+
+function setInputCheckBox() {
     let filters = getFilters();
-    if (filters !== null) {
-        let brands = JSON.parse(filters)["brand"];
-        let categories = JSON.parse(filters)["category"];
-        let colors = JSON.parse(filters)["color"];
-        let genders = JSON.parse(filters)["gender"];
+
+    if (filters) {
+        let brands = filters["brand"];
+        let categories = filters["category"];
+        let colors = filters["color"];
+        let genders = filters["gender"];
 
         for (let i in brands) {
             $("#brand-collapse").addClass("show");
@@ -60,6 +65,7 @@ function displayBrands(data) {
     $("#brand-filter").find("button").attr("aria-controls", "brand-collapse");
     $("#brand-filter").find("button").html("Brand <i class='bi bi-caret-down-fill ml-auto'></i>");
     $("#brand-filter").find("div").attr("id", "brand-collapse");
+    $("#brand-filter").removeClass("d-none");
     $("#brand-collapse").find("div").attr("id", "input-brand");
     $("#input-brand").find("input").attr("name", "brand");
 
@@ -67,7 +73,11 @@ function displayBrands(data) {
     for (let i in data) {
         brands.push(data[i]["brand"]);
     }
-    brands = Array.from(new Set(brands));
+    brands = Array.from(new Set(brands)).sort();
+
+    clone = $("#input-brand");
+    $("#brand-collapse").empty();
+    $("#brand-collapse").append(clone);
 
     for (let i in brands) {
         let node = $("#input-brand");
@@ -76,6 +86,9 @@ function displayBrands(data) {
 
         $("#input-brand-" + brands[i]).find("label").append(brands[i]);
         $("#input-brand-" + brands[i]).find("input").attr("value", brands[i]);
+        $("#input-brand-" + brands[i]).find("input").attr("checked", false);
+        $("#input-brand-" + brands[i]).removeClass("d-none");    
+        $("#input-brand-" + brands[i]).find("input").on("change", filterProducts);
     }
 
     $("#input-brand").addClass("d-none");
@@ -90,6 +103,7 @@ function displayCategories(data) {
     $("#category-filter").find("button").attr("aria-controls", "category-collapse");
     $("#category-filter").find("button").html("Category <i class='bi bi-caret-down-fill ml-auto'></i>");
     $("#category-filter").find("div").attr("id", "category-collapse");
+    $("#category-filter").removeClass("d-none");
     $("#category-collapse").find("div").attr("id", "input-category");
     $("#input-category").find("input").attr("name", "category");
 
@@ -97,7 +111,11 @@ function displayCategories(data) {
     for (let i in data) {
         categories.push(data[i]["category"]);
     }
-    categories = Array.from(new Set(categories));
+    categories = Array.from(new Set(categories)).sort();
+
+    clone = $("#input-category");
+    $("#category-collapse").empty();
+    $("#category-collapse").append(clone);
 
     for (let i in categories) {
         let node = $("#input-category");
@@ -106,6 +124,9 @@ function displayCategories(data) {
 
         $("#input-category-" + categories[i]).find("label").append(categories[i]);
         $("#input-category-" + categories[i]).find("input").attr("value", categories[i]);
+        $("#input-category-" + categories[i]).find("input").attr("checked", false);
+        $("#input-category-" + categories[i]).removeClass("d-none"); 
+        $("#input-category-" + categories[i]).find("input").on("change", filterProducts);
     }
 
     $("#input-category").addClass("d-none");
@@ -120,6 +141,7 @@ function displayColors(data) {
     $("#color-filter").find("button").attr("aria-controls", "color-collapse");
     $("#color-filter").find("button").html("Color <i class='bi bi-caret-down-fill ml-auto'></i>");
     $("#color-filter").find("div").attr("id", "color-collapse");
+    $("#color-filter").removeClass("d-none");
     $("#color-collapse").find("div").attr("id", "input-color");
     $("#input-color").find("input").attr("name", "color");
 
@@ -127,7 +149,11 @@ function displayColors(data) {
     for (let i in data) {
         colors.push(data[i]["color"]);
     }
-    colors = Array.from(new Set(colors));
+    colors = Array.from(new Set(colors)).sort();
+
+    clone = $("#input-color");
+    $("#color-collapse").empty();
+    $("#color-collapse").append(clone);
 
     for (let i in colors) {
         let node = $("#input-color");
@@ -136,6 +162,9 @@ function displayColors(data) {
 
         $("#input-color-" + colors[i]).find("label").append(colors[i]);
         $("#input-color-" + colors[i]).find("input").attr("value", colors[i]);
+        $("#input-color-" + colors[i]).find("input").attr("checked", false);
+        $("#input-color-" + colors[i]).removeClass("d-none"); 
+        $("#input-color-" + colors[i]).find("input").on("change", filterProducts);
     }
 
     $("#input-color").addClass("d-none");
@@ -150,14 +179,19 @@ function displayGenders(data) {
     $("#gender-filter").find("button").attr("aria-controls", "gender-collapse");
     $("#gender-filter").find("button").html("Gender <i class='bi bi-caret-down-fill ml-auto'></i>");
     $("#gender-filter").find("div").attr("id", "gender-collapse");
+    $("#gender-filter").removeClass("d-none");
     $("#gender-collapse").find("div").attr("id", "input-gender");
     $("#input-gender").find("input").attr("name", "gender");
-
+    
     let genders = [];
     for (let i in data) {
         genders.push(data[i]["gender"]);
     }
-    genders = Array.from(new Set(genders));
+    genders = Array.from(new Set(genders)).sort();
+
+    clone = $("#input-gender");
+    $("#gender-collapse").empty();
+    $("#gender-collapse").append(clone);
 
     for (let i in genders) {
         let node = $("#input-gender");
@@ -166,8 +200,11 @@ function displayGenders(data) {
 
         $("#input-gender-" + genders[i]).find("label").append(genders[i]);
         $("#input-gender-" + genders[i]).find("input").attr("value", genders[i]);
+        $("#input-gender-" + genders[i]).find("input").attr("checked", false);
+        $("#input-gender-" + genders[i]).removeClass("d-none"); 
+        $("#input-gender-" + genders[i]).find("input").on("change", filterProducts);
     }
-
+    
     $("#input-gender").addClass("d-none");
 }
 
@@ -202,8 +239,6 @@ function displayProducts(data) {
     if (!filters) {
         showProductCard(data);
     } else {
-        filters = JSON.parse(filters);
-
         if (Object.keys(filters).length === 0) {
             showProductCard(data);
         } else {
@@ -227,10 +262,6 @@ function displayProducts(data) {
             showProductCard(data);
         }
     }
-
-    $("input[type='checkbox']").on("change", function (e) {
-        filterProducts();
-    });
 }
 
 function showProductCard(data) {
@@ -246,7 +277,6 @@ function showProductCard(data) {
             let node = $("#product-card");
             let clone = node.clone().attr("id", "product-card-" + e["barcode"]);
             $("#products-area").append(clone);
-            console.log(clone);
 
             $("#product-card-" + e["barcode"]).removeClass("d-none");
             $("#product-card-" + e["barcode"] + " .product-img-1").attr("src", e["images"][0]["src"]);
@@ -339,14 +369,14 @@ function filterProducts() {
             selectedFilters[this.name] = [];
         }
 
-        selectedFilters[this.name].push(this.value);
+        if (Object.values(selectedFilters[this.name]).indexOf(this.value) < 0) {
+            selectedFilters[this.name].push(this.value);   
+        }
     });
-
+   
     setFilters(selectedFilters);
 
-
     makeProductAreaEmpty();
-    // TODO: remove displayfilters
     displayFilters(productsData);
     data = sortProducts(productsData);
     displayProducts(data);

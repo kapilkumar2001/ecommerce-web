@@ -56,7 +56,6 @@ function showOrder(orderData) {
 
     orderDataArray = convertMapToArray(orderData);
 
-    console.log(orderDataArray);
     $(".add-to-cart-btn").attr("onclick", "addToCart(" + JSON.stringify(orderData) + ")");
     $(".place-order-btn").click(function () {
         placeOrderConfirmation(orderDataArray);
@@ -116,7 +115,6 @@ function placeOrderConfirmation(orderDataArray) {
 }
 
 function placeOrder(orderDataArray) {
-    console.log(orderDataArray);
     writeFileData(orderDataArray);
     $(".place-order-modal").modal("hide");
     window.location.href = "order-placed.html";
