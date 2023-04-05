@@ -388,8 +388,77 @@ function isExistingProduct(barcode, productsData) {
     return false;
 }
 
-async function handleLocalStorageChanges() {
-    Promise.all([handleCurrentUser(), handleCart()]).then(() => {
+async function handleFilters() {
+    let filters = getFilters();
+
+    await $.ajax({
+        url: "data/products.json",
+        dataType: "json",
+        success: async (data) => {
+
+            let brands = [];
+            let categories = [];
+            let genders = [];
+            let colors = [];
+
+            for (let i in data) {
+                brands.push(data[i]["brand"]);
+                categories.push(data[i]["category"]);
+                genders.push(data[i]["gender"]);
+                colors.push(data[i]["color"]);
+            }
+
+            brands = Array.from(new Set(brands));
+            categories = Array.from(new Set(categories));
+            genders = Array.from(new Set(genders));
+            colors = Array.from(new Set(colors));
+
+            for (let key in filters) {
+                let value = filters[key];
+
+                if(key !== "brand" && key !== "category" && key !== "gender" && key !== "color") {
+                    delete filters[key];
+                } else {
+                    switch(key) {
+                        case "brand":
+                            for(let i in value) {
+                                if(!brands.includes(value[i])) {
+                                    filters[key].splice(i, 1);
+                                }
+                            }
+                            break;
+                        case "category":
+                            for(let i in value) {
+                                if(!categories.includes(value[i])) {
+                                    filters[key].splice(i, 1);
+                                }
+                            }
+                            break;
+                        case "color":
+                            for(let i in value) {
+                                if(!colors.includes(value[i])) {
+                                    filters[key].splice(i, 1);
+                                }
+                            }
+                            break;
+                        case "gender":
+                            for(let i in value) {
+                                if(!genders.includes(value[i])) {
+                                    filters[key].splice(i, 1);
+                                }
+                            }
+                            break;
+                    }
+                }
+            }
+
+            setFilters(filters);
+        }
+    });
+} 
+
+async function handleStorageChanges() {
+    Promise.all([handleCurrentUser(), handleCart(), handleFilters()]).then(() => {
         window.location.reload();
     });
 }
@@ -406,7 +475,7 @@ function init() {
     $("#navbar-placeholder").load("navbar.html", updateNavbar);
     $("#footer-placeholder").load("footer.html");
     setInterval(showTime, 1000);
-    $(window).on('storage', handleLocalStorageChanges); 
+    $(window).on('storage', handleStorageChanges); 
 }
 
 $(document).ready(init)

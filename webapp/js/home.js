@@ -246,16 +246,16 @@ function displayProducts(data) {
                 let value = filters[key];
                 switch (key) {
                     case "brand":
-                        data = filterByBrand(data, value);
+                        if(filters[key].length > 0) data = filterByBrand(data, value);
                         break;
                     case "category":
-                        data = filterByCategory(data, value);
+                        if(filters[key].length > 0) data = filterByCategory(data, value);
                         break;
                     case "color":
-                        data = filterByColor(data, value);
+                        if(filters[key].length > 0) data = filterByColor(data, value);
                         break;
                     case "gender":
-                        data = filterByGender(data, value);
+                        if(filters[key].length > 0) data = filterByGender(data, value);
                         break;
                 }
             }
