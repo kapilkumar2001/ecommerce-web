@@ -1,8 +1,11 @@
+let productsData;
+
 function displayPage() {
     $.ajax({
         url: 'data/products.json',
         dataType: 'json',
         success: function (data) {
+            productsData = data;
             displayFilters(data);
             data = sortProducts(data);
             displayProducts(data);
@@ -75,7 +78,7 @@ function displayBrands(data) {
         $("#input-brand-" + brands[i]).find("input").attr("value", brands[i]);
     }
 
-    $("#input-brand").remove();
+    $("#input-brand").addClass("d-none");
 }
 
 function displayCategories(data) {
@@ -105,7 +108,7 @@ function displayCategories(data) {
         $("#input-category-" + categories[i]).find("input").attr("value", categories[i]);
     }
 
-    $("#input-category").remove();
+    $("#input-category").addClass("d-none");
 }
 
 function displayColors(data) {
@@ -135,7 +138,7 @@ function displayColors(data) {
         $("#input-color-" + colors[i]).find("input").attr("value", colors[i]);
     }
 
-    $("#input-color").remove();
+    $("#input-color").addClass("d-none");
 }
 
 function displayGenders(data) {
@@ -165,7 +168,7 @@ function displayGenders(data) {
         $("#input-gender-" + genders[i]).find("input").attr("value", genders[i]);
     }
 
-    $("#input-gender").remove();
+    $("#input-gender").addClass("d-none");
 }
 
 function sortProducts(data) {
@@ -243,6 +246,7 @@ function showProductCard(data) {
             let node = $("#product-card");
             let clone = node.clone().attr("id", "product-card-" + e["barcode"]);
             $("#products-area").append(clone);
+            console.log(clone);
 
             $("#product-card-" + e["barcode"]).removeClass("d-none");
             $("#product-card-" + e["barcode"] + " .product-img-1").attr("src", e["images"][0]["src"]);
@@ -339,7 +343,13 @@ function filterProducts() {
     });
 
     setFilters(selectedFilters);
-    window.location.href = "home.html";
+
+
+    makeProductAreaEmpty();
+    // TODO: remove displayfilters
+    displayFilters(productsData);
+    data = sortProducts(productsData);
+    displayProducts(data);
 }
 
 function filterByBrand(data, brands) {
@@ -402,22 +412,37 @@ function resetFilters() {
     let filters = {};
     setFilters(filters);
     $(".reset-btn").addClass("d-none");
-    window.location.href = "home.html";
+
+    makeProductAreaEmpty();
+    displayFilters(productsData);
+    data = sortProducts(productsData);
+    displayProducts(data);
+
+    // window.location.href = "home.html";
 }
 
 function sortByPriceHighToLow() {
     setSortBy("price-hl"); // sort by price high to low
-    window.location.href = "home.html";
+
+    makeProductAreaEmpty();
+    let data = sortProducts(productsData);
+    displayProducts(data);
 }
 
 function sortByPriceLowToHigh() {
     setSortBy("price-lh"); // sort by price low to high
-    window.location.href = "home.html";
+    
+    makeProductAreaEmpty();
+    let data = sortProducts(productsData);
+    displayProducts(data);
 }
 
 function sortByRating() {
     setSortBy("rating"); // sort by rating
-    window.location.href = "home.html";
+
+    makeProductAreaEmpty();
+    let data = sortProducts(productsData);
+    displayProducts(data);
 }
 
 function openFiltersInMobileScreen() {
@@ -433,6 +458,12 @@ function closeFiltersInMobileScreen() {
     $("#products-area").removeClass("d-none");
     $("#sort-by-btn").removeClass("d-none");
     $(".filters-btn").removeClass("d-none");
+}
+
+function makeProductAreaEmpty() {
+    let clone = $("#product-card").clone();
+    $("#products-area").empty();
+    $("#products-area").append(clone);
 }
 
 function init() {
