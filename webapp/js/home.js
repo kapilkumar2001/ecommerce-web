@@ -308,12 +308,12 @@ function showProductCard(data) {
             let userCart = getUserCart();
 
             if (!userCart[e["barcode"]] || parseInt(userCart[e["barcode"]]) < 0) {
-                $("#product-card-" + e["barcode"] + " .add-to-cart-btn").attr("onclick", "changeToCountButton('" + e['barcode'] + "')")
+                $("#product-card-" + e["barcode"] + " .add-to-cart-btn").attr("onclick", "changeToCountButton('" + e['barcode'] + "', '" + e['name'] + "')")
                 $("#product-card-" + e["barcode"] + " .add-to-cart-span").removeClass("d-none");
                 $("#product-card-" + e["barcode"] + " .inc-dec-qty-span").addClass("d-none");
             } else {
                 $("#product-card-" + e["barcode"] + " .inc-qty-btn").attr("onclick", "increaseQuantity('" + e['barcode'] + "')");
-                $("#product-card-" + e["barcode"] + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + e['barcode'] + "')");
+                $("#product-card-" + e["barcode"] + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + e['barcode'] + "', '" + e['name'] + "')");
                 $("#product-card-" + e["barcode"] + " .inc-dec-qty-span").removeClass("d-none");
                 $("#product-card-" + e["barcode"] + " .add-to-cart-span").addClass("d-none");
                 $("#product-card-" + e["barcode"] + " .product-qty").html(parseInt(userCart[e["barcode"]]));
@@ -334,11 +334,11 @@ function showProductCard(data) {
     }
 }
 
-function changeToCountButton(barcode) {
+function changeToCountButton(barcode, productName) {
     let quantity = increaseQuantityInCart(barcode);
 
     $("#product-card-" + barcode + " .inc-qty-btn").attr("onclick", "increaseQuantity('" + barcode + "')");
-    $("#product-card-" + barcode + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "')");
+    $("#product-card-" + barcode + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "', '" + productName + "')");
     $("#product-card-" + barcode + " .inc-dec-qty-span").removeClass("d-none");
     $("#product-card-" + barcode + " .add-to-cart-span").addClass("d-none");
     $("#product-card-" + barcode + " .product-qty").html(quantity);
@@ -349,17 +349,41 @@ function increaseQuantity(barcode) {
     $("#product-card-" + barcode + " .product-qty").html(quantity);
 }
 
-function decreaseQuantity(barcode) {
-    let quantity = decreaseQuantityInCart(barcode);
+function decreaseQuantity(barcode, productName) {
+    let userCart = getUserCart();
 
-    if (quantity >= 1) {
+    if (userCart[barcode] > 1) {
+        let quantity = decreaseQuantityInCart(barcode);
         $("#product-card-" + barcode + " .product-qty").html(quantity);
+        updateOrderSummary();
     } else {
-        $("#product-card-" + barcode + " .add-to-cart-btn").attr("onclick", "changeToCountButton('" + barcode + "')");
-        $("#product-card-" + barcode + " .add-to-cart-btn").html("Add to cart");
-        $("#product-card-" + barcode + " .inc-dec-qty-span").addClass("d-none");
-        $("#product-card-" + barcode + " .add-to-cart-span").removeClass("d-none");
+        openRemoveItemModal(barcode, productName);
     }
+}
+
+function openRemoveItemModal(barcode, productName) {
+    $(".confirm-modal").modal("toggle");
+    $(".confirm-modal .modal-title").html("Confirm Remove Item");
+    $(".confirm-modal .modal-body").html("<span class='font-weight-bold'>" + productName + "</span> will be removed from cart. Are you sure?");
+    $(".confirm-modal .btn-yes").attr("onclick", "removeItem('" + barcode + "','" + productName + "')");
+    $(".confirm-modal .btn-no").click(() => {
+        $(".confirm-modal").modal("hide");
+    });
+}
+
+function removeItem(barcode, productName) {
+    removeItemFromCart(barcode);
+
+    $(".confirm-modal").modal("hide");
+    $(".toast-success").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>" + productName + " removed from the cart.</span></div>");
+    $(".toast-success").toast("show");
+
+    $("#product-card-" + barcode + " .add-to-cart-btn").attr("onclick", "changeToCountButton('" + barcode + "')");
+    $("#product-card-" + barcode + " .add-to-cart-btn").html("Add to cart");
+    $("#product-card-" + barcode + " .inc-dec-qty-span").addClass("d-none");
+    $("#product-card-" + barcode + " .add-to-cart-span").removeClass("d-none");
+
+    updateOrderSummary();
 }
 
 function viewProduct(barcode) {

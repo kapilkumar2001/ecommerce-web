@@ -133,6 +133,7 @@ function getCart() {
         return cart;
     } catch (e) {
         localStorage.removeItem("cart");
+        sessionStorage.setItem("successToast", "Your Cart has been updated");
         window.location.reload();
     }
 }
@@ -313,7 +314,6 @@ async function handleCart() {
     let cart = getCart();
     setCart(cart);
 
-    console.log("tjos");
     let usersData;
     let productsData;
 
@@ -338,18 +338,28 @@ async function handleCart() {
                                     if (!Number.isInteger(userCart[j])) {
                                         delete userCart[j];
                                         cart[i] = userCart;
+
+                                        if(i === getCurrentUserId()) {
+                                            sessionStorage.setItem("successToast", "Your Cart has been updated");
+                                        }
                                     } else if (userCart[j] <= 0) {
                                         delete userCart[j];
                                         cart[i] = userCart;
+
+                                        if(i === getCurrentUserId()) {
+                                            sessionStorage.setItem("successToast", "Your Cart has been updated");
+                                        }
                                     }
                                 } else {
-                                    console.log("product not exist");
                                     delete userCart[j];
                                     cart[i] = userCart;
+
+                                    if(i === getCurrentUserId()) {
+                                        sessionStorage.setItem("successToast", "Your Cart has been updated");
+                                    }
                                 }
                             }
                         } else {
-                            console.log("user not exist");
                             delete cart[i]; 
                         }
                     }
@@ -463,8 +473,6 @@ function handleSortBy() {
 async function handleStorageChanges() {
     Promise.all([handleCurrentUser(), handleCart(), handleFilters(), handleSortBy()]).then(() => {
         window.location.reload();
-        $(".toast-success").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>Data has been updated</span></div>");
-        $(".toast-success").toast("show");
     });
 }
 

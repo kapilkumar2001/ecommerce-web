@@ -34,7 +34,7 @@ function displayCart() {
                 updateOrderSummary();
 
                 if (getCurrentUserId() === "0") {
-                    $(".place-order-btn").html("Login");
+                    $(".place-order-btn").html("Login to Place Order");
                     $(".place-order-btn").attr("onclick", "redirectToLoginScreenWithParam('cart')");
                 } else {
                     $(".place-order-btn").html("Place Order")
@@ -151,6 +151,11 @@ function updateOrderSummary() {
                 $(".shipping-price").html("<span class='text-body'><s>₹199</s></span> FREE");
                 $(".shipping-price").addClass("text-success");
                 $(".free-delivery").addClass("d-none");
+
+                $(".total-amount").html("₹" + (totalPrice - totalDiscount).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }));
             } else {
                 $(".shipping-price").html("₹" + 199);
                 $(".free-delivery").html("Add items worth ₹" + (4999 - totalPrice).toLocaleString(undefined, {
@@ -158,11 +163,12 @@ function updateOrderSummary() {
                     maximumFractionDigits: 2
                 }) + " more to get free delivery on this order.");
                 $(".free-delivery").removeClass("d-none");
+
+                $(".total-amount").html("₹" + (totalPrice - totalDiscount + 199).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }));
             }
-            $(".total-amount").html("₹" + (totalPrice - totalDiscount).toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }));
         }
     });
 }

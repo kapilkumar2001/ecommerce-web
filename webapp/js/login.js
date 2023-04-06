@@ -45,9 +45,8 @@ function mergeGuestCartToUserCart(userId) {
 	let guestCart = getGuestCart();
 	let userCart = getUserCart();
 
-	console.log(Object.keys(guestCart).length);
 	if(Object.keys(guestCart).length !== 0) {
-		sessionStorage.setItem("successToast", "Items added to your cart");
+		sessionStorage.setItem("successToast", "Items have been added to your cart");
 	}
 
 	cart[userId] = mergeCarts(guestCart, userCart);
@@ -84,10 +83,8 @@ function showOrHidePassword() {
 	var input = $($(this).attr("toggle"));
 
 	if (input.attr("type") == "password") {
-		$(this).attr('data-original-title', 'Hide Password');
 		input.attr("type", "text");
 	} else {
-		$(this).attr('data-original-title', 'Show Password');
 		input.attr("type", "password");
 	}
 }

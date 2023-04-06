@@ -57,6 +57,12 @@ function displayProductDetails(barcode) {
                 $(".product-details").addClass("d-none");
                 $(".no-product-found").removeClass("d-none");
             }
+
+            if(sessionStorage.getItem("successToast")) {
+                $(".toast-success").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>" + sessionStorage.getItem("successToast") + "</span></div>");
+                $(".toast-success").toast("show");
+                sessionStorage.removeItem("successToast");
+            }
         },
     });
 }

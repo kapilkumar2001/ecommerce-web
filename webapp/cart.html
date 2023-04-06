@@ -19,19 +19,19 @@
   <body>
     <div id="navbar-placeholder"></div>
     <div class="container-fluid">
-      <div class="row p-4" id="order-placed">
+      <div class="row p-4 d-none" id="order-placed">
         <div class="col-12">
           <div class="row"><i class="bi bi-check2-circle text-success fa-10x mx-auto"></i></div>
           <h5 class="text-center mb-4">Your order has been placed successfully.</h5>
           <div class="row">
             <div class="mx-auto">
-              <button id="download-order-csv" class="btn btn-sm btn-outline-success mr-4">Download Order</button>
+              <button id="download-order-csv" class="btn btn-sm btn-outline-success mr-4">Download Order CSV</button>
               <button id="start-shopping-btn" class="btn btn-sm btn-success" onclick="redirectToHomeScreen()">Shop Again</button>
             </div>
           </div>
         </div>
       </div>
-      <div class="row p-4" id="cart">
+      <div class="row p-4 d-none" id="cart">
         <div id="empty-cart" class="col-12 d-none">
           <div class="row"><i class="bi bi-cart3 text-success fa-10x mx-auto"></i></div>
           <h5 class="text-center mb-4">Your cart is empty.</h5>
@@ -105,7 +105,7 @@
                 <span class='total-amount font-weight-bold ml-auto'></span> 
               </div>
               <div class="row px-3"> 
-                <button class="place-order-btn btn btn-sm btn-block btn-success border mx-2 mt-4 px-4 py-2 rounded ml-auto">Place Order</button>
+                <button class="place-order-btn btn btn-sm btn-block btn-success border mx-2 mt-4 px-4 py-2 rounded ml-auto">Login to Place Order</button>
               </div>
             </div>
           </div>
@@ -118,8 +118,8 @@
               </div>
               <div class="modal-body"></div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm btn-no px-3">No</button>
-                <button type="button" class="btn btn-outline-dark btn-sm btn-yes px-3">Yes</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm btn-no px-3">No</button>
+                <button type="button" class="btn btn-success btn-sm btn-yes px-3">Yes</button>
               </div>
             </div>
           </div>
@@ -132,8 +132,8 @@
               </div>
               <div class="modal-body">Are you sure, you want to logout?</div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm btn-no px-2">Cancel</button>
-                <button type="button" class="btn btn-outline-dark btn-sm btn-yes px-2">Logout</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm btn-no px-2">Cancel</button>
+                <button type="button" class="btn btn-success btn-sm btn-yes px-2">Logout</button>
               </div>
             </div>
           </div>

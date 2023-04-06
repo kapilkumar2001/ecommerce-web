@@ -11,6 +11,12 @@ function displayPage() {
         $(".order-placed").addClass("d-none");
         $(".not-logged-in").addClass("d-none");
     }
+
+    if(sessionStorage.getItem("successToast")) {
+        $(".toast-success").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>" + sessionStorage.getItem("successToast") + "</span></div>");
+        $(".toast-success").toast("show");
+        sessionStorage.removeItem("successToast");
+    }
 }
 
 function clickInputFile() {
@@ -104,6 +110,8 @@ function addToCart(orderData) {
     }
 
     setCart(cart);
+
+    sessionStorage.setItem("successToast", "Items have been added to your cart");
     redirectToCartScreen();
 }
 
