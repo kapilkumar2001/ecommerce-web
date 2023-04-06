@@ -295,15 +295,10 @@ function showProductCard(data) {
             $("#product-card-" + e["barcode"] + " .brand-name").attr("href", "product-details.html?barcode=" + e['barcode']);
             $("#product-card-" + e["barcode"] + " .product-name").find("div").html(e["name"]);
             $("#product-card-" + e["barcode"] + " .product-name").attr("href", "product-details.html?barcode=" + e['barcode']);
-            $("#product-card-" + e["barcode"] + " .rating-reviews").attr("href", "product-details.html?barcode=" + e['barcode']);
             $("#product-card-" + e["barcode"] + " .product-rating").html(parseFloat(e["rating"]).toFixed(1) + " <i class='bi bi-star-fill'></i>");
             $("#product-card-" + e["barcode"] + " .product-reviews").html("(" + e["reviews"] + ")");
-            $("#product-card-" + e["barcode"] + " .product-price").find("b").html("₹" + e["price"].toLocaleString());     // html("₹" + (e["mrp"] - parseInt(e["mrp"] * e["discountPercent"] / 100)).toLocaleString());
-            $("#product-card-" + e["barcode"] + " .product-price").attr("href", "product-details.html?barcode=" + e['barcode']);
+            $("#product-card-" + e["barcode"] + " .product-price").find("b").html("₹" + e["price"].toLocaleString());     
             $("#product-card-" + e["barcode"] + " .product-mrp").find("s").html("₹" + e["mrp"].toLocaleString());
-            $("#product-card-" + e["barcode"] + " .product-mrp").attr("href", "product-details.html?barcode=" + e['barcode']);
-            $("#product-card-" + e["barcode"] + " .product-discount").html(e["discountPercent"] + "%off");
-            $("#product-card-" + e["barcode"] + " .product-discount").attr("href", "product-details.html?barcode=" + e['barcode']);
 
             let userCart = getUserCart();
 
@@ -326,7 +321,7 @@ function showProductCard(data) {
             $("#product-card-" + e["barcode"] + " .carousel-item").hover(function () {
                 setTimeout(function () {
                     $("#product-card-" + e["barcode"] + " .carousel").carousel('next', { interval: 2000 });
-                }, 2000);
+                }, 1000);
             }, function () {
                 $("#product-card-" + e["barcode"] + " .carousel").carousel('pause');
             });

@@ -32,7 +32,7 @@ function displayProductDetails(barcode) {
                 $(".product-mrp").find("s").html("₹" + parseInt(productData['mrp']).toLocaleString());
                 $(".product-discount").find("b").html(productData['discountDisplayLabel']);
                 $(".product-color").html("Color: " + productData['color']);
-                $(".product-sizes").html("Available Sizes: " + productData['sizes']);
+                $(".product-sizes").html("Size: " + productData['sizes'].split(",")[0]);
 
                 let userCart = getUserCart();
 
