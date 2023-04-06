@@ -23,16 +23,10 @@ function writeFileData(arr) {
 
     let data = Papa.unparse(arr, config);
     let blob = new Blob([data], { type: "text/csv;charset=utf-8;" });
-    let fileUrl = null;
-
-    if (navigator.msSaveBlob) {
-        fileUrl = navigator.msSaveBlob(blob, "order");
-    } else {
-        fileUrl = window.URL.createObjectURL(blob);
-    }
+    const url = URL.createObjectURL(blob);
 
     let tempLink = document.createElement("a");
-    tempLink.href = fileUrl;
+    tempLink.setAttribute("href", url);
     tempLink.setAttribute("download", "order");
     tempLink.click();
     tempLink.remove();
@@ -484,10 +478,6 @@ function redirectToLoginScreenWithParam(param) {
 
 function redirectToHomeScreen() {
     window.location.href = "home.html";
-}
-
-function redirectToOrderPlacedScreen() {
-    window.location.href = "order-placed.html";
 }
 
 function redirectToCartScreen() {

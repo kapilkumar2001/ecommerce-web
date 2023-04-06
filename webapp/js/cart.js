@@ -2,11 +2,13 @@ function displayCart() {
     let userCart = getUserCart();
     let cartProductsLength = Object.keys(userCart).length;
 
+    $("#cart").removeClass("d-none");
+    $("#order-placed").addClass("d-none");
+
     if (cartProductsLength === 0) {
         $("#empty-cart").removeClass("d-none");
         $("#cart-items").addClass("d-none");
         $("#order-summary").addClass("d-none");
-        $("#start-shopping-btn").click(redirectToHomeScreen);
     } else {
         $("#empty-cart").addClass("d-none");
         $("#cart-items").removeClass("d-none");
@@ -198,13 +200,22 @@ function placeOrder() {
                 }
             }
 
-            writeFileData(orderData);
+            
             removeAllItemsFromCart();
 
             $(".place-order-modal").modal("hide");
-            redirectToOrderPlacedScreen();
+            
+            $("#cart").addClass("d-none");
+            $("#order-placed").removeClass("d-none");
+            $("#download-order-csv").attr("onclick", "downloadOrderCSV(" + JSON.stringify(orderData) + ")");
+
+            writeFileData(orderData);
         },
     });
+}
+
+function downloadOrderCSV(orderData) {
+    writeFileData(orderData);
 }
 
 function openClearCartModal() {

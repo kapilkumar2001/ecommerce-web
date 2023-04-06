@@ -3,10 +3,12 @@ function displayPage() {
 
     if (userId === "0") {
         $(".logged-in").addClass("d-none");
+        $(".order-placed").addClass("d-none");
         $(".not-logged-in").removeClass("d-none");
         $("")
     } else {
         $(".logged-in").removeClass("d-none");
+        $(".order-placed").addClass("d-none");
         $(".not-logged-in").addClass("d-none");
     }
 }
@@ -118,7 +120,15 @@ function placeOrderConfirmation(orderDataArray) {
 function placeOrder(orderDataArray) {
     writeFileData(orderDataArray);
     $(".place-order-modal").modal("hide");
-    window.location.href = "order-placed.html";
+
+    $(".logged-in").addClass("d-none");
+    $(".not-logged-in").addClass("d-none");
+    $(".order-placed").removeClass("d-none");
+    $("#download-order-csv").attr("onclick", "downloadOrderCSV(" + orderDataArray + ")");
+}
+
+function downloadOrderCSV(orderDataArray) {
+    writeFileData(orderDataArray);
 }
 
 function showError(errorData) {
