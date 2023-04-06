@@ -457,9 +457,20 @@ async function handleFilters() {
     });
 } 
 
+function handleSortBy() {
+    let sortBy = getSortBy();
+    let sortingOptions = ["price-hl", "price-lh", "rating"];
+
+    if(!sortingOptions.includes(sortBy)) {
+        sessionStorage.removeItem("sortBy");
+    }
+}
+ 
 async function handleStorageChanges() {
-    Promise.all([handleCurrentUser(), handleCart(), handleFilters()]).then(() => {
+    Promise.all([handleCurrentUser(), handleCart(), handleFilters(), handleSortBy()]).then(() => {
         window.location.reload();
+        $(".toast-success").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>Data has been updated</span></div>");
+        $(".toast-success").toast("show");
     });
 }
 
@@ -467,8 +478,24 @@ function redirectToLoginScreen() {
     window.location.href = "login.html";
 }
 
+function redirectToLoginScreenWithParam(param) {
+    window.location.href = "login.html?redirect=" + param;
+}
+
 function redirectToHomeScreen() {
     window.location.href = "home.html";
+}
+
+function redirectToOrderPlacedScreen() {
+    window.location.href = "order-placed.html";
+}
+
+function redirectToCartScreen() {
+    window.location.href = "cart.html";
+}
+
+function redirectToUploadScreen() {
+    window.location.href = "upload-order.html";
 }
 
 function init() {

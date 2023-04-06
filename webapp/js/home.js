@@ -10,6 +10,12 @@ function displayPage() {
             data = sortProducts(data);
             displayProducts(data);
             $(".container-fluid").removeClass("d-none");
+
+            if(sessionStorage.getItem("successToast")) {
+                $(".toast-success").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>" + sessionStorage.getItem("successToast") + "</span></div>");
+                $(".toast-success").toast("show");
+                sessionStorage.removeItem("successToast");
+            }
         },
     });
 }
@@ -447,8 +453,6 @@ function resetFilters() {
     displayFilters(productsData);
     data = sortProducts(productsData);
     displayProducts(data);
-
-    // window.location.href = "home.html";
 }
 
 function sortByPriceHighToLow() {

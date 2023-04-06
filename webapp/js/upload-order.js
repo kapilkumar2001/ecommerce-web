@@ -4,6 +4,7 @@ function displayPage() {
     if (userId === "0") {
         $(".logged-in").addClass("d-none");
         $(".not-logged-in").removeClass("d-none");
+        $("")
     } else {
         $(".logged-in").removeClass("d-none");
         $(".not-logged-in").addClass("d-none");

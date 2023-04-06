@@ -12,16 +12,16 @@ function login() {
 		success: function (data) {
 			let userId;
 			let flag = -1;
+
 			for (let i in data) {
 				if (data[i]["email"].toLowerCase() === email.toLowerCase()) {
 					if (data[i]["password"] === password) {
 						userId = data[i]["id"];
 						flag = 1;
-						break;
 					} else {
 						flag = 0;
-						break;
 					}
+					break;
 				}
 			}
 
@@ -34,7 +34,7 @@ function login() {
 			} else {
 				setCurrentUserId(userId);
 				mergeGuestCartToUserCart(userId);
-				window.location.href = "home.html";
+				redirectTo();
 			}
 		},
 	});
@@ -44,6 +44,11 @@ function mergeGuestCartToUserCart(userId) {
 	let cart = getCart();
 	let guestCart = getGuestCart();
 	let userCart = getUserCart();
+
+	console.log(Object.keys(guestCart).length);
+	if(Object.keys(guestCart).length !== 0) {
+		sessionStorage.setItem("successToast", "Items added to your cart");
+	}
 
 	cart[userId] = mergeCarts(guestCart, userCart);
 	cart["0"] = {};
@@ -84,6 +89,19 @@ function showOrHidePassword() {
 	} else {
 		$(this).attr('data-original-title', 'Show Password');
 		input.attr("type", "password");
+	}
+}
+
+function redirectTo() {
+	let searchParams = new URLSearchParams(window.location.search);
+	let redirect = searchParams.get('redirect');
+
+	if(redirect === "cart") {
+		redirectToCartScreen();
+	} else if(redirect === "upload-order") {
+		redirectToUploadScreen();
+	} else {
+		redirectToHomeScreen();
 	}
 }
 
