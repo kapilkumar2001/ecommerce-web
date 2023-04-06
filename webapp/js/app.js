@@ -50,7 +50,7 @@ function openLogoutModal() {
 
 function logout() {
     localStorage.setItem("currentUserId", "0");
-    window.location.href = "home.html";
+    redirectToHomeScreen();
 }
 
 function updateNavbar() {
@@ -59,7 +59,7 @@ function updateNavbar() {
         setLoginLogoutIcon();
         $("#navbar-login-logout").click(function () {
             if (localStorage.getItem("currentUserId") === "0") {
-                window.location.href = "login.html";
+                redirectToLoginScreen();
             } else {
                 openLogoutModal();
             }

@@ -104,7 +104,7 @@ function addToCart(orderData) {
     }
 
     setCart(cart);
-    window.location.href = "cart.html";
+    redirectToCartScreen();
 }
 
 function placeOrderConfirmation(orderDataArray) {

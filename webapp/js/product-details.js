@@ -53,7 +53,7 @@ function displayProductDetails(barcode) {
                 $(".product-details").removeClass("d-none");
                 $(".no-product-found").addClass("d-none");
             } else {
-                $("#go-to-home-btn").attr("onclick", "viewHomePage()");
+                $("#go-to-home-btn").attr("onclick", "redirectToHomeScreen()");
                 $(".product-details").addClass("d-none");
                 $(".no-product-found").removeClass("d-none");
             }
@@ -61,17 +61,10 @@ function displayProductDetails(barcode) {
     });
 }
 
-function viewCart() {
-    window.location.href = "cart.html";
-}
-
-function viewHomePage() {
-    window.location.href = "home.html";
-}
 
 function buyNow(barcode) {
     increaseQuantityInCart(barcode);
-    window.location.href = "cart.html";
+    redirectToCartScreen();
 }
 
 function changeToCountButton(barcode) {

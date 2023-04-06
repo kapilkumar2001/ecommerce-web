@@ -75,7 +75,7 @@ function validateEmail(mail, password) {
 
 function checkLogin() {
 	if (getCurrentUserId() !== null && getCurrentUserId() !== "0") {
-		window.location.href = "home.html";
+		redirectToHomeScreen();
 	}
 }
 
