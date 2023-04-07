@@ -26,13 +26,15 @@ function displayProductDetails(barcode) {
                 $(".product-img-4").attr("src", productData["images"][3]["src"]);
                 $(".product-img-5").attr("src", productData["images"][4]["src"]);
                 $(".product-desc").html(productData['additionalInfo']);
-                $(".product-rating").html(parseFloat(productData['rating']).toFixed(1) + " <i class='bi bi-star-fill'></i>");
                 $(".product-reviews").html("(" + productData['reviews'] + " reviews)");
                 $(".product-price").html("₹" + productData["price"].toLocaleString());
                 $(".product-mrp").find("s").html("₹" + parseInt(productData['mrp']).toLocaleString());
                 $(".product-discount").find("b").html(productData['discountDisplayLabel']);
                 $(".product-color").html("Color: " + productData['color']);
                 $(".product-sizes").html("Size: " + productData['sizes'].split(",")[0]);
+                document.getElementById("product-rating").title = parseFloat(productData['rating']).toFixed(1) + " out of 5 stars";
+                document.getElementById("full-stars").style.width = parseInt(productData['rating'] / 5 *100) + "%";
+                initializeTooltip();
 
                 let userCart = getUserCart();
 
