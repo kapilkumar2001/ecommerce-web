@@ -34,9 +34,9 @@ function writeFileData(arr) {
 
 function setLoginLogoutIcon() {
     if (getCurrentUserId() === "0") {
-        $("#navbar-login-logout").html("<a class='nav-link'><i class='bi bi-box-arrow-in-right fa-lg' data-toggle='tooltip' data-placement='bottom' title='login'></i></a>");
+        $("#navbar-login-logout").html("<a class='nav-link'><i class='bi bi-box-arrow-in-right fa-lg' data-toggle='tooltip' data-placement='bottom' title='Login'></i></a>");
     } else {
-        $("#navbar-login-logout").html("<a class='nav-link'><i class='bi bi-box-arrow-right fa-lg' data-toggle='tooltip' data-placement='bottom' title='logout''></i></a>");
+        $("#navbar-login-logout").html("<a class='nav-link'><i class='bi bi-box-arrow-right fa-lg' data-toggle='tooltip' data-placement='bottom' title='Logout''></i></a>");
     }
 }
 
@@ -81,7 +81,12 @@ function getCartItemsCount() {
 
 function updateCartIcon() {
     let cartItemsCount = getCartItemsCount();
-    $(".cart-icon span").html(cartItemsCount);
+
+    if(cartItemsCount > 99) {
+        $(".cart-icon span").html("99+");
+    } else {
+        $(".cart-icon span").html(cartItemsCount);
+    }
 }
 
 function mergeCarts(cart1, cart2) {
@@ -494,6 +499,16 @@ function redirectToCartScreen() {
 
 function redirectToUploadScreen() {
     window.location.href = "upload-order.html";
+}
+
+function showSuccessToast(message) {
+    $(".toast-success .toast-msg").html(message);
+    $(".toast-success").toast("show");
+}
+
+function showErrorToast(message) {
+    $(".toast-error .toast-msg").html(message);
+    $(".toast-error").toast("show");
 }
 
 function init() {

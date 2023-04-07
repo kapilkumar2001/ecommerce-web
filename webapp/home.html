@@ -30,7 +30,7 @@
             <div id="filter">
               <hr class="my-2">
               <button class="btn bg-transparent border-0 p-0 small" type="button" data-toggle="collapse" data-target="#filter-collapse" aria-expanded="false" aria-controls="filter-collapse">
-                Filter Name <i class="bi bi-caret-down-fill ml-auto small"></i>
+                <i class="bi bi-caret-down-fill ml-auto small"></i>
               </button>
               <div class="collapse pt-2 px-2">
                 <div><label class="small"><input type="checkbox" name="filtername" class="mr-2"></label><br></div>
@@ -41,7 +41,7 @@
         <div class="col-12 col-md-9 col-lg-10">
           <div class="row">
             <div class="d-block d-md-none ml-4">
-              <button class="filters-btn btn btn-sm btn-outline-dark">Apply Filters</button>
+              <button class="filters-btn btn btn-sm btn-outline-dark"><i class="bi bi-funnel mr-1"></i>Filters</button>
             </div>
             <div id="sort-by-btn" class="ml-auto mr-4">
               <div class="dropdown">
@@ -50,16 +50,16 @@
                   <span class="sort-by"></span>
                 </button>
                 <div class="dropdown-menu py-1" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" onclick="sortByPriceHighToLow()">Price: High to Low</a>
-                  <a class="dropdown-item" onclick="sortByPriceLowToHigh()">Price: Low to High</a>
-                  <a class="dropdown-item" onclick="sortByRating()">Rating</a>
+                  <a class="dropdown-item" onclick="setSortProductsBy('price-hl')">Price: High to Low</a>
+                  <a class="dropdown-item" onclick="setSortProductsBy('price-lh')">Price: Low to High</a>
+                  <a class="dropdown-item" onclick="setSortProductsBy('rating')">Rating</a>
                 </div>
               </div>
             </div>
           </div>
           <div id="no-product" class="d-none">
-            <div class="row"><i class="bi bi-search text-success fa-10x mx-auto"></i></div>
-            <h5 class="text-center mt-4">Sorry! No product found in this category.</h5>
+            <div class="row mt-4"><i class="bi bi-search text-success fa-10x mx-auto"></i></div>
+            <h5 class="text-center mt-4">Ah! No product found for applied filters.</h5>
           </div>
           <div id="products-area" class="row my-4 mx-1">
             <div id="product-card" class="product-card d-none p-2 col-sm-12 col-md-6 col-lg-4 col-xl-3">

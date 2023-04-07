@@ -12,8 +12,7 @@ function displayPage() {
             $(".container-fluid").removeClass("d-none");
 
             if(sessionStorage.getItem("successToast")) {
-                $(".toast-success").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>" + sessionStorage.getItem("successToast") + "</span></div>");
-                $(".toast-success").toast("show");
+                showSuccessToast(sessionStorage.getItem("successToast"));
                 sessionStorage.removeItem("successToast");
             }
         },
@@ -33,6 +32,7 @@ function displayFilters(data) {
 function setInputCheckBox() {
     let filters = getFilters();
 
+    $(".reset-btn").addClass("d-none");
     if (filters) {
         let brands = filters["brand"];
         let categories = filters["category"];
@@ -58,6 +58,19 @@ function setInputCheckBox() {
             $("#gender-collapse").addClass("show");
             $(".reset-btn").removeClass("d-none");
             $("#input-gender-" + genders[i]).find("input").attr("checked", true);
+        }
+
+        if(brands && brands.length !== 0) {
+            $("#brand-filter").find("button").append("<span class='badge badge-success rounded-circle ml-2'>" + brands.length + "</span>");
+        }
+        if(categories && categories.length !== 0) {
+            $("#category-filter").find("button").append("<span class='badge badge-success rounded-circle ml-2'>" + categories.length + "</span>");
+        }
+        if(colors && colors.length !== 0) {
+            $("#color-filter").find("button").append("<span class='badge badge-success rounded-circle ml-2'>" + colors.length + "</span>");
+        }
+        if(genders && genders.length !== 0) {
+            $("#gender-filter").find("button").append("<span class='badge badge-success rounded-circle ml-2'>" + genders.length + "</span>");
         }
     }
 }
@@ -276,7 +289,9 @@ function showProductCard(data) {
         $("#sort-by-btn").addClass("d-none");
     } else {
         $("#no-product").addClass("d-none");
-        $("#sort-by-btn").removeClass("d-none");
+        if(window.innerWidth >= 765) {
+            $("#sort-by-btn").removeClass("d-none");
+        }
         
         for (let i in data) {
             let e = data[i];
@@ -332,6 +347,8 @@ function showProductCard(data) {
 function changeToCountButton(barcode, productName) {
     let quantity = increaseQuantityInCart(barcode);
 
+    showSuccessToast("<b>" + productName + "</b> has been added to your cart.");
+
     $("#product-card-" + barcode + " .inc-qty-btn").attr("onclick", "increaseQuantity('" + barcode + "')");
     $("#product-card-" + barcode + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "', '" + productName + "')");
     $("#product-card-" + barcode + " .inc-dec-qty-span").removeClass("d-none");
@@ -370,10 +387,9 @@ function removeItem(barcode, productName) {
     removeItemFromCart(barcode);
 
     $(".confirm-modal").modal("hide");
-    $(".toast-success").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>" + productName + " removed from the cart.</span></div>");
-    $(".toast-success").toast("show");
+    showSuccessToast("<b>" + productName + "</b> has been removed from the cart.");
 
-    $("#product-card-" + barcode + " .add-to-cart-btn").attr("onclick", "changeToCountButton('" + barcode + "')");
+    $("#product-card-" + barcode + " .add-to-cart-btn").attr("onclick", "changeToCountButton('" + barcode + "', '" + productName + "')");
     $("#product-card-" + barcode + " .add-to-cart-btn").html("Add to cart");
     $("#product-card-" + barcode + " .inc-dec-qty-span").addClass("d-none");
     $("#product-card-" + barcode + " .add-to-cart-span").removeClass("d-none");
@@ -474,25 +490,8 @@ function resetFilters() {
     displayProducts(data);
 }
 
-function sortByPriceHighToLow() {
-    setSortBy("price-hl"); // sort by price high to low
-
-    makeProductAreaEmpty();
-    let data = sortProducts(productsData);
-    displayProducts(data);
-}
-
-function sortByPriceLowToHigh() {
-    setSortBy("price-lh"); // sort by price low to high
-    
-    makeProductAreaEmpty();
-    let data = sortProducts(productsData);
-    displayProducts(data);
-}
-
-function sortByRating() {
-    setSortBy("rating"); // sort by rating
-
+function setSortProductsBy(value) {
+    setSortBy(value); 
     makeProductAreaEmpty();
     let data = sortProducts(productsData);
     displayProducts(data);

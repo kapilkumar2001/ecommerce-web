@@ -33,9 +33,9 @@
       </div>
       <div class="row p-4 d-none" id="cart">
         <div id="empty-cart" class="col-12 d-none">
-          <div class="row"><i class="bi bi-cart3 text-success fa-10x mx-auto"></i></div>
+          <div class="row"><i class="bi bi-cart-x text-success fa-10x mx-auto"></i></div>
           <h5 class="text-center mb-4">Your cart is empty.</h5>
-          <button id="start-shopping-btn" class="btn btn-sm btn-success mx-auto d-block" onclick="redirectToHomeScreen()">Start Shopping</button>
+          <button id="start-shopping-btn" class="btn btn-success mx-auto d-block" onclick="redirectToHomeScreen()">Start Shopping</button>
         </div>
         <div id="cart-items" class="col-sm-12 col-md-7 col-lg-8 d-none">
           <div class="card">
@@ -46,14 +46,15 @@
               </div>
             </div> 
             <div class="card-body">
-              <div id="cart-item" class="row align-items-center p-2 my-4">
+              <div id="cart-item" class="row align-items-center px-2 py-4 py-lg-2">
                 <div class="col-sm-12 col-md-3"> 
                   <img class="product-img img-fluid rounded img-thumbnail border-0 mx-auto d-block"> 
                 </div>
                 <div class="col-sm-12 col-md-9 mt-2 mt-md-0 pl-4">
                   <h6 class="brand-name text-muted mb-2"></h6>
-                  <a class="product-name text-body"></a> 
-                  <h6 class="product-color text-body mt-2"></h6>
+                  <a class="product-name text-body text-wrap"></a>
+                  <div class="product-color text-body mt-2 small"></div>
+                  <div class="product-size text-body small"></div>
                   <div class="row pl-3 mt-3">
                     <h6 class="product-price font-weight-bold"></h6> 
                     <h6 class="product-mrp ml-2"><s></s></h6>
@@ -69,7 +70,7 @@
                         <i class="bi bi-plus-lg pr-1 align-middle"></i>
                       </button>
                     </span>
-                    <button class="remove-item-btn btn btn-sm btn-outline-danger rounded px-2 ml-4">
+                    <button class="remove-item-btn btn btn-sm btn-outline-danger rounded px-2 py-0 ml-4">
                       <i class="bi bi-trash3 mr-1"></i> Remove Item
                     </button> 
                   </div>

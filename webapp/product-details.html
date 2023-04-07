@@ -25,8 +25,15 @@
         <button id="go-to-home-btn" class="btn btn-sm btn-success mx-auto d-block">Go Back to Products Page</button>
       </div>
       <div class="product-details row mt-4 d-none"> 
-        <div class="col-sm-12 col-md-4">
+        <div class="col-sm-12 col-md-4 my-auto">
           <div id="carouselControls" class="carousel slide" data-ride="carousel" data-interval="2000">
+            <ol class="carousel-indicators">
+              <li data-target="#carouselControls" data-slide-to="0" class="active"></li>
+              <li data-target="#carouselControls" data-slide-to="1"></li>
+              <li data-target="#carouselControls" data-slide-to="2"></li>
+              <li data-target="#carouselControls" data-slide-to="3"></li>
+              <li data-target="#carouselControls" data-slide-to="4"></li>
+            </ol>
             <div class="carousel-inner">
               <div class="carousel-item active">
                 <img class="product-img-1 img-fluid rounded img-thumbnail border-0 mx-auto d-block" >
@@ -54,7 +61,7 @@
             </a>
           </div>
         </div>
-        <div class="col-sm-12 col-md-8 px-4"> 
+        <div class="col-sm-12 col-md-8 px-4 my-auto"> 
           <h4 class="product-name my-2"></h4> 
           <p class="product-desc text-secondary"></p>
           <div class="row align-items-baseline mx-1 mb-4">
@@ -90,7 +97,7 @@
                 <i class="bi bi-plus-lg pr-1 align-middle"></i>
               </button>
             </span>
-            <button class="remove-from-cart-btn btn btn-sm btn-outline-danger ml-4 rounded d-none"><i class="bi bi-trash3 mr-1"></i>Remove from Cart</button>
+            <button class="remove-from-cart-btn btn btn-sm btn-outline-danger ml-4 rounded d-none"><i class="bi bi-trash3 mr-1"></i>Remove</button>
           </div>
         </div>
       </div>

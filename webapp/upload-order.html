@@ -22,7 +22,7 @@
       <div class="not-logged-in d-none">
         <div class="row">
           <div class="mx-auto">
-            <i class="bi bi-box-arrow-in-right fa-10x text-success"></i>
+            <button class="border-0 bg-transparent" onclick="redirectToLoginScreenWithParam('upload-order')"><i class="bi bi-box-arrow-in-right fa-10x text-success"></i></button>
           </div>
         </div>
         <div class="row">
@@ -32,7 +32,7 @@
         </div>
         <div class="row">
           <div class="mx-auto mt-4">
-            <button class="btn btn-sm btn-success" onclick="redirectToLoginScreenWithParam('upload-order')">Go to Login Screen</button>
+            <button class="btn btn-success" onclick="redirectToLoginScreenWithParam('upload-order')">Login Now</button>
           </div>
         </div>
       </div>
@@ -56,7 +56,7 @@
         </div>
         <div class="row">
           <div class="mx-auto">
-            <h6>Upload CSV file to place an order</h6>
+            <h6>Upload CSV file to place an order <a href="resources/order-sample.csv" target="_blank" class="text-primary">(Sample File)</a></h6>
           </div>
         </div>
         <div class="row">
@@ -68,13 +68,13 @@
             </div>
           </button>
         </div>
-        <div id="sample-file" class="row mb-4">
+        <!-- <div id="sample-file" class="row mb-4">
           <div class="mx-auto">  
             <div class="row">
-              <a href="resources/order-sample.csv" target="_blank" class="text-dark px-4"> Download Sample File</a>
+              
             </div>
           </div>
-        </div>
+        </div> -->
         <div id="upload-btn-row" class="row d-none">
           <div class="mx-auto">
             <span id="file-name" class="pr-2 border border-dark py-1 px-2 rounded"></span>
