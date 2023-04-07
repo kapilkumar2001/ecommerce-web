@@ -16,3 +16,11 @@ img {
     cursor: pointer;
 }
 
+.sticky-top {
+    top: 70px !important;
+}
+
+.filters-section {
+    height: 580px;
+    overflow-y: scroll;
+}

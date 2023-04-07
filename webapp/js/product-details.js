@@ -65,7 +65,6 @@ function displayProductDetails(barcode) {
     });
 }
 
-
 function buyNow(barcode) {
     increaseQuantityInCart(barcode);
     redirectToCartScreen();

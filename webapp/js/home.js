@@ -473,7 +473,7 @@ function filterByGender(data, genders) {
 
 function resetFilters() {
     $(".reset-btn").addClass("d-none");
-    
+
     let filters = {};
     setFilters(filters);
     makeProductAreaEmpty();
