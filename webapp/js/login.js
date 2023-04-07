@@ -44,7 +44,7 @@ function mergeGuestCartToUserCart(userId) {
 	let userCart = getUserCart();
 
 	if(Object.keys(guestCart).length !== 0) {
-		sessionStorage.setItem("successToast", "Items have been added to your cart");
+		setToastInSessionStorage("Items have been added to your cart");
 	}
 
 	cart[userId] = mergeCarts(guestCart, userCart);
@@ -78,7 +78,7 @@ function showOrHidePassword() {
 	$(this).toggleClass("bi-eye bi-eye-slash");
 	var input = $($(this).attr("toggle"));
 
-	if (input.attr("type") == "password") {
+	if (input.attr("type") === "password") {
 		input.attr("type", "text");
 	} else {
 		input.attr("type", "password");

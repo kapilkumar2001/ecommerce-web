@@ -12,7 +12,7 @@ function displayProductDetails(barcode) {
             let productData = null;
 
             for (let i in data) {
-                if (data[i]['barcode'] == barcode) {
+                if (data[i]['barcode'] === barcode) {
                     productData = data[i];
                     break;
                 }
@@ -58,10 +58,7 @@ function displayProductDetails(barcode) {
                 $(".no-product-found").removeClass("d-none");
             }
 
-            if(sessionStorage.getItem("successToast")) {
-                showSuccessToast(sessionStorage.getItem("successToast"));
-                sessionStorage.removeItem("successToast");
-            }
+            checkToastInSessionStorage();
         },
     });
 }

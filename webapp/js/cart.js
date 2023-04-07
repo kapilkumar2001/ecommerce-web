@@ -18,6 +18,7 @@ function displayCart() {
             url: 'data/products.json',
             dataType: 'json',
             success: function (data) {
+
                 for (let i in data) {
                     let barcode = data[i]["barcode"];
                     if (!userCart[barcode]) {
@@ -30,7 +31,6 @@ function displayCart() {
                 }
 
                 $("#cart-item").addClass("d-none");
-                $('[data-toggle="tooltip"]').tooltip();
                 updateOrderSummary();
 
                 if (getCurrentUserId() === "0") {
@@ -41,10 +41,7 @@ function displayCart() {
                     $(".place-order-btn").attr("onclick", "openPlaceOrderConfirmationModal()");
                 }
 
-                if(sessionStorage.getItem("successToast")) {
-                    showSuccessToast(sessionStorage.getItem("successToast"));
-                    sessionStorage.removeItem("successToast");
-                }
+                checkToastInSessionStorage();
             }
         });
     }
@@ -110,10 +107,7 @@ function removeItem(barcode, productName) {
     $(".confirm-modal").modal("hide");
     showSuccessToast("<b>" + productName + "</b> has been removed from the cart.");
 
-    let userCart = getUserCart();
-    if (Object.keys(userCart).length === 0) {
-        displayCart();
-    }
+    if (Object.keys(getUserCart()).length === 0) displayCart();
 }
 
 function updateOrderSummary() {
@@ -205,11 +199,8 @@ function placeOrder() {
                 }
             }
 
-            
             removeAllItemsFromCart();
-
             $(".place-order-modal").modal("hide");
-            
             $("#cart").addClass("d-none");
             $("#order-placed").removeClass("d-none");
             $("#download-order-csv").attr("onclick", "downloadOrderCSV(" + JSON.stringify(orderData) + ")");
@@ -234,11 +225,10 @@ function openClearCartModal() {
 }
 
 function clearCart() {
-    removeAllItemsFromCart();
-
     $(".confirm-modal").modal("hide");
+    
+    removeAllItemsFromCart();
     showSuccessToast("All the products have been removed from the cart.");
-
     displayCart();
 }
 

@@ -65,7 +65,7 @@ function updateNavbar() {
             }
         });
     }
-    $('[data-toggle="tooltip"]').tooltip();
+    initializeTooltip();
 }
 
 function getCartItemsCount() {
@@ -93,10 +93,10 @@ function mergeCarts(cart1, cart2) {
     let newCart = {};
 
     for (let i in cart1) {
-        if (!cart2[i]) {
-            newCart[i] = cart1[i];
-        } else {
+        if (cart2[i]) {
             newCart[i] = cart1[i] + cart2[i];
+        } else {
+            newCart[i] = cart1[i];
         }
     }
 
@@ -132,13 +132,12 @@ function getCart() {
     try {
         let cart = JSON.parse(localStorage.getItem("cart"));
 
-        if (!cart) {
-            cart = {};
-        }
+        if (!cart) cart = {};
+
         return cart;
     } catch (e) {
         localStorage.removeItem("cart");
-        sessionStorage.setItem("successToast", "Your Cart has been updated");
+        setToastInSessionStorage("Your Cart has been updated");
         window.location.reload();
     }
 }
@@ -171,13 +170,8 @@ function increaseQuantityInCart(barcode) {
     let cart = getCart();
     let userId = getCurrentUserId();
 
-    if (!cart[userId]) {
-        cart[userId] = {};
-    } 
-
-    if (!cart[userId][barcode] || cart[userId][barcode] < 0) {
-        cart[userId][barcode] = 0;
-    }
+    if (!cart[userId]) cart[userId] = {}; 
+    if (!cart[userId][barcode] || cart[userId][barcode] < 0) cart[userId][barcode] = 0;
 
     cart[userId][barcode] = cart[userId][barcode] + 1;
     setCart(cart);
@@ -188,13 +182,8 @@ function decreaseQuantityInCart(barcode) {
     let cart = getCart();
     let userId = getCurrentUserId();
 
-    if (!cart[userId]) {
-        cart[userId] = {};
-    }
-
-    if (!cart[userId][barcode] || cart[userId][barcode] < 0) {
-        cart[userId][barcode] = 0;
-    }
+    if (!cart[userId]) cart[userId] = {};
+    if (!cart[userId][barcode] || cart[userId][barcode] < 0) cart[userId][barcode] = 0;
 
     if (cart[userId][barcode] > 1) {
         cart[userId][barcode] = cart[userId][barcode] - 1;
@@ -211,13 +200,8 @@ function removeItemFromCart(barcode) {
     let cart = getCart();
     let userId = getCurrentUserId();
 
-    if (!cart[userId]) {
-        cart[userId] = {};
-    }
-
-    if (!cart[userId][barcode] || cart[userId][barcode] < 0) {
-        cart[userId][barcode] = 0;
-    }
+    if (!cart[userId]) cart[userId] = {};
+    if (!cart[userId][barcode] || cart[userId][barcode] < 0) cart[userId][barcode] = 0;
 
     delete cart[userId][barcode];
     setCart(cart);
@@ -236,9 +220,8 @@ function getFilters() {
     try {
         let filters = JSON.parse(sessionStorage.getItem("filters"));
 
-        if (!filters) {
-            filters = {};
-        }
+        if (!filters) filters = {};
+
         return filters;
     } catch (e) {
         sessionStorage.removeItem("filters");
@@ -266,29 +249,22 @@ function showTime() {
     var day = days[dateObj.getDay()];
     var hr = dateObj.getHours();
     var min = dateObj.getMinutes();
-
-    if (min < 10) {
-        min = "0" + min;
-    }
-
     var ampm = "AM";
+
+    if (min < 10) min = "0" + min;
 
     if (hr > 12) {
         hr -= 12;
         ampm = "PM";
     }
 
-    if (hr < 10) {
-        hr = "0" + hr;
-    }
+    if (hr < 10) hr = "0" + hr;
 
     var date = dateObj.getDate();
     var month = months[dateObj.getMonth()];
     var year = dateObj.getFullYear();
 
-    if (date < 10) {
-        date = "0" + date;
-    }
+    if (date < 10) date = "0" + date;
 
     $(".footer").html("&copy; 2023 Increff  <br>" + day + " " + date + " " + month + " " + year + " " + hr + ":" + min + " " + ampm);
 }
@@ -305,6 +281,7 @@ async function handleCurrentUser() {
             for (let i in data) {
                 if (data[i]["id"] === userId) {
                     existingUser = true;
+                    break;
                 }
             }
 
@@ -319,40 +296,39 @@ async function handleCart() {
     let cart = getCart();
     setCart(cart);
 
-    let usersData;
-    let productsData;
-
     await $.ajax({
         url: "data/users.json",
         dataType: "json",
         success: async function (data) {
-            usersData = data;
+            let usersData = data;
 
             await $.ajax({
                 url: "data/products.json",
                 dataType: "json",
                 success: function (data) {
-                    productsData = data;
+                    let productsData = data;
 
                     for (let i in cart) {
                         if (isExistingUser(i, usersData)) {
                             let userCart = cart[i];
 
                             for (let j in userCart) {
+                                
                                 if (isExistingProduct(j, productsData)) {
+                                    console.log(j + "is a existing product");
                                     if (!Number.isInteger(userCart[j])) {
                                         delete userCart[j];
                                         cart[i] = userCart;
 
                                         if(i === getCurrentUserId()) {
-                                            sessionStorage.setItem("successToast", "Your Cart has been updated");
+                                            setToastInSessionStorage("Your Cart has been updated");
                                         }
                                     } else if (userCart[j] <= 0) {
                                         delete userCart[j];
                                         cart[i] = userCart;
 
                                         if(i === getCurrentUserId()) {
-                                            sessionStorage.setItem("successToast", "Your Cart has been updated");
+                                            setToastInSessionStorage("Your Cart has been updated");
                                         }
                                     }
                                 } else {
@@ -360,7 +336,7 @@ async function handleCart() {
                                     cart[i] = userCart;
 
                                     if(i === getCurrentUserId()) {
-                                        sessionStorage.setItem("successToast", "Your Cart has been updated");
+                                        setToastInSessionStorage("Your Cart has been updated");
                                     }
                                 }
                             }
@@ -376,24 +352,20 @@ async function handleCart() {
 }
 
 function isExistingUser(userId, usersData) {
-    if(userId === "0") {
-        return true;
-    }
+    if(userId === "0") return true;
 
     for (let i in usersData) {
-        if (usersData[i]["id"] === userId) {
-            return true;
-        }
+        if (usersData[i]["id"] === userId) return true;
     }
+
     return false;
 }
 
 function isExistingProduct(barcode, productsData) {
     for (let i in productsData) {
-        if (productsData[i]["barcode"] == barcode) {
-            return true;
-        }
+        if (productsData[i]["barcode"] === barcode) return true;
     }
+
     return false;
 }
 
@@ -509,6 +481,21 @@ function showSuccessToast(message) {
 function showErrorToast(message) {
     $(".toast-error .toast-msg").html(message);
     $(".toast-error").toast("show");
+}
+
+function checkToastInSessionStorage() {
+    if(sessionStorage.getItem("successToast")) {
+        showSuccessToast(sessionStorage.getItem("successToast"));
+        sessionStorage.removeItem("successToast");
+    }
+}
+
+function setToastInSessionStorage(message) {
+    sessionStorage.setItem("successToast", message);
+}
+
+function initializeTooltip() {
+    $('[data-toggle="tooltip"]').tooltip();
 }
 
 function init() {
