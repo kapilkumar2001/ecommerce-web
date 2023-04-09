@@ -22,5 +22,12 @@ img {
 
 .filters-section {
     height: 580px;
-    overflow-y: scroll;
+    overflow-y: auto;
+    -ms-overflow-style: none;  /* Hide scrollbar for IE and Edge */
+    scrollbar-width: none;  /* Hide scrollbar for Firefox */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.filters-section::-webkit-scrollbar {
+    display: none;
 }

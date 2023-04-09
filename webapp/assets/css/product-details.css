@@ -32,11 +32,3 @@ a {
 .full-stars:before {
 	-webkit-text-stroke: 1px orange;
 }
-  
-/* Webkit-text-stroke is not supported on firefox or IE */
-/* Firefox */
-@-moz-document url-prefix() {
-	.full-stars{
-	  color: #ECBE24;
-	}
-}
