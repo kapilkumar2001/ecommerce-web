@@ -11,7 +11,6 @@
     <script src="https://kit.fontawesome.com/c30beb553f.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="stylesheet" href="assets/css/product-details.css">
-    <link rel="icon" type="image/x-icon" href="images/increff-logo.png" />
     <link rel="icon" href="https://storage.googleapis.com/www.increff.com/img/favicon.png?v=2" type="image/x-icon"/>
     <link rel="stylesheet" href="https://storage.googleapis.com/static.increff.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
@@ -25,8 +24,15 @@
         <button id="go-to-home-btn" class="btn btn-sm btn-success mx-auto d-block">Go Back to Products Page</button>
       </div>
       <div class="product-details row mt-4 d-none"> 
-        <div class="col-sm-12 col-md-4">
+        <div class="col-sm-12 col-md-4 my-auto">
           <div id="carouselControls" class="carousel slide" data-ride="carousel" data-interval="2000">
+            <ol class="carousel-indicators">
+              <li data-target="#carouselControls" data-slide-to="0" class="active"></li>
+              <li data-target="#carouselControls" data-slide-to="1"></li>
+              <li data-target="#carouselControls" data-slide-to="2"></li>
+              <li data-target="#carouselControls" data-slide-to="3"></li>
+              <li data-target="#carouselControls" data-slide-to="4"></li>
+            </ol>
             <div class="carousel-inner">
               <div class="carousel-item active">
                 <img class="product-img-1 img-fluid rounded img-thumbnail border-0 mx-auto d-block" >
@@ -54,11 +60,14 @@
             </a>
           </div>
         </div>
-        <div class="col-sm-12 col-md-8 px-4"> 
+        <div class="col-sm-12 col-md-8 px-4 my-auto"> 
           <h4 class="product-name my-2"></h4> 
           <p class="product-desc text-secondary"></p>
           <div class="row align-items-baseline mx-1 mb-4">
-            <span class="product-rating bg-success small rounded px-2 py-1 d-inline-block text-light"></span>
+            <div id="product-rating" data-toggle="tooltip" data-placement="bottom" title="">
+              <div class="empty-stars"></div>
+              <div class="full-stars" id="full-stars"></div>
+            </div>
             <span class="product-reviews ml-2 text-secondary"></span>
           </div>
           <hr>
@@ -85,13 +94,12 @@
               <button class="dec-qty-btn btn btn-sm border-0 bg-transparent text-success">
                 <i class="bi bi-dash-lg pl-1 align-middle"></i>
               </button> 
-              <!-- <input id="product-qty" name="product-qty" value="" class="px-2 align-middle text-success border-0"> -->
               <span class="product-qty px-2 align-middle text-success"></span> 
               <button class="inc-qty-btn btn btn-sm border-0 bg-transparent text-success">
                 <i class="bi bi-plus-lg pr-1 align-middle"></i>
               </button>
             </span>
-            <button class="remove-from-cart-btn btn btn-sm btn-outline-danger ml-4 rounded d-none"><i class="bi bi-trash3 mr-1"></i>Remove from Cart</button>
+            <button class="remove-from-cart-btn btn btn-sm btn-outline-danger ml-4 rounded d-none"><i class="bi bi-trash3 mr-1"></i>Remove</button>
           </div>
         </div>
       </div>
@@ -103,8 +111,8 @@
             </div>
             <div class="modal-body">Product will be removed from the cart. Are you sure?</div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary btn-sm btn-no px-3">No</button>
-              <button type="button" class="btn btn-outline-dark btn-sm btn-yes px-3">Yes</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm btn-no px-3">No</button>
+              <button type="button" class="btn btn-success btn-sm btn-yes px-3">Yes</button>
             </div>
           </div>
         </div>
@@ -117,8 +125,8 @@
             </div>
             <div class="modal-body">Are you sure, you want to logout?</div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary btn-sm btn-no px-2">Cancel</button>
-              <button type="button" class="btn btn-outline-dark btn-sm btn-yes px-2">Logout</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm btn-no px-2">Cancel</button>
+              <button type="button" class="btn btn-success btn-sm btn-yes px-2">Logout</button>
             </div>
           </div>
         </div>

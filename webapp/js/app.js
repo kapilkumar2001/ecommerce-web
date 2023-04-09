@@ -22,47 +22,21 @@ function writeFileData(arr) {
     };
 
     let data = Papa.unparse(arr, config);
-    let blob = new Blob([data], { type: "text/tsv;charset=utf-8;" });
-    let fileUrl = null;
-
-    if (navigator.msSaveBlob) {
-        fileUrl = navigator.msSaveBlob(blob, "order.csv");
-    } else {
-        fileUrl = window.URL.createObjectURL(blob);
-    }
+    let blob = new Blob([data], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
 
     let tempLink = document.createElement("a");
-    tempLink.href = fileUrl;
-    tempLink.setAttribute("download", "order.csv");
+    tempLink.setAttribute("href", url);
+    tempLink.setAttribute("download", "order");
     tempLink.click();
     tempLink.remove();
 }
 
-// TODO: waiting for response ig
-function isUserLoggedIn() {
-    let userId = getCurrentUserId();
-
-    $.ajax({
-        url: "data/users.json",
-        dataType: "json",
-        success: function (data) {
-            for (let i in data) {
-                if (data[i]["id"] === userId) {
-                    return true;
-                }
-            }
-
-            setCurrentUserId("0");
-            return false;
-        }
-    });
-}
-
 function setLoginLogoutIcon() {
     if (getCurrentUserId() === "0") {
-        $("#navbar-login-logout").html("<a class='nav-link'><i class='bi bi-box-arrow-in-right fa-lg' data-toggle='tooltip' data-placement='bottom' title='login'></i></a>");
+        $("#navbar-login-logout").html("<a class='nav-link'><i class='bi bi-box-arrow-in-right fa-lg' data-toggle='tooltip' data-placement='bottom' title='Login'></i></a>");
     } else {
-        $("#navbar-login-logout").html("<a class='nav-link'><i class='bi bi-box-arrow-right fa-lg' data-toggle='tooltip' data-placement='bottom' title='logout''></i></a>");
+        $("#navbar-login-logout").html("<a class='nav-link'><i class='bi bi-box-arrow-right fa-lg' data-toggle='tooltip' data-placement='bottom' title='Logout''></i></a>");
     }
 }
 
@@ -75,8 +49,8 @@ function openLogoutModal() {
 }
 
 function logout() {
-    localStorage.setItem("current-user-id", "0");
-    window.location.href = "home.html";
+    localStorage.setItem("currentUserId", "0");
+    redirectToHomeScreen();
 }
 
 function updateNavbar() {
@@ -84,14 +58,14 @@ function updateNavbar() {
     if (window.location.pathname !== "/webapp/login.html") {
         setLoginLogoutIcon();
         $("#navbar-login-logout").click(function () {
-            if (localStorage.getItem("current-user-id") === "0") {
-                window.location.href = "login.html";
+            if (localStorage.getItem("currentUserId") === "0") {
+                redirectToLoginScreen();
             } else {
                 openLogoutModal();
             }
         });
     }
-    $('[data-toggle="tooltip"]').tooltip();
+    initializeTooltip();
 }
 
 function getCartItemsCount() {
@@ -99,9 +73,7 @@ function getCartItemsCount() {
     let itemsCount = 0;
 
     for (let i in userCart) {
-        if (userCart[i] > 0) {
-            itemsCount += userCart[i];
-        }
+        if (userCart[i] > 0) itemsCount += userCart[i];
     }
 
     return itemsCount;
@@ -109,10 +81,11 @@ function getCartItemsCount() {
 
 function updateCartIcon() {
     let cartItemsCount = getCartItemsCount();
-    if(cartItemsCount > 0) {
-        $(".cart-icon span").html(cartItemsCount);
+
+    if(cartItemsCount > 99) {
+        $(".cart-icon span").html("99+");
     } else {
-        $(".cart-icon span").html("");
+        $(".cart-icon span").html(cartItemsCount);
     }
 }
 
@@ -120,10 +93,10 @@ function mergeCarts(cart1, cart2) {
     let newCart = {};
 
     for (let i in cart1) {
-        if (!cart2[i]) {
-            newCart[i] = cart1[i];
-        } else {
+        if (cart2[i]) {
             newCart[i] = cart1[i] + cart2[i];
+        } else {
+            newCart[i] = cart1[i];
         }
     }
 
@@ -137,8 +110,12 @@ function mergeCarts(cart1, cart2) {
 }
 
 function getCurrentUserId() {
-    let currentUserId = localStorage.getItem("current-user-id");
+    let currentUserId =  localStorage.getItem("currentUserId");
+    currentUserId = checkCurrentUserId(currentUserId);
+    return currentUserId;
+}
 
+function checkCurrentUserId(currentUserId) {
     if (!currentUserId) {
         setCurrentUserId("0");
         currentUserId = 0;
@@ -148,19 +125,19 @@ function getCurrentUserId() {
 }
 
 function setCurrentUserId(userId) {
-    localStorage.setItem("current-user-id", userId);
+    localStorage.setItem("currentUserId", userId);
 }
 
 function getCart() {
     try {
         let cart = JSON.parse(localStorage.getItem("cart"));
 
-        if (!cart) {
-            cart = {};
-        }
+        if (!cart) cart = {};
+
         return cart;
     } catch (e) {
         localStorage.removeItem("cart");
+        setToastInSessionStorage("Your Cart has been updated");
         window.location.reload();
     }
 }
@@ -173,26 +150,18 @@ function setCart(cart) {
 function getUserCart() {
     let cart = getCart();
     let userId = getCurrentUserId();
-    let userCart;
+    let userCart = {};
 
-    if (!cart[userId]) {
-        userCart = {};
-    } else {
-        userCart = cart[userId];
-    }
+    if (cart[userId]) userCart = cart[userId];
 
     return userCart;
 }
 
 function getGuestCart() {
     let cart = getCart();
-    let guestCart;
+    let guestCart = {};
 
-    if (!cart["0"]) {
-        guestCart = {};
-    } else {
-        guestCart = cart["0"];
-    }
+    if (cart["0"]) guestCart = cart["0"];
 
     return guestCart;
 }
@@ -201,18 +170,11 @@ function increaseQuantityInCart(barcode) {
     let cart = getCart();
     let userId = getCurrentUserId();
 
-    if (!cart[userId]) {
-        cart[userId] = {};
-    }
-
-    if (!cart[userId][barcode] || cart[userId][barcode] < 0) {
-        cart[userId][barcode] = 0;
-    }
+    if (!cart[userId]) cart[userId] = {}; 
+    if (!cart[userId][barcode] || cart[userId][barcode] < 0) cart[userId][barcode] = 0;
 
     cart[userId][barcode] = cart[userId][barcode] + 1;
-
     setCart(cart);
-
     return cart[userId][barcode];
 }
 
@@ -220,13 +182,8 @@ function decreaseQuantityInCart(barcode) {
     let cart = getCart();
     let userId = getCurrentUserId();
 
-    if (!cart[userId]) {
-        cart[userId] = {};
-    }
-
-    if (!cart[userId][barcode] || cart[userId][barcode] < 0) {
-        cart[userId][barcode] = 0;
-    }
+    if (!cart[userId]) cart[userId] = {};
+    if (!cart[userId][barcode] || cart[userId][barcode] < 0) cart[userId][barcode] = 0;
 
     if (cart[userId][barcode] > 1) {
         cart[userId][barcode] = cart[userId][barcode] - 1;
@@ -243,13 +200,8 @@ function removeItemFromCart(barcode) {
     let cart = getCart();
     let userId = getCurrentUserId();
 
-    if (!cart[userId]) {
-        cart[userId] = {};
-    }
-
-    if (!cart[userId][barcode] || cart[userId][barcode] < 0) {
-        cart[userId][barcode] = 0;
-    }
+    if (!cart[userId]) cart[userId] = {};
+    if (!cart[userId][barcode] || cart[userId][barcode] < 0) cart[userId][barcode] = 0;
 
     delete cart[userId][barcode];
     setCart(cart);
@@ -265,7 +217,16 @@ function removeAllItemsFromCart() {
 }
 
 function getFilters() {
-    return sessionStorage.getItem("filters");
+    try {
+        let filters = JSON.parse(sessionStorage.getItem("filters"));
+
+        if (!filters) filters = {};
+
+        return filters;
+    } catch (e) {
+        sessionStorage.removeItem("filters");
+        window.location.reload();
+    }
 }
 
 function setFilters(filters) {
@@ -273,151 +234,221 @@ function setFilters(filters) {
 }
 
 function getSortBy() {
-    return sessionStorage.getItem("sort-by");
+    return sessionStorage.getItem("sortBy");
 }
 
 function setSortBy(sortBy) {
-    sessionStorage.setItem("sort-by", sortBy);
+    sessionStorage.setItem("sortBy", sortBy);
 }
 
 function showTime() {
     var dateObj = new Date();
 
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    var days = ["Sun", "Mon", "Tues", "Wed", "Thu", "Fri", "Sat"];
     var day = days[dateObj.getDay()];
     var hr = dateObj.getHours();
     var min = dateObj.getMinutes();
-
-    if (min < 10) {
-        min = "0" + min;
-    }
-
     var ampm = "AM";
+
+    if (min < 10) min = "0" + min;
 
     if (hr > 12) {
         hr -= 12;
         ampm = "PM";
     }
 
-    if (hr < 10) {
-        hr = "0" + hr;
-    }
+    if (hr < 10) hr = "0" + hr;
 
     var date = dateObj.getDate();
     var month = months[dateObj.getMonth()];
     var year = dateObj.getFullYear();
 
-    if (date < 10) {
-        date = "0" + date;
-    }
+    if (date < 10) date = "0" + date;
 
-    $(".footer").html("&copy; 2023 Increff  <br>" + day + " " + date + " " + month + " " + year + " " + hr + ":" + min + ampm);
+    $(".footer").html("&copy; 2023 Increff  <br>" + day + " " + date + " " + month + " " + year + " " + hr + ":" + min + " " + ampm);
 }
 
-function handleCurrentUser() {
-    return new Promise((resolve) => {
-        let userId = localStorage.getItem("current-user-id");
+async function handleCurrentUser() {
+    let userId = localStorage.getItem("currentUserId");
 
-        $.ajax({
-            url: "data/users.json",
-            dataType: "json",
-            success: function (data) {
-                let existingUser = false;
+    await $.ajax({
+        url: "data/users.json",
+        dataType: "json",
+        success: function (data) {
+            let existingUser = false;
 
-                for (let i in data) {
-                    if (data[i]["id"] === userId) {
-                        existingUser = true;
-                    }
+            for (let i in data) {
+                if (data[i]["id"] === userId) {
+                    existingUser = true;
+                    break;
                 }
+            }
 
-                if (existingUser === false) {
-                    setCurrentUserId("0");
-                }
-
-                resolve();
-            },
-        });
+            if (existingUser === false) {
+                setCurrentUserId("0");
+            }
+        },
     });
 }
 
-function handleCart() {
-    return new Promise(async (resolve) => {
-        let cart = getCart();
-        setCart(cart);
+async function handleCart() {
+    let cart = getCart();
+    setCart(cart);
 
-        let usersData;
-        let productsData;
+    await $.ajax({
+        url: "data/users.json",
+        dataType: "json",
+        success: async function (data) {
+            let usersData = data;
 
-        await $.ajax({
-            url: "data/users.json",
-            dataType: "json",
-            success: async function (data) {
-                usersData = data;
+            await $.ajax({
+                url: "data/products.json",
+                dataType: "json",
+                success: function (data) {
+                    let productsData = data;
 
-                await $.ajax({
-                    url: "data/products.json",
-                    dataType: "json",
-                    success: function (data) {
-                        productsData = data;
+                    for (let i in cart) {
+                        if (isExistingUser(i, usersData)) {
+                            let userCart = cart[i];
 
-                        for (let i in cart) {
-                            if (isExistingUser(i, usersData)) {
-                                let userCart = cart[i];
-
-                                for (let j in userCart) {
-
-                                    if (isExistingProduct(j, productsData)) {
-                                        if (!Number.isInteger(userCart[j])) {
-                                            delete userCart[j];
-                                            cart[i] = userCart;
-                                            setCart(cart);
-                                        } else if (userCart[j] <= 0) {
-                                            delete userCart[j];
-                                            cart[i] = userCart;
-                                            setCart(cart);
-                                        }
-                                    } else {
+                            for (let j in userCart) {
+                                
+                                if (isExistingProduct(j, productsData)) {
+                                    console.log(j + "is a existing product");
+                                    if (!Number.isInteger(userCart[j])) {
                                         delete userCart[j];
                                         cart[i] = userCart;
-                                        setCart(cart);
+
+                                        if(i === getCurrentUserId()) {
+                                            setToastInSessionStorage("Your Cart has been updated");
+                                        }
+                                    } else if (userCart[j] <= 0) {
+                                        delete userCart[j];
+                                        cart[i] = userCart;
+
+                                        if(i === getCurrentUserId()) {
+                                            setToastInSessionStorage("Your Cart has been updated");
+                                        }
+                                    }
+                                } else {
+                                    delete userCart[j];
+                                    cart[i] = userCart;
+
+                                    if(i === getCurrentUserId()) {
+                                        setToastInSessionStorage("Your Cart has been updated");
                                     }
                                 }
-                            } else {
-                                delete cart[i];
-                                setCart(cart);
                             }
+                        } else {
+                            delete cart[i]; 
                         }
-
-                        resolve();
                     }
-                });
-            }
-        });
+                    setCart(cart);
+                }
+            });
+        }
     });
 }
 
 function isExistingUser(userId, usersData) {
+    if(userId === "0") return true;
+
     for (let i in usersData) {
-        if (usersData[i]["id"] === userId) {
-            return true;
-        }
+        if (usersData[i]["id"] === userId) return true;
     }
+
     return false;
 }
 
 function isExistingProduct(barcode, productsData) {
     for (let i in productsData) {
-        if (productsData[i]["barcode"] == barcode) {
-            return true;
-        }
+        if (productsData[i]["barcode"] === barcode) return true;
     }
+
     return false;
 }
 
-async function handleLocalStorageChanges() {
-    Promise.all([handleCurrentUser(), handleCart()]).then(() => {
-        console.log("reload");
+async function handleFilters() {
+    let filters = getFilters();
+
+    await $.ajax({
+        url: "data/products.json",
+        dataType: "json",
+        success: async (data) => {
+
+            let brands = [];
+            let categories = [];
+            let genders = [];
+            let colors = [];
+
+            for (let i in data) {
+                brands.push(data[i]["brand"]);
+                categories.push(data[i]["category"]);
+                genders.push(data[i]["gender"]);
+                colors.push(data[i]["color"]);
+            }
+
+            brands = Array.from(new Set(brands));
+            categories = Array.from(new Set(categories));
+            genders = Array.from(new Set(genders));
+            colors = Array.from(new Set(colors));
+
+            for (let key in filters) {
+                let value = filters[key];
+
+                if(key !== "brand" && key !== "category" && key !== "gender" && key !== "color") {
+                    delete filters[key];
+                } else {
+                    switch(key) {
+                        case "brand":
+                            for(let i in value) {
+                                if(!brands.includes(value[i])) {
+                                    filters[key].splice(i, 1);
+                                }
+                            }
+                            break;
+                        case "category":
+                            for(let i in value) {
+                                if(!categories.includes(value[i])) {
+                                    filters[key].splice(i, 1);
+                                }
+                            }
+                            break;
+                        case "color":
+                            for(let i in value) {
+                                if(!colors.includes(value[i])) {
+                                    filters[key].splice(i, 1);
+                                }
+                            }
+                            break;
+                        case "gender":
+                            for(let i in value) {
+                                if(!genders.includes(value[i])) {
+                                    filters[key].splice(i, 1);
+                                }
+                            }
+                            break;
+                    }
+                }
+            }
+
+            setFilters(filters);
+        }
+    });
+} 
+
+function handleSortBy() {
+    let sortBy = getSortBy();
+    let sortingOptions = ["price-hl", "price-lh", "rating"];
+
+    if(!sortingOptions.includes(sortBy)) {
+        sessionStorage.removeItem("sortBy");
+    }
+}
+ 
+async function handleStorageChanges() {
+    Promise.all([handleCurrentUser(), handleCart(), handleFilters(), handleSortBy()]).then(() => {
         window.location.reload();
     });
 }
@@ -426,19 +457,52 @@ function redirectToLoginScreen() {
     window.location.href = "login.html";
 }
 
+function redirectToLoginScreenWithParam(param) {
+    window.location.href = "login.html?redirect=" + param;
+}
+
 function redirectToHomeScreen() {
     window.location.href = "home.html";
 }
 
+function redirectToCartScreen() {
+    window.location.href = "cart.html";
+}
+
+function redirectToUploadScreen() {
+    window.location.href = "upload-order.html";
+}
+
+function showSuccessToast(message) {
+    $(".toast-success .toast-msg").html(message);
+    $(".toast-success").toast("show");
+}
+
+function showErrorToast(message) {
+    $(".toast-error .toast-msg").html(message);
+    $(".toast-error").toast("show");
+}
+
+function checkToastInSessionStorage() {
+    if(sessionStorage.getItem("successToast")) {
+        showSuccessToast(sessionStorage.getItem("successToast"));
+        sessionStorage.removeItem("successToast");
+    }
+}
+
+function setToastInSessionStorage(message) {
+    sessionStorage.setItem("successToast", message);
+}
+
+function initializeTooltip() {
+    $('[data-toggle="tooltip"]').tooltip();
+}
+
 function init() {
-    $("#navbar-placeholder").load("navbar.html", function () {
-        updateNavbar();
-    });
+    $("#navbar-placeholder").load("navbar.html", updateNavbar);
     $("#footer-placeholder").load("footer.html");
     setInterval(showTime, 1000);
-    $(window).on('storage', function (e) {
-        handleLocalStorageChanges();
-    });
+    $(window).on('storage', handleStorageChanges); 
 }
 
 $(document).ready(init)

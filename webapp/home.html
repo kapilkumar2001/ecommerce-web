@@ -11,7 +11,6 @@
     <script src="https://kit.fontawesome.com/c30beb553f.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="stylesheet" href="assets/css/home.css">
-    <link rel="icon" type="image/x-icon" href="images/increff-logo.png" />
     <link rel="icon" href="https://storage.googleapis.com/www.increff.com/img/favicon.png?v=2" type="image/x-icon"/>
     <link rel="stylesheet" href="https://storage.googleapis.com/static.increff.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
@@ -20,28 +19,28 @@
     <div id="navbar-placeholder"></div>
     <div class="container-fluid d-none">
       <div class="row">
-        <div class="filters-section col-12 col-md-3 col-lg-2 shadow-sm pt-2 pb-2 d-none d-md-block">
-          <div id="filters-col" class="sticky-top">
+        <div class="filters-section col-12 col-md-3 col-lg-2 shadow-sm pt-2 pb-2 d-none d-md-block sticky-top">
+          <div id="filters-col" class="">
             <div class="row">
               <h5 class="ml-3 my-auto">Filters</h5>
-              <button class="close-filters-btn mr-2 ml-auto my-auto btn btn-sm btn-dark py-0 d-block d-md-none">Close</button>
+              <button class="close-filters-btn mr-2 ml-auto my-auto btn btn-sm btn-dark py-0 d-block d-md-none">Apply & Close</button>
               <button class="reset-btn mr-2 my-auto ml-0 ml-md-auto btn btn-sm btn-outline-dark py-0 d-none" onclick="resetFilters()">Reset</button>
             </div>
             <div id="filter">
-              <hr>
-              <button class="btn bg-transparent border-0 p-0" type="button" data-toggle="collapse" data-target="#filter-collapse" aria-expanded="false" aria-controls="filter-collapse">
-                Filter Name <i class="bi bi-caret-down-fill ml-auto"></i>
+              <hr class="my-2">
+              <button class="btn bg-transparent border-0 p-0 small" type="button" data-toggle="collapse" data-target="#filter-collapse" aria-expanded="false" aria-controls="filter-collapse">
+                <i class="bi bi-caret-down-fill ml-auto small"></i>
               </button>
               <div class="collapse pt-2 px-2">
-                <div><label><input type="checkbox" name="filtername" class="mr-2"></label><br></div>
+                <div><label class="small"><input type="checkbox" name="filtername" class="mr-2"></label><br></div>
               </div>
             </div>
           </div>
         </div>
-        <div class="col-12 col-md-9 col-lg-10">
+        <div class="col-12 col-md-9 col-lg-10 mt-2">
           <div class="row">
             <div class="d-block d-md-none ml-4">
-              <button class="filters-btn btn btn-sm btn-outline-dark">Apply Filters</button>
+              <button class="filters-btn btn btn-sm btn-outline-dark"><i class="bi bi-funnel mr-1"></i>Filters</button>
             </div>
             <div id="sort-by-btn" class="ml-auto mr-4">
               <div class="dropdown">
@@ -49,20 +48,21 @@
                   <span class="font-weight-bold">Sort By - </span>
                   <span class="sort-by"></span>
                 </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" onclick="sortByPriceHighToLow()">Price: High to Low</a>
-                  <a class="dropdown-item" onclick="sortByPriceLowToHigh()">Price: Low to High</a>
-                  <a class="dropdown-item" onclick="sortByRating()">Rating</a>
+                <div class="dropdown-menu py-1" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" onclick="setSortProductsBy('price-hl')">Price: High to Low</a>
+                  <a class="dropdown-item" onclick="setSortProductsBy('price-lh')">Price: Low to High</a>
+                  <a class="dropdown-item" onclick="setSortProductsBy('rating')">Rating</a>
                 </div>
               </div>
             </div>
           </div>
           <div id="no-product" class="d-none">
-            <div class="row"><i class="bi bi-search text-success fa-10x mx-auto"></i></div>
-            <h5 class="text-center mt-4">Sorry! No product found in this category.</h5>
+            <div class="row mt-4"><i class="bi bi-search text-success fa-10x mx-auto"></i></div>
+            <h5 class="text-center mt-4">Ah! No product found for applied filters.</h5>
+            <div class="row"><button class="reset-btn btn btn-sm btn-outline-success mt-3 mx-auto" onclick="resetFilters()">Reset Filters</button></div>
           </div>
           <div id="products-area" class="row my-4 mx-1">
-            <div id="product-card" class="product-card d-none p-2 col-sm-12 col-md-6 col-lg-3">
+            <div id="product-card" class="product-card d-none p-2 col-sm-12 col-md-6 col-lg-4 col-xl-3">
               <div class="card-shadow">
                 <div class="product-images">
                   <div id="carousel" class="carousel slide" data-ride="carousel">
@@ -88,16 +88,14 @@
                 <div class="product-details">
                   <a class="brand-name"><div class="ml-2 mr-2 mt-2 text-muted text-wrap"></div></a>
                   <a class="product-name"><div class="row mx-2 text-body text-wrap"></div></a>
-                  <a class="rating-reviews">
-                    <div class="row align-items-baseline mx-2 mb-2 mt-2">
-                      <span class="product-rating bg-success small rounded px-1 d-inline-block text-light"></span>
-                      <span class="product-reviews ml-2 text-secondary"></span>
-                    </div>
-                  </a>
-                  <div class="row mt-3 pb-2 align-items-center">
+                  <div class="row align-items-baseline mx-2 mb-2 mt-2">
+                    <span class="product-rating bg-success small rounded px-1 d-inline-block text-light"></span>
+                    <span class="product-reviews ml-2 text-secondary"></span>
+                  </div>
+                  <div class="row mt-2 pb-2 align-items-center">
                     <div class="ml-4">
-                      <a class="product-price text-body"><b></b></a><br>
-                      <a class="product-mrp text-secondary"><s></s></a>
+                      <span class="product-price text-body"><b></b></span>
+                      <span class="product-mrp text-secondary small"><s></s></span>
                     </div>
                     <span class='add-to-cart-span ml-auto d-none mr-3'>
                       <button class='add-to-cart-btn border border-success btn btn-outline-success btn-sm mx-2 px-2 py-1 rounded'>Add to cart</button>
@@ -113,6 +111,20 @@
             </div>
           </div>
         </div>
+        <div class="modal fade confirm-modal" tabindex="-1" role="dialog">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Confirm</h5>
+              </div>
+              <div class="modal-body"></div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary btn-sm btn-no px-3">No</button>
+                <button type="button" class="btn btn-success btn-sm btn-yes px-3">Yes</button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="modal fade logout-modal" tabindex="-1" role="dialog">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -121,8 +133,8 @@
               </div>
               <div class="modal-body">Are you sure, you want to logout?</div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm btn-no px-2">Cancel</button>
-                <button type="button" class="btn btn-outline-dark btn-sm btn-yes px-2">Logout</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm btn-no px-2">Cancel</button>
+                <button type="button" class="btn btn-success btn-sm btn-yes px-2">Logout</button>
               </div>
             </div>
           </div>

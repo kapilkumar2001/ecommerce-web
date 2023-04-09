@@ -12,20 +12,22 @@ a {
 	text-decoration: none !important; 
 }
 
-.text-wrap {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box !important;
-    -webkit-line-clamp: 1; 
-    -webkit-box-orient: vertical;
-}
-
 img {
     cursor: pointer;
 }
 
-.sticky {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 0;
+.sticky-top {
+    top: 70px !important;
+}
+
+.filters-section {
+    height: 580px;
+    overflow-y: auto;
+    -ms-overflow-style: none;  /* Hide scrollbar for IE and Edge */
+    scrollbar-width: none;  /* Hide scrollbar for Firefox */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.filters-section::-webkit-scrollbar {
+    display: none;
 }

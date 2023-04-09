@@ -4,7 +4,7 @@ html {
 }
 
 body {
-	margin-top: 85px !important;
+	margin-top: 65px !important;
     margin-bottom: 80px !important;
 }
 
@@ -56,4 +56,12 @@ body {
 
 .dropdown-item {
 	cursor: pointer;
+}
+
+.text-wrap {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1; 
+    -webkit-box-orient: vertical;
 }

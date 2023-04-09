@@ -1,12 +1,17 @@
+let productsData;
+
 function displayPage() {
     $.ajax({
         url: 'data/products.json',
         dataType: 'json',
         success: function (data) {
+            productsData = data;
             displayFilters(data);
             data = sortProducts(data);
             displayProducts(data);
             $(".container-fluid").removeClass("d-none");
+
+            checkToastInSessionStorage();
         },
     });
 }
@@ -16,14 +21,19 @@ function displayFilters(data) {
     displayCategories(data);
     displayColors(data);
     displayGenders(data);
-    $("#filter").remove();
+    $("#filter").addClass("d-none");
+    setInputCheckBox();
+}
 
+function setInputCheckBox() {
     let filters = getFilters();
-    if (filters !== null) {
-        let brands = JSON.parse(filters)["brand"];
-        let categories = JSON.parse(filters)["category"];
-        let colors = JSON.parse(filters)["color"];
-        let genders = JSON.parse(filters)["gender"];
+
+    $(".reset-btn").addClass("d-none");
+    if (filters) {
+        let brands = filters["brand"];
+        let categories = filters["category"];
+        let colors = filters["color"];
+        let genders = filters["gender"];
 
         for (let i in brands) {
             $("#brand-collapse").addClass("show");
@@ -45,6 +55,19 @@ function displayFilters(data) {
             $(".reset-btn").removeClass("d-none");
             $("#input-gender-" + genders[i]).find("input").attr("checked", true);
         }
+
+        if(brands && brands.length !== 0) {
+            $("#brand-filter").find("button").append("<span class='badge badge-success rounded-circle ml-2'>" + brands.length + "</span>");
+        }
+        if(categories && categories.length !== 0) {
+            $("#category-filter").find("button").append("<span class='badge badge-success rounded-circle ml-2'>" + categories.length + "</span>");
+        }
+        if(colors && colors.length !== 0) {
+            $("#color-filter").find("button").append("<span class='badge badge-success rounded-circle ml-2'>" + colors.length + "</span>");
+        }
+        if(genders && genders.length !== 0) {
+            $("#gender-filter").find("button").append("<span class='badge badge-success rounded-circle ml-2'>" + genders.length + "</span>");
+        }
     }
 }
 
@@ -57,6 +80,7 @@ function displayBrands(data) {
     $("#brand-filter").find("button").attr("aria-controls", "brand-collapse");
     $("#brand-filter").find("button").html("Brand <i class='bi bi-caret-down-fill ml-auto'></i>");
     $("#brand-filter").find("div").attr("id", "brand-collapse");
+    $("#brand-filter").removeClass("d-none");
     $("#brand-collapse").find("div").attr("id", "input-brand");
     $("#input-brand").find("input").attr("name", "brand");
 
@@ -64,7 +88,11 @@ function displayBrands(data) {
     for (let i in data) {
         brands.push(data[i]["brand"]);
     }
-    brands = Array.from(new Set(brands));
+    brands = Array.from(new Set(brands)).sort();
+
+    clone = $("#input-brand");
+    $("#brand-collapse").empty();
+    $("#brand-collapse").append(clone);
 
     for (let i in brands) {
         let node = $("#input-brand");
@@ -73,9 +101,12 @@ function displayBrands(data) {
 
         $("#input-brand-" + brands[i]).find("label").append(brands[i]);
         $("#input-brand-" + brands[i]).find("input").attr("value", brands[i]);
+        $("#input-brand-" + brands[i]).find("input").attr("checked", false);
+        $("#input-brand-" + brands[i]).removeClass("d-none");    
+        $("#input-brand-" + brands[i]).find("input").on("change", filterProducts);
     }
 
-    $("#input-brand").remove();
+    $("#input-brand").addClass("d-none");
 }
 
 function displayCategories(data) {
@@ -87,6 +118,7 @@ function displayCategories(data) {
     $("#category-filter").find("button").attr("aria-controls", "category-collapse");
     $("#category-filter").find("button").html("Category <i class='bi bi-caret-down-fill ml-auto'></i>");
     $("#category-filter").find("div").attr("id", "category-collapse");
+    $("#category-filter").removeClass("d-none");
     $("#category-collapse").find("div").attr("id", "input-category");
     $("#input-category").find("input").attr("name", "category");
 
@@ -94,7 +126,11 @@ function displayCategories(data) {
     for (let i in data) {
         categories.push(data[i]["category"]);
     }
-    categories = Array.from(new Set(categories));
+    categories = Array.from(new Set(categories)).sort();
+
+    clone = $("#input-category");
+    $("#category-collapse").empty();
+    $("#category-collapse").append(clone);
 
     for (let i in categories) {
         let node = $("#input-category");
@@ -103,9 +139,12 @@ function displayCategories(data) {
 
         $("#input-category-" + categories[i]).find("label").append(categories[i]);
         $("#input-category-" + categories[i]).find("input").attr("value", categories[i]);
+        $("#input-category-" + categories[i]).find("input").attr("checked", false);
+        $("#input-category-" + categories[i]).removeClass("d-none"); 
+        $("#input-category-" + categories[i]).find("input").on("change", filterProducts);
     }
 
-    $("#input-category").remove();
+    $("#input-category").addClass("d-none");
 }
 
 function displayColors(data) {
@@ -117,6 +156,7 @@ function displayColors(data) {
     $("#color-filter").find("button").attr("aria-controls", "color-collapse");
     $("#color-filter").find("button").html("Color <i class='bi bi-caret-down-fill ml-auto'></i>");
     $("#color-filter").find("div").attr("id", "color-collapse");
+    $("#color-filter").removeClass("d-none");
     $("#color-collapse").find("div").attr("id", "input-color");
     $("#input-color").find("input").attr("name", "color");
 
@@ -124,7 +164,11 @@ function displayColors(data) {
     for (let i in data) {
         colors.push(data[i]["color"]);
     }
-    colors = Array.from(new Set(colors));
+    colors = Array.from(new Set(colors)).sort();
+
+    clone = $("#input-color");
+    $("#color-collapse").empty();
+    $("#color-collapse").append(clone);
 
     for (let i in colors) {
         let node = $("#input-color");
@@ -133,9 +177,12 @@ function displayColors(data) {
 
         $("#input-color-" + colors[i]).find("label").append(colors[i]);
         $("#input-color-" + colors[i]).find("input").attr("value", colors[i]);
+        $("#input-color-" + colors[i]).find("input").attr("checked", false);
+        $("#input-color-" + colors[i]).removeClass("d-none"); 
+        $("#input-color-" + colors[i]).find("input").on("change", filterProducts);
     }
 
-    $("#input-color").remove();
+    $("#input-color").addClass("d-none");
 }
 
 function displayGenders(data) {
@@ -147,14 +194,19 @@ function displayGenders(data) {
     $("#gender-filter").find("button").attr("aria-controls", "gender-collapse");
     $("#gender-filter").find("button").html("Gender <i class='bi bi-caret-down-fill ml-auto'></i>");
     $("#gender-filter").find("div").attr("id", "gender-collapse");
+    $("#gender-filter").removeClass("d-none");
     $("#gender-collapse").find("div").attr("id", "input-gender");
     $("#input-gender").find("input").attr("name", "gender");
-
+    
     let genders = [];
     for (let i in data) {
         genders.push(data[i]["gender"]);
     }
-    genders = Array.from(new Set(genders));
+    genders = Array.from(new Set(genders)).sort();
+
+    clone = $("#input-gender");
+    $("#gender-collapse").empty();
+    $("#gender-collapse").append(clone);
 
     for (let i in genders) {
         let node = $("#input-gender");
@@ -163,9 +215,12 @@ function displayGenders(data) {
 
         $("#input-gender-" + genders[i]).find("label").append(genders[i]);
         $("#input-gender-" + genders[i]).find("input").attr("value", genders[i]);
+        $("#input-gender-" + genders[i]).find("input").attr("checked", false);
+        $("#input-gender-" + genders[i]).removeClass("d-none"); 
+        $("#input-gender-" + genders[i]).find("input").on("change", filterProducts);
     }
-
-    $("#input-gender").remove();
+    
+    $("#input-gender").addClass("d-none");
 }
 
 function sortProducts(data) {
@@ -199,8 +254,6 @@ function displayProducts(data) {
     if (!filters) {
         showProductCard(data);
     } else {
-        filters = JSON.parse(filters);
-
         if (Object.keys(filters).length === 0) {
             showProductCard(data);
         } else {
@@ -208,26 +261,22 @@ function displayProducts(data) {
                 let value = filters[key];
                 switch (key) {
                     case "brand":
-                        data = filterByBrand(data, value);
+                        if(filters[key].length > 0) data = filterByBrand(data, value);
                         break;
                     case "category":
-                        data = filterByCategory(data, value);
+                        if(filters[key].length > 0) data = filterByCategory(data, value);
                         break;
                     case "color":
-                        data = filterByColor(data, value);
+                        if(filters[key].length > 0) data = filterByColor(data, value);
                         break;
                     case "gender":
-                        data = filterByGender(data, value);
+                        if(filters[key].length > 0) data = filterByGender(data, value);
                         break;
                 }
             }
             showProductCard(data);
         }
     }
-
-    $("input[type='checkbox']").on("change", function (e) {
-        filterProducts();
-    });
 }
 
 function showProductCard(data) {
@@ -236,8 +285,8 @@ function showProductCard(data) {
         $("#sort-by-btn").addClass("d-none");
     } else {
         $("#no-product").addClass("d-none");
-        $("#sort-by-btn").removeClass("d-none");
-
+        if(window.innerWidth >= 765) $("#sort-by-btn").removeClass("d-none");
+        
         for (let i in data) {
             let e = data[i];
             let node = $("#product-card");
@@ -255,25 +304,20 @@ function showProductCard(data) {
             $("#product-card-" + e["barcode"] + " .brand-name").attr("href", "product-details.html?barcode=" + e['barcode']);
             $("#product-card-" + e["barcode"] + " .product-name").find("div").html(e["name"]);
             $("#product-card-" + e["barcode"] + " .product-name").attr("href", "product-details.html?barcode=" + e['barcode']);
-            $("#product-card-" + e["barcode"] + " .rating-reviews").attr("href", "product-details.html?barcode=" + e['barcode']);
             $("#product-card-" + e["barcode"] + " .product-rating").html(parseFloat(e["rating"]).toFixed(1) + " <i class='bi bi-star-fill'></i>");
             $("#product-card-" + e["barcode"] + " .product-reviews").html("(" + e["reviews"] + ")");
-            $("#product-card-" + e["barcode"] + " .product-price").find("b").html("₹" + e["price"].toLocaleString());     // html("₹" + (e["mrp"] - parseInt(e["mrp"] * e["discountPercent"] / 100)).toLocaleString());
-            $("#product-card-" + e["barcode"] + " .product-price").attr("href", "product-details.html?barcode=" + e['barcode']);
+            $("#product-card-" + e["barcode"] + " .product-price").find("b").html("₹" + e["price"].toLocaleString());     
             $("#product-card-" + e["barcode"] + " .product-mrp").find("s").html("₹" + e["mrp"].toLocaleString());
-            $("#product-card-" + e["barcode"] + " .product-mrp").attr("href", "product-details.html?barcode=" + e['barcode']);
-            $("#product-card-" + e["barcode"] + " .product-discount").html(e["discountPercent"] + "%off");
-            $("#product-card-" + e["barcode"] + " .product-discount").attr("href", "product-details.html?barcode=" + e['barcode']);
 
             let userCart = getUserCart();
 
             if (!userCart[e["barcode"]] || parseInt(userCart[e["barcode"]]) < 0) {
-                $("#product-card-" + e["barcode"] + " .add-to-cart-btn").attr("onclick", "changeToCountButton('" + e['barcode'] + "')")
+                $("#product-card-" + e["barcode"] + " .add-to-cart-btn").attr("onclick", "changeToCountButton('" + e['barcode'] + "', '" + e['name'] + "')")
                 $("#product-card-" + e["barcode"] + " .add-to-cart-span").removeClass("d-none");
                 $("#product-card-" + e["barcode"] + " .inc-dec-qty-span").addClass("d-none");
             } else {
                 $("#product-card-" + e["barcode"] + " .inc-qty-btn").attr("onclick", "increaseQuantity('" + e['barcode'] + "')");
-                $("#product-card-" + e["barcode"] + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + e['barcode'] + "')");
+                $("#product-card-" + e["barcode"] + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + e['barcode'] + "', '" + e['name'] + "')");
                 $("#product-card-" + e["barcode"] + " .inc-dec-qty-span").removeClass("d-none");
                 $("#product-card-" + e["barcode"] + " .add-to-cart-span").addClass("d-none");
                 $("#product-card-" + e["barcode"] + " .product-qty").html(parseInt(userCart[e["barcode"]]));
@@ -286,7 +330,7 @@ function showProductCard(data) {
             $("#product-card-" + e["barcode"] + " .carousel-item").hover(function () {
                 setTimeout(function () {
                     $("#product-card-" + e["barcode"] + " .carousel").carousel('next', { interval: 2000 });
-                }, 2000);
+                }, 1000);
             }, function () {
                 $("#product-card-" + e["barcode"] + " .carousel").carousel('pause');
             });
@@ -294,14 +338,16 @@ function showProductCard(data) {
     }
 }
 
-function changeToCountButton(barcode) {
+function changeToCountButton(barcode, productName) {
     let quantity = increaseQuantityInCart(barcode);
 
     $("#product-card-" + barcode + " .inc-qty-btn").attr("onclick", "increaseQuantity('" + barcode + "')");
-    $("#product-card-" + barcode + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "')");
+    $("#product-card-" + barcode + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "', '" + productName + "')");
     $("#product-card-" + barcode + " .inc-dec-qty-span").removeClass("d-none");
     $("#product-card-" + barcode + " .add-to-cart-span").addClass("d-none");
     $("#product-card-" + barcode + " .product-qty").html(quantity);
+
+    showSuccessToast("<b>" + productName + "</b> has been added to your cart.");
 }
 
 function increaseQuantity(barcode) {
@@ -309,17 +355,39 @@ function increaseQuantity(barcode) {
     $("#product-card-" + barcode + " .product-qty").html(quantity);
 }
 
-function decreaseQuantity(barcode) {
-    let quantity = decreaseQuantityInCart(barcode);
+function decreaseQuantity(barcode, productName) {
+    let userCart = getUserCart();
 
-    if (quantity >= 1) {
+    if (userCart[barcode] > 1) {
+        let quantity = decreaseQuantityInCart(barcode);
         $("#product-card-" + barcode + " .product-qty").html(quantity);
+        updateOrderSummary();
     } else {
-        $("#product-card-" + barcode + " .add-to-cart-btn").attr("onclick", "changeToCountButton('" + barcode + "')");
-        $("#product-card-" + barcode + " .add-to-cart-btn").html("Add to cart");
-        $("#product-card-" + barcode + " .inc-dec-qty-span").addClass("d-none");
-        $("#product-card-" + barcode + " .add-to-cart-span").removeClass("d-none");
+        openRemoveItemModal(barcode, productName);
     }
+}
+
+function openRemoveItemModal(barcode, productName) {
+    $(".confirm-modal").modal("toggle");
+    $(".confirm-modal .modal-title").html("Confirm Remove Item");
+    $(".confirm-modal .modal-body").html("<span class='font-weight-bold'>" + productName + "</span> will be removed from cart. Are you sure?");
+    $(".confirm-modal .btn-yes").attr("onclick", "removeItem('" + barcode + "','" + productName + "')");
+    $(".confirm-modal .btn-no").click(() => {
+        $(".confirm-modal").modal("hide");
+    });
+}
+
+function removeItem(barcode, productName) {
+    removeItemFromCart(barcode);
+
+    $(".confirm-modal").modal("hide");
+    $("#product-card-" + barcode + " .add-to-cart-btn").attr("onclick", "changeToCountButton('" + barcode + "', '" + productName + "')");
+    $("#product-card-" + barcode + " .add-to-cart-btn").html("Add to cart");
+    $("#product-card-" + barcode + " .inc-dec-qty-span").addClass("d-none");
+    $("#product-card-" + barcode + " .add-to-cart-span").removeClass("d-none");
+
+    showSuccessToast("<b>" + productName + "</b> has been removed from the cart.");
+    updateOrderSummary();
 }
 
 function viewProduct(barcode) {
@@ -335,11 +403,16 @@ function filterProducts() {
             selectedFilters[this.name] = [];
         }
 
-        selectedFilters[this.name].push(this.value);
+        if (Object.values(selectedFilters[this.name]).indexOf(this.value) < 0) {
+            selectedFilters[this.name].push(this.value);   
+        }
     });
-
+   
     setFilters(selectedFilters);
-    window.location.href = "home.html";
+    makeProductAreaEmpty();
+    displayFilters(productsData);
+    data = sortProducts(productsData);
+    displayProducts(data);
 }
 
 function filterByBrand(data, brands) {
@@ -399,25 +472,21 @@ function filterByGender(data, genders) {
 }
 
 function resetFilters() {
+    $(".reset-btn").addClass("d-none");
+
     let filters = {};
     setFilters(filters);
-    $(".reset-btn").addClass("d-none");
-    window.location.href = "home.html";
+    makeProductAreaEmpty();
+    displayFilters(productsData);
+    data = sortProducts(productsData);
+    displayProducts(data);
 }
 
-function sortByPriceHighToLow() {
-    setSortBy("price-hl"); // sort by price high to low
-    window.location.href = "home.html";
-}
-
-function sortByPriceLowToHigh() {
-    setSortBy("price-lh"); // sort by price low to high
-    window.location.href = "home.html";
-}
-
-function sortByRating() {
-    setSortBy("rating"); // sort by rating
-    window.location.href = "home.html";
+function setSortProductsBy(value) {
+    setSortBy(value); 
+    makeProductAreaEmpty();
+    let data = sortProducts(productsData);
+    displayProducts(data);
 }
 
 function openFiltersInMobileScreen() {
@@ -433,6 +502,12 @@ function closeFiltersInMobileScreen() {
     $("#products-area").removeClass("d-none");
     $("#sort-by-btn").removeClass("d-none");
     $(".filters-btn").removeClass("d-none");
+}
+
+function makeProductAreaEmpty() {
+    let clone = $("#product-card").clone();
+    $("#products-area").empty();
+    $("#products-area").append(clone);
 }
 
 function init() {

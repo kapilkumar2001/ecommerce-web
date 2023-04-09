@@ -11,7 +11,6 @@
     <script src="https://kit.fontawesome.com/c30beb553f.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="stylesheet" href="assets/css/upload-order.css">
-    <link rel="icon" type="image/x-icon" href="images/increff-logo.png" />
     <link rel="icon" href="https://storage.googleapis.com/www.increff.com/img/favicon.png?v=2" type="image/x-icon"/>
     <link rel="stylesheet" href="https://storage.googleapis.com/static.increff.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
@@ -22,7 +21,7 @@
       <div class="not-logged-in d-none">
         <div class="row">
           <div class="mx-auto">
-            <i class="bi bi-box-arrow-in-right fa-10x text-success"></i>
+            <button class="border-0 bg-transparent" onclick="redirectToLoginScreenWithParam('upload-order')"><i class="bi bi-box-arrow-in-right fa-10x text-success"></i></button>
           </div>
         </div>
         <div class="row">
@@ -32,41 +31,46 @@
         </div>
         <div class="row">
           <div class="mx-auto mt-4">
-            <button class="btn btn-sm btn-success" onclick="redirectToLoginScreen()">Go to Login Screen</button>
+            <button class="btn btn-success" onclick="redirectToLoginScreenWithParam('upload-order')">Login Now</button>
+          </div>
+        </div>
+      </div>
+      <div class="row p-4 d-none order-placed">
+        <div class="col-12">
+          <div class="row"><i class="bi bi-check2-circle text-success fa-10x mx-auto"></i></div>
+          <h5 class="text-center mb-4">Your order has been placed successfully.</h5>
+          <div class="row">
+            <div class="mx-auto">
+              <button id="download-order-csv" class="btn btn-sm btn-outline-success mr-4">Download Order CSV</button>
+              <button id="start-shopping-btn" class="btn btn-sm btn-success" onclick="redirectToUploadScreen()">Upload Again</button>
+            </div>
           </div>
         </div>
       </div>
       <div class="logged-in d-none">
         <div class="row">
           <div class="mx-auto">
-            <h5>Upload Order</h5>
+            <h5 class="mt-4">Upload Order</h5>
           </div>
         </div>
         <div class="row">
           <div class="mx-auto">
-            <h6>Upload CSV file to place an order</h6>
+            <h6>Upload CSV file to place an order <a href="resources/order-sample.csv" target="_blank" class="text-primary">(Sample File)</a></h6>
           </div>
         </div>
         <div class="row">
           <input type="file" name="file-input" id="file-input" accept="csv" class="custom-file-input d-none">
-          <button id="browse-btn" class="border-0 bg-transparent mx-auto col-8">
+          <button id="browse-btn" class="border-0 bg-transparent mx-auto col-12 col-md-8">
             <div class="browse-box">
               <i class="bi bi-upload text-muted mx-auto fa-4x"></i>
-              <div class="row"><span class="mx-auto px-5">Drag and Drop the CSV file here or Click to Browse</span></div>
+              <div class="row"><span class="mx-auto px-4">Drop the CSV File here or Click to Browse</span></div>
             </div>
           </button>
         </div>
-        <div id="sample-file" class="row mb-4">
-          <div class="mx-auto">  
-            <div class="row">
-              <a href="resources/order-sample.csv" target="_blank" class="text-dark px-4"> Click here to Download Sample File</a>
-            </div>
-          </div>
-        </div>
-        <div id="upload-btn-row" class="row d-none">
+        <div id="upload-btn-row" class="row d-none mt-2">
           <div class="mx-auto">
-            <span id="file-name" class="pr-2 border border-dark py-1 px-2 rounded"></span>
-            <button id="upload-btn" class="btn btn-sm btn-success">Upload</button>
+            <span id="file-name" class="px-3 border border-dark py-1 rounded mr-3 align-middle"></span>
+            <button id="upload-btn" class="btn btn-sm btn-success align-middle">Upload</button>
           </div>
         </div>
         <div id="file-error" class="d-none row mt-4">
@@ -81,14 +85,13 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-8 mx-auto">
+            <div class="col-12 col-md-8 mx-auto">
               <table class="table table-striped border shadow-sm" id="errors-table">
                 <thead>
                   <tr>
                     <th class="text-center">Row No</th>
-                    <th class="text-right">Barcode</th>
-                    <th class="text-right">Quantity</th>
-                    <th></th>
+                    <th class="text-center">Barcode</th>
+                    <th class="text-center">Quantity</th>
                     <th class="text-left">Error Description</th>
                   </tr>
                 </thead>
@@ -98,7 +101,7 @@
           </div>
         </div>
         <div class="row">
-          <div id="uploaded-cart-items" class="col-sm-12 col-md-8 col-lg-8 mx-auto mt-5 d-none">
+          <div id="uploaded-cart-items" class="col-sm-12 col-md-10 col-lg-8 mx-auto mt-5 d-none">
             <div class="card">
               <div class="card-header">
                 <div class="row">
@@ -140,8 +143,8 @@
               </div>
               <div class="modal-body">Are you sure, you want to logout?</div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm btn-no px-2">Cancel</button>
-                <button type="button" class="btn btn-outline-dark btn-sm btn-yes px-2">Logout</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm btn-no px-2">Cancel</button>
+                <button type="button" class="btn btn-success btn-sm btn-yes px-2">Logout</button>
               </div>
             </div>
           </div>
@@ -154,8 +157,8 @@
               </div>
               <div class="modal-body">You are about to place your order.</div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm btn-no px-2">Cancel</button>
-                <button type="button" class="btn btn-outline-dark btn-sm btn-yes px-2">Place Order</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm btn-no px-2">Cancel</button>
+                <button type="button" class="btn btn-success btn-sm btn-yes px-2">Place Order</button>
               </div>
             </div>
           </div>

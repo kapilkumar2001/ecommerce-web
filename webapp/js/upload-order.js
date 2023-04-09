@@ -3,14 +3,19 @@ function displayPage() {
 
     if (userId === "0") {
         $(".logged-in").addClass("d-none");
+        $(".order-placed").addClass("d-none");
         $(".not-logged-in").removeClass("d-none");
     } else {
         $(".logged-in").removeClass("d-none");
+        $(".order-placed").addClass("d-none");
         $(".not-logged-in").addClass("d-none");
     }
+
+    checkToastInSessionStorage();
 }
 
 function clickInputFile() {
+    $("#file-input").val("");
     $("#file-input").click();
     $("#uploaded-cart-items").addClass("d-none");
     $("#uploaded-items-error").addClass("d-none");
@@ -56,7 +61,6 @@ function showOrder(orderData) {
 
     orderDataArray = convertMapToArray(orderData);
 
-    console.log(orderDataArray);
     $(".add-to-cart-btn").attr("onclick", "addToCart(" + JSON.stringify(orderData) + ")");
     $(".place-order-btn").click(function () {
         placeOrderConfirmation(orderDataArray);
@@ -82,18 +86,16 @@ function showCartItem(productData) {
 function addToCart(orderData) {
     let userId = getCurrentUserId();
     let cart = getCart();
-
-    if (cart === undefined || cart === null) {
-        cart = {};
-    }
-
     let uploadedCart = {};
+    let userCart = {};
+
+    if (cart === undefined || cart === null) cart = {};
+
     for (let i in orderData) {
         let data = orderData[i];
         uploadedCart[data.barcode] = data.quantity;
     }
 
-    let userCart = {};
     if (cart[userId]) {
         userCart = cart[userId];
         cart[userId] = mergeCarts(uploadedCart, userCart);
@@ -102,7 +104,8 @@ function addToCart(orderData) {
     }
 
     setCart(cart);
-    window.location.href = "cart.html";
+    setToastInSessionStorage("Items have been added to your cart");
+    redirectToCartScreen();
 }
 
 function placeOrderConfirmation(orderDataArray) {
@@ -116,10 +119,17 @@ function placeOrderConfirmation(orderDataArray) {
 }
 
 function placeOrder(orderDataArray) {
-    console.log(orderDataArray);
     writeFileData(orderDataArray);
     $(".place-order-modal").modal("hide");
-    window.location.href = "order-placed.html";
+
+    $(".logged-in").addClass("d-none");
+    $(".not-logged-in").addClass("d-none");
+    $(".order-placed").removeClass("d-none");
+    $("#download-order-csv").attr("onclick", "downloadOrderCSV(" + orderDataArray + ")");
+}
+
+function downloadOrderCSV(orderDataArray) {
+    writeFileData(orderDataArray);
 }
 
 function showError(errorData) {
@@ -134,9 +144,8 @@ function showError(errorData) {
         let data = errorData[i];
         let row = "<tr>"
             + "<td class='text-center'>" + data.rowNumber + "</td>"
-            + "<td class='text-right'>" + data.barcode + "</td>"
-            + "<td class='text-right'>" + data.quantity + "</td>"
-            + "<td></td>"
+            + "<td class='text-center'>" + data.barcode + "</td>"
+            + "<td class='text-center'>" + data.quantity + "</td>"
             + "<td class='text-left'>" + data.error + "</td>"
         tbody.append(row);
     }
@@ -146,7 +155,6 @@ function showFileError(message) {
     $("#uploaded-cart-items").addClass("d-none");
     $("#uploaded-items-error").addClass("d-none");
     $("#file-error").removeClass("d-none");
-
     $("#file-error .error-text").html(message);
 }
 
@@ -220,7 +228,7 @@ function uploadRows(productsData) {
         let product = null;
 
         for (let i in productsData) {
-            if (productsData[i]["barcode"] == row.barcode) {
+            if (productsData[i]["barcode"] === row.barcode) {
                 product = productsData[i];
                 break;
             }

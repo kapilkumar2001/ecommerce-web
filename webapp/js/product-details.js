@@ -12,7 +12,7 @@ function displayProductDetails(barcode) {
             let productData = null;
 
             for (let i in data) {
-                if (data[i]['barcode'] == barcode) {
+                if (data[i]['barcode'] === barcode) {
                     productData = data[i];
                     break;
                 }
@@ -26,13 +26,15 @@ function displayProductDetails(barcode) {
                 $(".product-img-4").attr("src", productData["images"][3]["src"]);
                 $(".product-img-5").attr("src", productData["images"][4]["src"]);
                 $(".product-desc").html(productData['additionalInfo']);
-                $(".product-rating").html(parseFloat(productData['rating']).toFixed(1) + " <i class='bi bi-star-fill'></i>");
                 $(".product-reviews").html("(" + productData['reviews'] + " reviews)");
                 $(".product-price").html("₹" + productData["price"].toLocaleString());
                 $(".product-mrp").find("s").html("₹" + parseInt(productData['mrp']).toLocaleString());
                 $(".product-discount").find("b").html(productData['discountDisplayLabel']);
                 $(".product-color").html("Color: " + productData['color']);
-                $(".product-sizes").html("Available Sizes: " + productData['sizes']);
+                $(".product-sizes").html("Size: " + productData['sizes'].split(",")[0]);
+                document.getElementById("product-rating").title = parseFloat(productData['rating']).toFixed(1) + " out of 5 stars";
+                document.getElementById("full-stars").style.width = parseInt(productData['rating'] / 5 *100) + "%";
+                initializeTooltip();
 
                 let userCart = getUserCart();
 
@@ -53,25 +55,19 @@ function displayProductDetails(barcode) {
                 $(".product-details").removeClass("d-none");
                 $(".no-product-found").addClass("d-none");
             } else {
-                $("#go-to-home-btn").attr("onclick", "viewHomePage()");
+                $("#go-to-home-btn").attr("onclick", "redirectToHomeScreen()");
                 $(".product-details").addClass("d-none");
                 $(".no-product-found").removeClass("d-none");
             }
+
+            checkToastInSessionStorage();
         },
     });
 }
 
-function viewCart() {
-    window.location.href = "cart.html";
-}
-
-function viewHomePage() {
-    window.location.href = "home.html";
-}
-
 function buyNow(barcode) {
     increaseQuantityInCart(barcode);
-    window.location.href = "cart.html";
+    redirectToCartScreen();
 }
 
 function changeToCountButton(barcode) {
@@ -85,6 +81,8 @@ function changeToCountButton(barcode) {
 
     $(".remove-from-cart-btn").removeClass("d-none");
     $(".remove-from-cart-btn").attr("onclick", "openRemoveItemModal('" + barcode + "')");
+
+    showSuccessToast("Product has been added to your cart.");
 }
 
 function increaseQuantity(barcode) {
@@ -122,8 +120,7 @@ function removeItem(barcode) {
     $(".remove-from-cart-btn").addClass("d-none");
 
     $(".confirm-modal").modal("hide");
-    $(".toast-success").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>Product removed from the cart.</span></div>");
-    $(".toast-success").toast("show");
+    showSuccessToast("Product has been removed from the cart.");
 }
 
 function init() {

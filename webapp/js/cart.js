@@ -2,11 +2,13 @@ function displayCart() {
     let userCart = getUserCart();
     let cartProductsLength = Object.keys(userCart).length;
 
+    $("#cart").removeClass("d-none");
+    $("#order-placed").addClass("d-none");
+
     if (cartProductsLength === 0) {
         $("#empty-cart").removeClass("d-none");
         $("#cart-items").addClass("d-none");
         $("#order-summary").addClass("d-none");
-        $("#start-shopping-btn").click(viewHomePage);
     } else {
         $("#empty-cart").addClass("d-none");
         $("#cart-items").removeClass("d-none");
@@ -16,6 +18,7 @@ function displayCart() {
             url: 'data/products.json',
             dataType: 'json',
             success: function (data) {
+
                 for (let i in data) {
                     let barcode = data[i]["barcode"];
                     if (!userCart[barcode]) {
@@ -28,8 +31,17 @@ function displayCart() {
                 }
 
                 $("#cart-item").addClass("d-none");
-                $('[data-toggle="tooltip"]').tooltip();
                 updateOrderSummary();
+
+                if (getCurrentUserId() === "0") {
+                    $(".place-order-btn").html("Login to Place Order");
+                    $(".place-order-btn").attr("onclick", "redirectToLoginScreenWithParam('cart')");
+                } else {
+                    $(".place-order-btn").html("Place Order")
+                    $(".place-order-btn").attr("onclick", "openPlaceOrderConfirmationModal()");
+                }
+
+                checkToastInSessionStorage();
             }
         });
     }
@@ -50,6 +62,7 @@ function showCartItem(quantity, productData) {
     $("#cart-item-" + barcode + " .product-price").html("₹" + productData["price"].toLocaleString());
     $("#cart-item-" + barcode + " .product-mrp").find("s").html("₹" + productData["mrp"].toLocaleString());
     $("#cart-item-" + barcode + " .product-discount").html(productData["discountDisplayLabel"]);
+    $("#cart-item-" + barcode + " .product-size").html("Size - " + productData['sizes'].split(",")[0]);
 
     $("#cart-item-" + barcode + " .inc-qty-btn").attr("onclick", "increaseQuantity('" + barcode + "')");
     $("#cart-item-" + barcode + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + barcode + "', '" + productData["name"] + "')");
@@ -89,16 +102,12 @@ function removeItem(barcode, productName) {
     removeItemFromCart(barcode);
     updateOrderSummary();
 
-    $(".confirm-modal").modal("hide");
-    $(".toast-success").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>" + productName + " removed from the cart.</span></div>");
-    $(".toast-success").toast("show");
-
     $("#cart-item-" + barcode).remove();
 
-    let userCart = getUserCart();
-    if (Object.keys(userCart).length === 0) {
-        displayCart();
-    }
+    $(".confirm-modal").modal("hide");
+    showSuccessToast("<b>" + productName + "</b> has been removed from the cart.");
+
+    if (Object.keys(getUserCart()).length === 0) displayCart();
 }
 
 function updateOrderSummary() {
@@ -135,33 +144,34 @@ function updateOrderSummary() {
                 $(".shipping-price").html("<span class='text-body'><s>₹199</s></span> FREE");
                 $(".shipping-price").addClass("text-success");
                 $(".free-delivery").addClass("d-none");
+
+                $(".total-amount").html("₹" + (totalPrice - totalDiscount).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }));
             } else {
-                $(".shipping-price").html("₹" + 199);
+                $(".shipping-price").html("<span class='text-body'>₹199</span>");
                 $(".free-delivery").html("Add items worth ₹" + (4999 - totalPrice).toLocaleString(undefined, {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 }) + " more to get free delivery on this order.");
                 $(".free-delivery").removeClass("d-none");
+
+                $(".total-amount").html("₹" + (totalPrice - totalDiscount + 199).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }));
             }
-            $(".total-amount").html("₹" + (totalPrice - totalDiscount).toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }));
         }
     });
 }
 
-function checkLogin() {
-    // TODO: check with isUserLogged in
-    if (getCurrentUserId() === "0") {
-        window.location.href = "login.html";
-    } else {
-        $(".place-order-modal").modal("toggle");
-        $(".place-order-modal .btn-yes").click(placeOrder);
-        $(".place-order-modal .btn-no").click(() => {
-            $(".place-order-modal").modal("hide");
-        });
-    }
+function openPlaceOrderConfirmationModal() {
+    $(".place-order-modal").modal("toggle");
+    $(".place-order-modal .btn-yes").click(placeOrder);
+    $(".place-order-modal .btn-no").click(() => {
+        $(".place-order-modal").modal("hide");
+    });
 }
 
 function placeOrder() {
@@ -189,13 +199,19 @@ function placeOrder() {
                 }
             }
 
-            writeFileData(orderData);
             removeAllItemsFromCart();
-
             $(".place-order-modal").modal("hide");
-            window.location.href = "order-placed.html";
+            $("#cart").addClass("d-none");
+            $("#order-placed").removeClass("d-none");
+            $("#download-order-csv").attr("onclick", "downloadOrderCSV(" + JSON.stringify(orderData) + ")");
+
+            writeFileData(orderData);
         },
     });
+}
+
+function downloadOrderCSV(orderData) {
+    writeFileData(orderData);
 }
 
 function openClearCartModal() {
@@ -209,12 +225,10 @@ function openClearCartModal() {
 }
 
 function clearCart() {
-    removeAllItemsFromCart();
-
     $(".confirm-modal").modal("hide");
-    $(".toast-success").html("<div class='toast-body text-white'><button type='button' class='ml-auto mr-1 close' data-dismiss='toast' aria-label='Close'><span aria-hidden='true' class='text-white'>&times;</span></button><span class='mr-4'>All the products are removed from the cart.</span></div>");
-    $(".toast-success").toast("show");
-
+    
+    removeAllItemsFromCart();
+    showSuccessToast("All the products have been removed from the cart.");
     displayCart();
 }
 
@@ -223,14 +237,9 @@ function viewProduct(barcode) {
     window.location.href = url;
 }
 
-function viewHomePage() {
-    window.location.href = "home.html";
-}
-
 function init() {
     displayCart();
     $("#clear-cart-btn").click(openClearCartModal);
-    $("#place-order-btn").click(checkLogin);
 }
 
 $(document).ready(init);
