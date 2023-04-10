@@ -40,7 +40,7 @@ function showProductDetails(data, barcode) {
         $(".product-color").html("Color: " + productData['color']);
         $(".product-sizes").html("Size: " + productData['sizes'].split(",")[0]);
         document.getElementById("product-rating").title = parseFloat(productData['rating']).toFixed(1) + " out of 5 stars";
-        document.getElementById("full-stars").style.width = parseInt(productData['rating'] / 5 *100) + "%";
+        document.getElementById("full-stars").style.width = parseInt(parseFloat(productData['rating']).toFixed(1) / 5 *100) + "%";
         initializeTooltip();
 
         let userCart = getUserCart();
