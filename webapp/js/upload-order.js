@@ -57,7 +57,10 @@ function showOrder(orderData) {
 
     $("#uploaded-cart-item").remove();
     $(".card-title").html("Uploaded Items (" + itemsCount + ")");
-    $(".total-amount").html("₹" + parseFloat(totalAmount).toFixed(2).toLocaleString());
+    $(".total-amount").html("₹" + (totalAmount).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }));
 
     orderDataArray = convertMapToArray(orderData);
 

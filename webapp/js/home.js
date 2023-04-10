@@ -311,11 +311,7 @@ function showProductCard(data) {
 
             let userCart = getUserCart();
 
-            if (!userCart[e["barcode"]] || parseInt(userCart[e["barcode"]]) < 0) {
-                $("#product-card-" + e["barcode"] + " .add-to-cart-btn").attr("onclick", "changeToCountButton('" + e['barcode'] + "', '" + e['name'] + "')")
-                $("#product-card-" + e["barcode"] + " .add-to-cart-span").removeClass("d-none");
-                $("#product-card-" + e["barcode"] + " .inc-dec-qty-span").addClass("d-none");
-            } else {
+            if (userCart[e["barcode"]] && parseInt(userCart[e["barcode"]]) >= 0) {
                 $("#product-card-" + e["barcode"] + " .inc-qty-btn").attr("onclick", "increaseQuantity('" + e['barcode'] + "')");
                 $("#product-card-" + e["barcode"] + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + e['barcode'] + "', '" + e['name'] + "')");
                 $("#product-card-" + e["barcode"] + " .inc-dec-qty-span").removeClass("d-none");
@@ -333,6 +329,25 @@ function showProductCard(data) {
                 }, 1000);
             }, function () {
                 $("#product-card-" + e["barcode"] + " .carousel").carousel('pause');
+            });
+
+            $("#product-card-" + e["barcode"]).hover(function () {
+                if (!getUserCart()[e["barcode"]] || parseInt(getUserCart()[e["barcode"]]) < 0) {
+                    $("#product-card-" + e["barcode"] + " .add-to-cart-btn").attr("onclick", "changeToCountButton('" + e['barcode'] + "', '" + e['name'] + "')")
+                    $("#product-card-" + e["barcode"] + " .add-to-cart-span").removeClass("d-none");
+                    $("#product-card-" + e["barcode"] + " .inc-dec-qty-span").addClass("d-none");
+                }
+            }, function () {
+                if (!getUserCart()[e["barcode"]] || parseInt(getUserCart()[e["barcode"]]) < 0) {
+                    $("#product-card-" + e["barcode"] + " .add-to-cart-span").addClass("d-none");
+                    $("#product-card-" + e["barcode"] + " .inc-dec-qty-span").addClass("d-none");
+                } else {
+                    $("#product-card-" + e["barcode"] + " .inc-qty-btn").attr("onclick", "increaseQuantity('" + e['barcode'] + "')");
+                    $("#product-card-" + e["barcode"] + " .dec-qty-btn").attr("onclick", "decreaseQuantity('" + e['barcode'] + "', '" + e['name'] + "')");
+                    $("#product-card-" + e["barcode"] + " .inc-dec-qty-span").removeClass("d-none");
+                    $("#product-card-" + e["barcode"] + " .add-to-cart-span").addClass("d-none");
+                    $("#product-card-" + e["barcode"] + " .product-qty").html(parseInt(getUserCart()[e["barcode"]]));
+                }
             });
         }
     }
@@ -381,10 +396,9 @@ function removeItem(barcode, productName) {
     removeItemFromCart(barcode);
 
     $(".confirm-modal").modal("hide");
-    $("#product-card-" + barcode + " .add-to-cart-btn").attr("onclick", "changeToCountButton('" + barcode + "', '" + productName + "')");
-    $("#product-card-" + barcode + " .add-to-cart-btn").html("Add to cart");
+
     $("#product-card-" + barcode + " .inc-dec-qty-span").addClass("d-none");
-    $("#product-card-" + barcode + " .add-to-cart-span").removeClass("d-none");
+    $("#product-card-" + barcode + " .add-to-cart-span").addClass("d-none");
 
     showSuccessToast("<b>" + productName + "</b> has been removed from the cart.");
     updateOrderSummary();
