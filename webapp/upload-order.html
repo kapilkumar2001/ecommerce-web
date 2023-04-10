@@ -55,12 +55,12 @@
         </div>
         <div class="row">
           <div class="mx-auto">
-            <h6>Upload CSV file to place an order <a href="resources/order-sample.csv" target="_blank" class="text-primary">(Sample File)</a></h6>
+            <h6>Upload CSV file to place an order <a href="assets/resources/order-sample.csv" target="_blank" class="text-primary">(Sample File)</a></h6>
           </div>
         </div>
         <div class="row">
           <input type="file" name="file-input" id="file-input" accept="csv" class="custom-file-input d-none">
-          <button id="browse-btn" class="border-0 bg-transparent mx-auto col-12 col-md-8">
+          <button id="browse-btn" class="border-0 bg-transparent mx-auto col-12 col-lg-8">
             <div class="browse-box">
               <i class="bi bi-upload text-muted mx-auto fa-4x"></i>
               <div class="row"><span class="mx-auto px-4">Drop the CSV File here or Click to Browse</span></div>
@@ -74,18 +74,18 @@
           </div>
         </div>
         <div id="file-error" class="d-none row mt-4">
-          <div class="mx-auto col-8">
+          <div class="mx-auto col-12 col-lg-8">
             <h6 class="text-danger error-text"></h6>
           </div>
         </div>
         <div id="uploaded-items-error" class="d-none mt-4">
           <div class="row">
-            <div class="col-8 mx-auto">
+            <div class="col-12 col-lg-8 mx-auto">
               <h6 class="mt-4 text-danger">The attached file contains some errors.</h6>
             </div>
           </div>
           <div class="row">
-            <div class="col-12 col-md-8 mx-auto">
+            <div class="col-12 col-lg-8 mx-auto">
               <table class="table table-striped border shadow-sm" id="errors-table">
                 <thead>
                   <tr>
@@ -101,12 +101,12 @@
           </div>
         </div>
         <div class="row">
-          <div id="uploaded-cart-items" class="col-sm-12 col-md-10 col-lg-8 mx-auto mt-5 d-none">
+          <div id="uploaded-cart-items" class="col-12 col-lg-8 mx-auto mt-5 d-none">
             <div class="card">
               <div class="card-header">
                 <div class="row">
-                  <h5 class="ml-4 my-auto card-title"></h5>
-                  <h6 class="ml-4 my-auto ml-auto mr-3 total-amount"></h6>
+                  <h6 class="ml-0 ml-md-4 my-auto card-title"></h6>
+                  <h6 class="my-auto ml-auto mr-3 total-amount"></h6>
                   <button class="add-to-cart-btn btn btn-sm btn-outline-success rounded mr-2 my-auto">Add to Cart</i></button>
                   <button class="place-order-btn btn btn-sm btn-success rounded mr-2 my-auto">Place Order</button>
                 </div>

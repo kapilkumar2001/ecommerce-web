@@ -4,8 +4,6 @@ a {
 
 #product-rating {
 	position: relative;
-	vertical-align: middle;
-	display: inline-block;
 	color: #b1b1b1;
 	overflow: hidden;
 }
